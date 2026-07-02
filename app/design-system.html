@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>디자인 시스템 · 회의 시간 조율</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="ds-wrap">
+    <h1 class="t-display">디자인 시스템</h1>
+    <p class="t-body" style="margin-top:8px">자체 아이덴티티(Fair Teal) 토큰 + 컴포넌트. 모든 화면이 <code>styles.css</code> 하나를 공유한다. 이모지 없이 색+텍스트 뱃지로 4상태를 표현.</p>
+
+    <!-- Colors -->
+    <div class="ds-block">
+      <h2 class="t-subtitle">색 (Color)</h2>
+      <div class="ds-grid" style="margin-top:16px">
+        <div class="swatch" style="background:#0E9F8E">Accent</div>
+        <div class="swatch" style="background:#0B7E71">Accent Dark</div>
+        <div class="swatch" style="background:#E3F3F0;color:#0E9F8E;text-shadow:none">Accent Weak</div>
+        <div class="swatch" style="background:#16241F">Text</div>
+        <div class="swatch" style="background:#8A9994">Text-3</div>
+        <div class="swatch" style="background:#0E9F8E">가능</div>
+        <div class="swatch" style="background:#D98324">아쉬움</div>
+        <div class="swatch" style="background:#E5544B">불가</div>
+      </div>
+    </div>
+
+    <!-- Typography -->
+    <div class="ds-block">
+      <h2 class="t-subtitle">타이포그래피</h2>
+      <div style="margin-top:12px">
+        <div class="t-display">Display 28 · 화요일 오후 2시</div>
+        <div class="t-title">Title 22 · 다음 주 팀 회의</div>
+        <div class="t-subtitle">Subtitle 18 · 왜 이 시간일까요?</div>
+        <div class="t-body">Body 15 · 필수 4명 모두 가능하고, 아쉬운 분이 가장 적어요.</div>
+        <div class="t-caption">Caption 13 · 당신의 선호는 아무에게도 보이지 않아요.</div>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="ds-block">
+      <h2 class="t-subtitle">뱃지 — 4상태 + 역할</h2>
+      <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
+        <span class="badge badge-ok"><span class="dot dot-ok"></span>가능</span>
+        <span class="badge badge-soft"><span class="dot dot-soft"></span>아쉬움</span>
+        <span class="badge badge-unk"><span class="dot dot-unk"></span>미응답</span>
+        <span class="badge badge-hard"><span class="dot dot-hard"></span>불가</span>
+        <span class="badge badge-req">필수</span>
+        <span class="badge badge-opt">선택</span>
+      </div>
+      <p class="t-caption" style="margin-top:12px">원칙: 하드 팩트(외근)=실명 노출 OK, 소프트 선호=익명 집계만.</p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="ds-block">
+      <h2 class="t-subtitle">버튼</h2>
+      <div style="max-width:340px;margin-top:12px">
+        <button class="btn btn-primary">이 시간으로 정하기</button>
+        <div style="height:8px"></div>
+        <button class="btn btn-secondary">다른 시간 보기</button>
+        <div style="height:8px"></div>
+        <div class="btn-row">
+          <button class="btn btn-ghost">어려워요</button>
+          <button class="btn btn-primary">좋아요</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toggle / Chips -->
+    <div class="ds-block">
+      <h2 class="t-subtitle">토글 · 요일 칩</h2>
+      <div class="row" style="max-width:340px;margin-top:8px">
+        <div class="grow"><div class="name">점심 직후 (13~14시)</div><div class="sub">피하고 싶어요</div></div>
+        <label class="switch"><input type="checkbox" checked /><span class="track"></span><span class="thumb"></span></label>
+      </div>
+      <div class="chip-row" style="margin-top:12px">
+        <div class="chip">월</div><div class="chip on">화</div><div class="chip">수</div>
+        <div class="chip on">목</div><div class="chip">금</div>
+      </div>
+    </div>
+
+    <!-- New utilities -->
+    <div class="ds-block">
+      <h2 class="t-subtitle">유틸 — 프라이버시 · 안내 문구</h2>
+      <div style="max-width:340px;margin-top:12px">
+        <span class="privacy">선호는 아무에게도 안 보여요</span>
+        <div class="reg-note" style="margin-top:14px">6명 중 5명 규칙 반영 · 미반영돼도 추천은 나와요</div>
+        <div class="anon-cap">누구인지·이유는 비공개예요</div>
+        <button class="btn-link" style="margin-top:8px">왜 이 시간?</button>
+      </div>
+    </div>
+
+    <!-- Sample components -->
+    <div class="ds-block">
+      <h2 class="t-subtitle">추천 카드 · 후보 슬롯</h2>
+      <p class="t-caption" style="margin:0 0 12px">아래 카드·리스트는 <code>engine.js</code>가 실제 계산한 결과 — 하드코딩 가짜 예시가 아니라 항상 최신.</p>
+      <div style="max-width:340px" id="ds-sample"></div>
+    </div>
+
+    <!-- Engine verification -->
+    <div class="ds-block">
+      <h2 class="t-subtitle">시스템 검증 — 랭킹 엔진 실행 결과</h2>
+      <p class="t-caption" style="margin:8px 0 12px">아래는 <code>engine.js</code>(Entry 008 기준점)를 시드 6명에 실제로 돌린 출력. 디자인과 시스템이 붙어 있음을 증명.</p>
+      <pre id="engine-out" style="background:#0f1419;color:#d7e0ea;padding:16px;border-radius:12px;font-size:12px;overflow:auto;white-space:pre-wrap"></pre>
+    </div>
+  </div>
+
+  <script src="engine.js"></script>
+  <script>
+    var people = [
+      { id: 'po',   name: '김PO',   required: true,  registered: true,  soft: { morningFocus: true, earlyMorning: true } },
+      { id: 'lead', name: '이팀장', required: true,  registered: true,  soft: { postLunch: true } },
+      { id: 'dev',  name: '박개발', required: true,  registered: true,  hardDays: [1, 3], soft: { lateAfternoon: true } },
+      { id: 'des',  name: '최디자', required: true,  registered: true,  soft: { earlyMorning: true } },
+      { id: 'mkt',  name: '정마케', required: false, registered: true,  soft: { afternoonSlump: true } },
+      { id: 'intern', name: '한인턴', required: false, registered: false }
+    ];
+    var slots = Engine.makeWeekSlots('2026-07-06'); // 월요일
+    var res = Engine.rankSlots(people, slots);
+    var best = res.ranked[0];
+
+    // 샘플 카드/리스트 = 엔진 실제 결과 (항상 최신)
+    function dsMeta(e) {
+      var p = ['필수 ' + e.requiredOkCount + '/' + e.requiredTotal, '선택 ' + e.optionalOk + '/' + e.optionalTotal];
+      if (e.softCount > 0) p.push('아쉬운 분 ' + e.softCount);
+      return p.join(' · ');
+    }
+    document.getElementById('ds-sample').innerHTML =
+      '<div class="card hero"><div class="tag">추천</div><div class="when">' +
+        Engine.slotLabel(best.slot).replace('요일 ', '요일<br>') + '</div>' +
+      '<div class="stat">필수 <b>' + best.requiredTotal + '명 모두</b> 가능</div>' +
+      '<div class="stat">선택 ' + best.optionalTotal + '명 중 <b>' + best.optionalOk + '명</b> 가능</div>' +
+      '<div class="stat">아쉬운 분 <b>' + best.softCount + '명</b></div>' +
+      '<div class="anon-cap">누구인지·이유는 비공개예요</div></div>' +
+      '<div style="height:12px"></div>' +
+      res.ranked.slice(0, 3).map(function (e, i) {
+        return '<div class="slot' + (i === 0 ? ' top' : '') + '"><div class="rank">' + (i + 1) +
+          '</div><div class="info"><div class="time">' + Engine.slotLabel(e.slot) +
+          '</div><div class="meta">' + dsMeta(e) + '</div></div></div>';
+      }).join('');
+
+    var out = [];
+    out.push('후보(Floor 통과) 상위 5개:');
+    res.ranked.slice(0, 5).forEach(function (e, i) {
+      out.push(
+        (i + 1) + '. ' + Engine.slotLabel(e.slot) +
+        '  | 필수 ' + e.requiredOkCount + '/' + e.requiredTotal +
+        ' · 선택 ' + e.optionalOk + '/' + e.optionalTotal +
+        ' · 아쉬운 분 ' + e.softCount +
+        (e.reqUnknown ? ' · 필수 미응답 ' + e.reqUnknown : '')
+      );
+    });
+    out.push('');
+    out.push('Floor-empty(필수 전원 불가) 슬롯 수: ' + res.blocked.length);
+    out.push('전체 후보(Floor 통과) 수: ' + res.ranked.length);
+    document.getElementById('engine-out').textContent = out.join('\n');
+  </script>
+</body>
+</html>

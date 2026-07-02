@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>회의 시간 조율 · 인터랙티브 프로토타입</title>
+<style>
+  :root{
+    --accent:#0E9F8E; --accent-dark:#0B7E71; --accent-weak:#E3F3F0;
+    --bg:#F3F7F6; --surface:#fff; --text:#16241F; --text-2:#4B5B55; --text-3:#8A9994; --line:#E2EAE7;
+    --ok-fg:#0E9F8E; --ok-bg:#E3F3F0; --soft-fg:#D98324; --soft-bg:#FBF0DE;
+    --unk-fg:#8A9994; --unk-bg:#EEF2F1; --hard-fg:#E5544B; --hard-bg:#FBE9E7;
+    --r-md:12px; --r-lg:16px; --shadow:0 1px 2px rgba(20,40,35,.04),0 8px 24px rgba(20,40,35,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+       background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;
+       display:flex;flex-direction:column;align-items:center;min-height:100vh}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input{font-family:inherit}
+  .t-display{font-size:28px;font-weight:800;letter-spacing:-.02em;line-height:1.3;text-wrap:balance}
+  .t-title{font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.35;text-wrap:balance}
+  .t-body{font-size:15px;font-weight:500;color:var(--text-2)}
+  .t-caption{font-size:13px;font-weight:500;color:var(--text-3)}
+  .t-strong{font-weight:700}
+  b{font-weight:700;color:var(--text)}
+
+  .head{text-align:center;margin:24px 0 8px}
+  .head .sub{color:var(--text-2);font-size:14px;margin-top:6px}
+  .wordmark{display:inline-flex;align-items:center;gap:9px;font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--accent)}
+  .wordmark::before{content:'';width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--accent-weak)}
+
+  .frame{width:390px;max-width:100%;min-height:760px;background:var(--bg);border-radius:28px;overflow:hidden;
+         position:relative;box-shadow:var(--shadow);display:flex;flex-direction:column;margin-bottom:40px}
+  .roleband{display:flex;align-items:center;justify-content:space-between;padding:14px 20px 2px;min-height:44px}
+  .role{font-size:12px;font-weight:800;padding:4px 12px;border-radius:999px}
+  .role-user{color:var(--accent);background:var(--accent-weak)}
+  .role-org{color:#fff;background:var(--text)}
+  .back{font-size:22px;color:var(--text-3);cursor:pointer;width:22px}
+  .dots{display:flex;gap:6px}
+  .dots i{width:7px;height:7px;border-radius:50%;background:var(--line);transition:all .2s}
+  .dots i.on{background:var(--accent);width:20px;border-radius:999px}
+
+  .screen{flex:1;padding:16px 20px 104px;overflow-y:auto;display:flex;flex-direction:column}
+  .cta-dock{position:absolute;left:0;right:0;bottom:0;padding:14px 20px 22px;background:linear-gradient(to top,var(--bg) 74%,transparent)}
+
+  .btn{display:block;width:100%;padding:16px;border-radius:var(--r-md);font-size:16px;font-weight:700;text-align:center;transition:transform .06s,background .15s}
+  .btn:active{transform:scale(.985)}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:active{background:var(--accent-dark)}
+  .btn-ghost{background:var(--surface);color:var(--text-2);border:1px solid var(--line)}
+  .btn-link{background:none;color:var(--text-3);font-weight:600;font-size:14px;padding:12px;width:100%;text-align:center}
+  .btn-row{display:flex;gap:12px}.btn-row .btn{flex:1}
+
+  .card{background:var(--surface);border-radius:var(--r-lg);padding:20px;box-shadow:var(--shadow)}
+  .card-flat{background:var(--surface);border-radius:var(--r-md);padding:16px;border:1px solid var(--line)}
+  .hero{text-align:center;padding:30px 20px}
+  .hero .tag{display:inline-block;font-size:12px;font-weight:800;color:var(--accent);background:var(--accent-weak);padding:4px 12px;border-radius:999px;margin-bottom:16px}
+  .hero .when{font-size:30px;font-weight:800;letter-spacing:-.02em;margin-bottom:18px;line-height:1.25}
+  .hero .stat{color:var(--text-2);font-size:15px;margin:3px 0}
+  .anon-cap{font-size:12px;color:var(--text-3);margin-top:12px;display:inline-flex;align-items:center;gap:5px}
+  .anon-cap::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--soft-fg)}
+  .reg-note{font-size:12px;color:var(--text-3);text-align:center;margin:0 0 12px}
+
+  .row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}.row .grow{flex:1;min-width:0}.row .name{font-weight:600;font-size:15px}.row .sub{font-size:13px;color:var(--text-3)}
+  .section-label{font-size:13px;font-weight:700;color:var(--text-3);margin:20px 0 12px}
+  .privacy{display:inline-flex;align-items:center;gap:6px;color:var(--accent);background:var(--accent-weak);padding:8px 12px;border-radius:999px;font-size:13px;font-weight:700}
+  .hint{font-size:12px;color:var(--text-3);text-align:center;margin-top:14px}
+
+  .switch{position:relative;width:48px;height:28px;flex:none}
+  .switch input{opacity:0;width:0;height:0}
+  .switch .track{position:absolute;inset:0;background:#D1D6DB;border-radius:999px;transition:background .15s}
+  .switch .thumb{position:absolute;top:3px;left:3px;width:22px;height:22px;background:#fff;border-radius:50%;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .switch input:checked+.track{background:var(--accent)}
+  .switch input:checked+.track+.thumb{transform:translateX(20px)}
+  .chip-row{display:flex;gap:8px}
+  .chip{padding:10px 0;width:48px;text-align:center;border-radius:8px;border:1px solid var(--line);background:var(--surface);font-weight:600;color:var(--text-2);cursor:pointer}
+  .chip.on{background:var(--hard-bg);border-color:var(--hard-fg);color:var(--hard-fg)}
+
+  /* 세그먼트 토글 (필수/선택) — 명확한 어포던스 */
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex:none;background:var(--unk-bg)}
+  .seg button{padding:7px 15px;font-size:13px;font-weight:700;color:var(--text-3);cursor:pointer;transition:all .12s}
+  .seg button.on{background:var(--accent);color:#fff}
+
+  .slot{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--r-md);background:var(--surface);border:1px solid var(--line);cursor:pointer;margin-top:8px}
+  .slot.sel{border-color:var(--accent);background:var(--accent-weak)}
+  .slot .rank{font-weight:800;color:var(--text-3);width:22px}
+  .slot .time{font-weight:700;font-size:15px}
+  .slot .meta{font-size:12px;color:var(--text-3);margin-top:2px}
+
+  .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;flex:none}
+  .badge-hard{color:var(--hard-fg);background:var(--hard-bg)}.badge-soft{color:var(--soft-fg);background:var(--soft-bg)}
+  .dot{width:7px;height:7px;border-radius:50%}.dot-hard{background:var(--hard-fg)}.dot-soft{background:var(--soft-fg)}
+  .field{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)}
+  .field .lab{font-weight:600}.field .val{color:var(--text-2)}
+  .succ{width:72px;height:72px;border-radius:50%;background:var(--accent);margin:8px auto 20px;position:relative}
+  .succ::after{content:'';position:absolute;left:26px;top:20px;width:16px;height:28px;border:solid #fff;border-width:0 4px 4px 0;transform:rotate(45deg)}
+  .toast{position:absolute;left:20px;right:20px;bottom:104px;background:var(--text);color:#fff;padding:13px 16px;border-radius:12px;font-size:14px;font-weight:600;text-align:center;opacity:0;transform:translateY(6px);transition:opacity .22s,transform .22s;pointer-events:none;box-shadow:0 8px 24px rgba(20,40,35,.18)}
+  .toast.on{opacity:1;transform:none}
+
+  /* 화면 전환 */
+  @keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .screen.anim{animation:enter .30s cubic-bezier(.2,.7,.2,1)}
+  /* 계산 모먼트 */
+  .computing{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;margin:auto 0}
+  .pulse{display:flex;gap:9px;margin-bottom:22px}
+  .pulse i{width:12px;height:12px;border-radius:50%;background:var(--accent);animation:bounce 1s infinite}
+  .pulse i:nth-child(2){animation-delay:.15s}.pulse i:nth-child(3){animation-delay:.3s}
+  @keyframes bounce{0%,100%{transform:translateY(0);opacity:.35}50%{transform:translateY(-9px);opacity:1}}
+  /* 슬롯 상태 dot */
+  .sdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;vertical-align:middle}
+
+  /* 홈 역할 선택 */
+  .choice{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;margin-top:12px;box-shadow:var(--shadow)}
+  .choice .ct{font-size:17px;font-weight:800}
+  .choice .cs{font-size:13px;color:var(--text-3);margin-top:4px}
+  .choice.accent{background:var(--accent);border-color:var(--accent)}
+  .choice.accent .ct{color:#fff}.choice.accent .cs{color:rgba(255,255,255,.85)}
+
+  /* 초대 토큰 */
+  .token{background:var(--accent-weak);border:1px dashed var(--accent);border-radius:var(--r-lg);padding:22px;text-align:center;margin-top:16px}
+  .token .code{font-size:34px;font-weight:800;letter-spacing:6px;color:var(--accent-dark)}
+  .status{display:flex;align-items:center;gap:10px;margin-top:16px}
+  .status .bar{flex:1;height:8px;border-radius:999px;background:var(--line);overflow:hidden}
+  .status .bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+  .codein{width:100%;text-align:center;font-size:28px;font-weight:800;letter-spacing:6px;color:var(--text);
+          border:1px solid var(--line);border-radius:var(--r-md);padding:16px;background:var(--surface);text-transform:uppercase}
+  .codein:focus{outline:none;border-color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="head">
+  <div class="wordmark">핏타임</div>
+  <div class="sub">모두가 괜찮은 회의 시간, 눈치 없이</div>
+</div>
+
+<div class="frame">
+  <div class="roleband">
+    <span class="back" id="back">‹</span>
+    <span class="role" id="role"></span>
+    <span class="dots" id="dots"></span>
+  </div>
+  <div class="screen" id="screen"></div>
+  <div class="cta-dock" id="cta"></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ===== 엔진 ===== */
+var WEEKDAYS=['월','화','수','목','금'];
+var STATE={OK:'가능',SOFT:'아쉬움',UNKNOWN:'미응답',HARD:'불가'};
+function personState(p,slot){
+  if(!p.registered) return STATE.UNKNOWN;
+  if(p.hardDays && p.hardDays.indexOf(slot.dayIdx)!==-1) return STATE.HARD;
+  var s=p.soft||{};
+  if(s.postLunch && slot.hour>=13 && slot.hour<14) return STATE.SOFT;
+  if(s.earlyMorning && slot.hour<10) return STATE.SOFT;
+  if(s.morningFocus && slot.hour>=10 && slot.hour<13) return STATE.SOFT;
+  if(s.afternoonSlump && slot.hour>=14 && slot.hour<16) return STATE.SOFT;
+  if(s.lateAfternoon && slot.hour>=16) return STATE.SOFT;
+  if(s.friPM && slot.dayIdx===4 && slot.hour>=13) return STATE.SOFT;
+  return STATE.OK;
+}
+function evaluateSlot(ppl,slot){
+  var st=ppl.map(function(p){return {person:p,state:personState(p,slot)};});
+  var req=st.filter(function(x){return x.person.required;});
+  var opt=st.filter(function(x){return !x.person.required;});
+  var reqHard=req.filter(function(x){return x.state===STATE.HARD;}).length;
+  return {slot:slot,states:st,floorPass:reqHard===0,
+    reqUnknown:req.filter(function(x){return x.state===STATE.UNKNOWN;}).length,
+    softCount:st.filter(function(x){return x.state===STATE.SOFT;}).length,
+    optionalOk:opt.filter(function(x){return x.state===STATE.OK||x.state===STATE.SOFT;}).length,
+    requiredOkCount:req.length-reqHard, requiredTotal:req.length, optionalTotal:opt.length};
+}
+function rankSlots(ppl,slots){
+  var ev=slots.map(function(s){return evaluateSlot(ppl,s);});
+  var fl=ev.filter(function(e){return e.floorPass;});
+  fl.sort(function(a,b){return (a.softCount-b.softCount)||(a.reqUnknown-b.reqUnknown)||(b.optionalOk-a.optionalOk)||((a.slot.dayIdx*100+a.slot.hour)-(b.slot.dayIdx*100+b.slot.hour));});
+  return {ranked:fl, blocked:ev.filter(function(e){return !e.floorPass;})};
+}
+function slotLabel(slot){
+  if(slot.hour===12) return WEEKDAYS[slot.dayIdx]+'요일 낮 12시';
+  var ap=slot.hour<12?'오전':'오후', h=slot.hour<=12?slot.hour:slot.hour-12;
+  return WEEKDAYS[slot.dayIdx]+'요일 '+ap+' '+h+'시';
+}
+function makeSlots(){var a=[];for(var d=0;d<5;d++)for(var h=9;h<=17;h++)a.push({id:d+'-'+h,dayIdx:d,hour:h});return a;}
+function genToken(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',t='';for(var i=0;i<6;i++)t+=c.charAt(Math.floor(Math.random()*c.length));return t;}
+
+/* ===== 상태 ===== */
+function defSoft(){return {postLunch:true,earlyMorning:true};} // 스마트 기본값
+var me={id:'me',name:'나(한인턴)',required:false,registered:false,soft:defSoft(),hardDays:[]};
+var team=[
+  {id:'po',name:'김PO',required:true,registered:true,soft:{morningFocus:true,earlyMorning:true}},
+  {id:'lead',name:'이팀장',required:true,registered:true,soft:{postLunch:true}},
+  {id:'dev',name:'박개발',required:true,registered:true,hardDays:[1,3],soft:{lateAfternoon:true}},
+  {id:'des',name:'최디자',required:true,registered:true,soft:{earlyMorning:true}},
+  {id:'mkt',name:'정마케',required:false,registered:true,soft:{afternoonSlump:true}}
+];
+var people=team.concat([me]);
+var app={screen:'home', path:null, token:'', joined:1, chosen:null, showList:false, adjusted:false};
+
+function compute(){ return rankSlots(people, makeSlots()); }
+function regCount(){ return people.filter(function(p){return p.registered;}).length; }
+function findEval(r,id){ for(var i=0;i<r.ranked.length;i++) if(r.ranked[i].slot.id===id) return r.ranked[i]; return r.ranked[0]; }
+function findAny(r,id){ var all=r.ranked.concat(r.blocked); for(var i=0;i<all.length;i++) if(all[i].slot.id===id) return all[i]; return r.ranked[0]||all[0]; }
+
+var PATHS={ org:['create','invite','recommend','done'], part:['join','onboard','joined'] };
+var $=function(id){return document.getElementById(id);};
+function chrome(role,cls){
+  if(role){ $('role').textContent=role; $('role').className='role '+cls; $('role').style.display=''; }
+  else $('role').style.display='none';
+  var order=app.path?PATHS[app.path]:[];
+  var idx=order.indexOf(app.screen);
+  if(['computing','adjust','override','ask','stuck','notice'].indexOf(app.screen)!==-1) idx=order.indexOf('recommend');
+  $('dots').innerHTML=order.map(function(_,k){return '<i class="'+(k===idx?'on':'')+'"></i>';}).join('');
+  $('back').style.visibility = (app.screen==='home')?'hidden':'visible';
+}
+function setCta(html){ $('cta').innerHTML=html; }
+function toast(m){ var t=$('toast'); t.textContent=m; t.className='toast on'; setTimeout(function(){t.className='toast';},1400); }
+
+function render(){
+  $('screen').style.paddingBottom='';
+  var s=app.screen;
+  if(s==='home') return renderHome();
+  if(s==='create') return renderCreate();
+  if(s==='invite') return renderInvite();
+  if(s==='computing') return renderComputing();
+  if(s==='recommend') return renderRecommend();
+  if(s==='adjust') return renderAdjust();
+  if(s==='override') return renderOverride();
+  if(s==='ask') return renderAsk();
+  if(s==='stuck') return renderStuck();
+  if(s==='notice') return renderNotice();
+  if(s==='done') return renderDone();
+  if(s==='join') return renderJoin();
+  if(s==='onboard') return renderOnboard();
+  if(s==='joined') return renderJoined();
+}
+function go(s){ app.screen=s; render(); animateScreen(); }
+function animateScreen(){ var s=$('screen'); s.classList.remove('anim'); void s.offsetWidth; s.classList.add('anim'); }
+$('back').onclick=function(){
+  var bmap={adjust:'recommend',override:'recommend',ask:'override',stuck:'ask',notice:'stuck'};
+  if(bmap[app.screen]){ go(bmap[app.screen]); return; }
+  var order=app.path?PATHS[app.path]:[];
+  var i=order.indexOf(app.screen);
+  if(i>0) go(order[i-1]); else go('home');
+};
+
+/* ===== 홈 (역할 선택) ===== */
+function renderHome(){
+  chrome(null);
+  $('screen').innerHTML=
+    '<div style="margin:auto 0">'+
+    '<div class="wordmark" style="justify-content:center;display:flex;font-size:32px">핏타임</div>'+
+    '<div class="t-body" style="text-align:center;margin-top:10px">여럿이 모이는 회의 시간, 눈치 없이 잡아요</div>'+
+    '<button class="choice accent" id="c-org"><div class="ct">회의 만들기</div><div class="cs">내가 팀 회의를 잡고, 초대코드를 받아요 · 조직자</div></button>'+
+    '<button class="choice" id="c-part"><div class="ct">초대코드로 참여</div><div class="cs">코드를 받았어요. 내 시간 규칙만 등록해요 · 참여자</div></button>'+
+    '</div>';
+  setCta('');
+  $('screen').style.paddingBottom='24px';
+  $('c-org').onclick=function(){ app.path='org'; go('create'); };
+  $('c-part').onclick=function(){ app.path='part'; go('join'); };
+}
+
+/* ===== 조직자 1. 회의 만들기 ===== */
+function renderCreate(){
+  chrome('조직자 · 나','role-org');
+  $('screen').innerHTML=
+    '<div class="t-title">새 회의</div>'+
+    '<div style="margin-top:12px">'+
+      '<div class="field"><span class="lab">제목</span><span class="val">스프린트 킥오프</span></div>'+
+      '<div class="field"><span class="lab">소요 시간</span><span class="val">1시간</span></div>'+
+      '<div class="field"><span class="lab">언제까지</span><span class="val">이번 주 금요일</span></div>'+
+    '</div>'+
+    '<div class="section-label">누가 오나요? 필수 / 선택을 눌러 바꿔요</div>'+
+    '<div class="card">'+people.map(function(p){
+      return '<div class="row"><div class="grow"><div class="name">'+p.name+'</div></div>'+
+        '<div class="seg" data-id="'+p.id+'">'+
+          '<button class="req'+(p.required?' on':'')+'">필수</button>'+
+          '<button class="opt'+(!p.required?' on':'')+'">선택</button>'+
+        '</div></div>';
+    }).join('')+'</div>'+
+    '<button class="btn-link" id="addp" style="margin-top:8px">＋ 참여자 추가</button>'+
+    '<div class="hint">필수를 늘리면 되는 시간이 줄어요. 인원은 몇 명이든 돼요.</div>';
+  setCta('<button class="btn btn-primary" id="next">초대코드 만들기</button>');
+  var segs=$('screen').querySelectorAll('.seg');
+  for(var i=0;i<segs.length;i++){
+    (function(seg){
+      var id=seg.getAttribute('data-id');
+      seg.querySelector('.req').onclick=function(){ setReq(id,true); };
+      seg.querySelector('.opt').onclick=function(){ setReq(id,false); };
+    })(segs[i]);
+  }
+  if($('addp')) $('addp').onclick=function(){ var k=people.length+1; people.push({id:'x'+k,name:'팀원 '+k,required:false,registered:false,soft:{}}); render(); };
+  $('next').onclick=function(){ if(!app.token) app.token=genToken(); go('invite'); };
+}
+function setReq(id,val){ for(var k=0;k<people.length;k++) if(people[k].id===id) people[k].required=val; render(); }
+
+/* ===== 조직자 2. 초대 (토큰) ===== */
+function renderInvite(){
+  chrome('조직자 · 나','role-org');
+  var reg=regCount(), total=people.length, pct=Math.round(reg/total*100);
+  $('screen').innerHTML=
+    '<div class="t-title">팀원을 초대하세요</div>'+
+    '<div class="t-body" style="margin-top:8px">이 코드를 팀 단톡방에 공유하면, 각자 규칙을 비공개로 등록해요.</div>'+
+    '<div class="token"><div class="t-caption">초대 코드</div><div class="code">'+app.token+'</div></div>'+
+    '<button class="btn btn-ghost" id="copy" style="margin-top:12px">코드 복사</button>'+
+    '<div class="section-label">참여 현황</div>'+
+    '<div class="card-flat"><div class="status"><b>'+reg+' / '+total+'명 등록</b><div class="bar"><i style="width:'+pct+'%"></i></div></div>'+
+    '<div class="hint" style="text-align:left;margin-top:10px">다 안 모여도 지금 정보로 추천이 나와요 (non-blocking)</div></div>'+
+    (reg<total?'<button class="btn-link" id="sim">＋ 팀원 참여 시뮬레이션</button>':'');
+  setCta('<button class="btn btn-primary" id="next">지금 추천 보기</button>');
+  $('copy').onclick=function(){ toast('코드 '+app.token+' 복사됨'); };
+  if($('sim')) $('sim').onclick=function(){ var c=0; for(var i=0;i<people.length&&c<2;i++){ if(!people[i].registered){ people[i].registered=true; c++; } } render(); };
+  $('next').onclick=function(){ app.chosen=null; app.showList=false; go('computing'); };
+}
+
+/* ===== 조직자 2b. 계산 모먼트 ===== */
+function renderComputing(){
+  chrome('조직자 · 나','role-org');
+  $('screen').innerHTML=
+    '<div class="computing"><div class="pulse"><i></i><i></i><i></i></div>'+
+    '<div class="t-title">'+people.length+'명의 시간을<br>맞춰보고 있어요</div>'+
+    '<div class="t-body" style="margin-top:8px">필수·선호·공정까지 함께 계산 중</div></div>';
+  setCta(''); $('screen').style.paddingBottom='24px';
+  setTimeout(function(){ if(app.screen==='computing') go('recommend'); }, 1100);
+}
+
+/* ===== 조직자 3. 추천 ===== */
+function renderRecommend(){
+  chrome('조직자 · 나','role-org');
+  var r=compute();
+  if(!r.ranked.length){ go('adjust'); return; }
+  var e = app.chosen ? findAny(r,app.chosen) : r.ranked[0];
+  app.chosen=e.slot.id;
+  var hardReq=e.states.filter(function(x){return x.person.required && x.state===STATE.HARD;}).map(function(x){return x.person.name;});
+  var unk=e.states.filter(function(x){return x.person.required && x.state===STATE.UNKNOWN;}).map(function(x){return x.person.name;});
+  var reqLine=hardReq.length
+    ? '필수 <b>'+e.requiredOkCount+'/'+e.requiredTotal+'</b> · '+hardReq.join(',')+' 조정 필요'
+    : (e.reqUnknown===0?'필수 <b>'+e.requiredTotal+'명 모두</b> 가능':'필수 <b>'+e.requiredOkCount+'/'+e.requiredTotal+'</b> 가능');
+  var html=
+    '<div class="reg-note">'+people.length+'명 중 '+regCount()+'명 규칙 반영 · 미반영돼도 추천은 나와요</div>'+
+    '<div class="card hero"><div class="tag">'+(hardReq.length?'선택한 시간':'추천')+'</div>'+
+    '<div class="when">'+slotLabel(e.slot).replace('요일 ','요일<br>')+'</div>'+
+    '<div class="stat">'+reqLine+'</div>'+
+    '<div class="stat">선택 '+e.optionalTotal+'명 중 <b>'+e.optionalOk+'명</b> 가능</div>'+
+    (e.softCount>0?'<div class="stat">아쉬운 분 <b>'+e.softCount+'명</b></div><div class="anon-cap">누구인지·이유는 비공개예요</div>':(hardReq.length?'':'<div class="stat">모두에게 편한 시간이에요</div>'))+
+    '</div>'+
+    (unk.length?'<div class="hint" style="color:var(--soft-fg)">'+unk.join(', ')+' 규칙 미반영 · 콕 물어볼까요?</div>':'')+
+    (hardReq.length
+      ? '<div class="card-flat" style="margin-top:12px"><div class="t-body">'+hardReq.join(',')+'님이 이 시간에 안 돼요. 정하면 조정을 부탁할 수 있어요.</div></div>'
+      : '<div class="card-flat" style="margin-top:12px"><div class="t-caption" style="margin-bottom:6px">왜 이 시간?</div><div class="t-body">· 필수 전원이 가능한 시간 중에서</div><div class="t-body">· '+(e.softCount>0?'아쉬운 사람이 가장 적고, 한 사람에게 몰리지 않아요':'선호를 어기는 사람이 없어요')+'</div></div>')+
+    '<button class="btn-link" id="toggleList">'+(app.showList?'접기':'다른 시간 보기')+'</button>';
+  if(app.showList){
+    var floorItems=r.ranked.slice(0,5).map(function(x,i){
+      var meta='필수 '+x.requiredOkCount+'/'+x.requiredTotal+' · 선택 '+x.optionalOk+'/'+x.optionalTotal+(x.softCount>0?' · 아쉬운 분 '+x.softCount:'');
+      return '<div class="slot'+(x.slot.id===e.slot.id?' sel':'')+'" data-slot="'+x.slot.id+'"><div class="rank">'+(i+1)+'</div><div class="grow"><div class="time"><span class="sdot" style="background:'+(x.softCount>0?'var(--soft-fg)':'var(--ok-fg)')+'"></span>'+slotLabel(x.slot)+'</div><div class="meta">'+meta+'</div></div></div>';
+    }).join('');
+    var blockedItems=r.blocked.slice(0,2).map(function(x){
+      var who=x.states.filter(function(y){return y.person.required&&y.state===STATE.HARD;}).map(function(y){return y.person.name;}).join(',');
+      return '<div class="slot'+(x.slot.id===e.slot.id?' sel':'')+'" data-slot="'+x.slot.id+'"><div class="rank" style="color:var(--hard-fg)">!</div><div class="grow"><div class="time"><span class="sdot" style="background:var(--hard-fg)"></span>'+slotLabel(x.slot)+'</div><div class="meta">'+who+' 불가 · 조정 필요</div></div></div>';
+    }).join('');
+    html+='<div>'+floorItems+(blockedItems?'<div class="section-label">필수가 안 맞는 시간</div>'+blockedItems:'')+'</div>';
+  }
+  $('screen').innerHTML=html;
+  setCta('<button class="btn btn-primary" id="next">이 시간으로 정하기</button>');
+  $('toggleList').onclick=function(){ app.showList=!app.showList; render(); };
+  var sl=$('screen').querySelectorAll('[data-slot]');
+  for(var i=0;i<sl.length;i++) sl[i].onclick=function(){ app.chosen=this.getAttribute('data-slot'); render(); };
+  $('next').onclick=function(){ if(hardReq.length){ app.overrideTarget=hardReq[0]; go('override'); } else go('done'); };
+}
+
+/* ===== override ⑥ 조정 부탁 (조직자) ===== */
+function renderOverride(){
+  chrome('조직자 · 나','role-org');
+  var e=findAny(compute(),app.chosen), t=app.overrideTarget;
+  $('screen').innerHTML=
+    '<div class="t-title">'+t+'님만 시간이 안 맞아요</div>'+
+    '<div class="t-body" style="margin-top:8px">이 시간이 팀에 가장 좋아요. '+t+'님께 조정을 부탁해볼까요?</div>'+
+    '<div class="card" style="margin-top:20px"><div class="section-label" style="margin-top:0">지금 이 시간 · '+slotLabel(e.slot)+'</div>'+
+    '<div class="row"><span class="badge badge-hard"><span class="dot dot-hard"></span>불가</span><div class="grow"><div class="name">'+t+'</div><div class="sub">그날 일정과 겹쳐요 — 조정 부탁 예정</div></div></div>'+
+    (e.softCount>0?'<div class="row"><span class="badge badge-soft"><span class="dot dot-soft"></span>아쉬움</span><div class="grow"><div class="name">아쉬운 분 '+e.softCount+'명</div><div class="sub">누구인지·이유는 비공개</div></div></div>':'')+
+    '</div>';
+  setCta('<button class="btn btn-primary" id="next">'+t+'님께 조정 부탁하고 정하기</button><button class="btn-link" id="repick">다른 시간 다시 보기</button>');
+  $('next').onclick=function(){ go('ask'); };
+  $('repick').onclick=function(){ app.chosen=null; go('recommend'); };
+}
+/* ===== ⑦ 참여자 응답 ===== */
+function renderAsk(){
+  chrome('참여자 · '+app.overrideTarget,'role-user');
+  var e=findAny(compute(),app.chosen);
+  $('screen').innerHTML=
+    '<div style="margin:auto 0">'+
+    '<div class="t-caption" style="text-align:center">팀 회의 시간 조율</div>'+
+    '<div class="t-title" style="text-align:center;margin:12px 0">이 시간이 유력해요. 조정 가능하실까요?</div>'+
+    '<div class="card-flat" style="text-align:center"><div class="t-strong">'+slotLabel(e.slot)+'</div><div class="t-caption" style="margin-top:4px">지금은 다른 일정과 겹쳐 있어요</div></div>'+
+    '<div class="btn-row" style="margin-top:20px"><button class="btn btn-ghost" id="cant">어려워요</button><button class="btn btn-primary" id="canadj">조정할게요</button></div>'+
+    '<div class="hint">어려우면 팀이 다른 시간을 다시 찾아요</div>'+
+    '</div>';
+  setCta(''); $('screen').style.paddingBottom='24px';
+  $('canadj').onclick=function(){ app.adjusted=true; toast('조정 완료! 참석할 수 있어요'); go('done'); };
+  $('cant').onclick=function(){ go('stuck'); };
+}
+/* ===== ⑧ 그래도 어려우면 (조직자) ===== */
+function renderStuck(){
+  chrome('조직자 · 나','role-org'); var t=app.overrideTarget;
+  $('screen').innerHTML=
+    '<div class="t-title">'+t+'님이 이번엔 조정이 어렵대요</div>'+
+    '<div class="t-body" style="margin-top:8px">비난 없이, 두 가지 중에 고르면 돼요.</div>'+
+    '<div class="card" style="margin-top:20px"><div class="t-strong">다른 시간을 다시 찾기</div><div class="t-caption" style="margin:4px 0 12px">'+t+'님도 되는 시간으로. 팀이 다시 골라줄게요.</div><button class="btn btn-primary" id="repick">다시 찾기</button></div>'+
+    '<div class="card"><div class="t-strong">이번엔 '+t+'님 없이 진행</div><div class="t-caption" style="margin:4px 0 12px">회의록을 꼭 공유하고, '+t+'님껜 정중히 안내돼요.</div><button class="btn btn-ghost" id="without">이렇게 정하기</button></div>';
+  setCta(''); $('screen').style.paddingBottom='24px';
+  $('repick').onclick=function(){ app.chosen=null; go('recommend'); };
+  $('without').onclick=function(){ go('notice'); };
+}
+/* ===== ⑨ 정중한 안내 (참여자) ===== */
+function renderNotice(){
+  chrome('참여자 · '+app.overrideTarget,'role-user');
+  var e=findAny(compute(),app.chosen);
+  $('screen').innerHTML=
+    '<div style="margin:auto 0">'+
+    '<div class="t-title" style="text-align:center">이번 회의는 '+slotLabel(e.slot)+'예요</div>'+
+    '<div class="card-flat" style="margin-top:16px"><div class="t-body">다른 일정과 겹쳐 이번엔 참석이 어려우실 것 같아, <b>회의록을 꼭 공유</b>드릴게요.</div></div>'+
+    '<div class="t-body" style="text-align:center;margin-top:16px">꼭 필요하면 <b>다시 조율</b>할 수 있어요.</div>'+
+    '<div class="hint">이번만 어긋난 거예요. 다음엔 먼저 배려할게요</div>'+
+    '</div>';
+  setCta('<button class="btn btn-primary" id="next">확인</button>');
+  $('next').onclick=function(){ app.adjusted=true; go('done'); };
+}
+
+/* ===== 조직자 3b. 되는 시간 없음 ===== */
+function renderAdjust(){
+  chrome('조직자 · 나','role-org');
+  var r=compute();
+  var blocks=r.blocked.slice(0,3).map(function(e){
+    var who=e.states.filter(function(x){return x.person.required && x.state===STATE.HARD;}).map(function(x){return x.person.name;}).join(', ');
+    return '<div class="card-flat" style="margin-top:8px"><div class="t-strong">'+slotLabel(e.slot)+'</div>'+
+      '<div class="t-caption" style="margin:4px 0 10px">'+(who||'필수 인원')+' 조정되면 열려요</div>'+
+      '<button class="btn btn-ghost" data-slot="'+e.slot.id+'" style="padding:10px">'+(who||'해당자')+'께 조정 부탁하고 이 시간으로</button></div>';
+  }).join('');
+  $('screen').innerHTML=
+    '<div class="card hero" style="padding:24px"><div class="t-title">지금 필수 전원 되는 시간이 없어요</div>'+
+    '<div class="t-body" style="margin-top:8px">조정을 부탁하거나, 필수를 줄여보세요</div></div>'+blocks;
+  setCta('<button class="btn btn-ghost" id="less">필수 인원 다시 정하기</button>');
+  $('less').onclick=function(){ go('create'); };
+  var sl=$('screen').querySelectorAll('[data-slot]');
+  for(var i=0;i<sl.length;i++) sl[i].onclick=function(){ app.chosen=this.getAttribute('data-slot'); app.adjusted=true; go('done'); };
+}
+
+/* ===== 조직자 4. 완료 ===== */
+function renderDone(){
+  chrome('모두에게','role-org');
+  var r=compute();
+  var e = app.chosen ? findEval(r,app.chosen) : (r.ranked[0]||null);
+  var label=e?slotLabel(e.slot):'조율한 시간';
+  var soft=e && e.softCount>0;
+  $('screen').innerHTML=
+    '<div style="margin:auto 0">'+
+    '<div class="succ"></div>'+
+    '<div class="t-title" style="text-align:center">'+label+'로 정해졌어요</div>'+
+    '<div class="t-body" style="text-align:center;margin-top:8px">모두에게 알렸어요.'+(app.adjusted?' 조정 부탁도 함께 보냈어요.':'')+'</div>'+
+    (soft?'<div class="card-flat" style="margin-top:20px;text-align:center"><div class="t-body">아쉬운 한 분껜 마음도 함께 전했어요.<br>다음엔 그분 먼저 배려할게요.</div></div>':'')+
+    '</div>';
+  setCta('<button class="btn btn-primary" id="next">처음으로</button>');
+  $('next').onclick=reset;
+}
+
+/* ===== 참여자 1. 코드 입력 ===== */
+function renderJoin(){
+  chrome('참여자 · 나','role-user');
+  var demo=app.token||'K7P2QX';
+  $('screen').innerHTML=
+    '<div style="margin:auto 0">'+
+    '<div class="t-title" style="text-align:center">회의에 참여하기</div>'+
+    '<div class="t-body" style="text-align:center;margin:8px 0 20px">조직자가 공유한 초대 코드를 넣어주세요</div>'+
+    '<input class="codein" id="code" maxlength="6" value="'+demo+'" />'+
+    '<div class="hint">데모용 코드가 미리 입력돼 있어요</div>'+
+    '</div>';
+  setCta('<button class="btn btn-primary" id="next">참여하기</button>');
+  $('screen').style.paddingBottom='24px';
+  $('next').onclick=function(){
+    var v=($('code').value||'').trim();
+    if(v.length<4){ toast('코드를 확인해주세요'); return; }
+    toast(v+' 회의에 참여!'); go('onboard');
+  };
+}
+
+/* ===== 참여자 2. 규칙 등록 (온보딩) ===== */
+function renderOnboard(){
+  chrome('참여자 · 나','role-user');
+  function tog(label,key){
+    return '<div class="row"><div class="grow"><div class="name">'+label+'</div></div>'+
+      '<label class="switch"><input type="checkbox" data-soft="'+key+'"'+(me.soft[key]?' checked':'')+'/><span class="track"></span><span class="thumb"></span></label></div>';
+  }
+  $('screen').innerHTML=
+    '<div style="text-align:center;margin:6px 0 16px"><span class="privacy">선호는 아무에게도 안 보여요</span></div>'+
+    '<div class="t-title">내 시간 규칙, 한 번만 알려주세요</div>'+
+    '<div class="t-body" style="margin-top:8px">흔한 건 미리 켜뒀어요. 안 맞는 것만 끄면 돼요.</div>'+
+    '<div class="section-label">피하고 싶은 시간</div>'+
+    '<div class="card">'+tog('점심 직후 (13~14시)','postLunch')+tog('이른 아침 (9시대)','earlyMorning')+tog('금요일 오후','friPM')+'</div>'+
+    '<div class="section-label">못 가는 요일이 있다면 (탭)</div>'+
+    '<div class="card"><div class="chip-row">'+
+      WEEKDAYS.map(function(d,i){return '<div class="chip'+(me.hardDays.indexOf(i)!==-1?' on':'')+'" data-day="'+i+'">'+d+'</div>';}).join('')+
+    '</div><div class="hint" style="text-align:left;margin-top:10px">없으면 그냥 넘어가도 돼요</div></div>';
+  setCta('<button class="btn btn-primary" id="next">다 됐어요</button>');
+  var a=$('screen').querySelectorAll('[data-soft]');
+  for(var i=0;i<a.length;i++) a[i].onchange=function(){ me.soft[this.getAttribute('data-soft')]=this.checked; };
+  var c=$('screen').querySelectorAll('[data-day]');
+  for(var j=0;j<c.length;j++) c[j].onclick=function(){
+    var d=+this.getAttribute('data-day'), pos=me.hardDays.indexOf(d);
+    if(pos===-1){me.hardDays.push(d);this.className='chip on';}else{me.hardDays.splice(pos,1);this.className='chip';}
+  };
+  $('next').onclick=function(){ me.registered=true; go('joined'); };
+}
+
+/* ===== 참여자 3. 참여 완료 ===== */
+function renderJoined(){
+  chrome('참여자 · 나','role-user');
+  $('screen').innerHTML=
+    '<div style="margin:auto 0">'+
+    '<div class="succ"></div>'+
+    '<div class="t-title" style="text-align:center">참여 완료!</div>'+
+    '<div class="t-body" style="text-align:center;margin-top:8px">팀이 시간을 정하면 알려드릴게요.<br>내 선호는 비공개로 반영돼요.</div>'+
+    '</div>';
+  setCta('<button class="btn btn-primary" id="next">처음으로</button>');
+  $('next').onclick=reset;
+}
+
+function reset(){
+  people.length=6; // 추가된 참여자 제거, 기본 팀으로
+  me.registered=false; me.soft=defSoft(); me.hardDays=[];
+  for(var i=0;i<people.length;i++) people[i].required = (people[i].id==='mkt'||people[i].id==='me')?false:true;
+  app={screen:'home',path:null,token:'',chosen:null,showList:false,adjusted:false};
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

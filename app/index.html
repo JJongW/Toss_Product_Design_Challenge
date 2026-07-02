@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>회의 시간 · 조직자 화면</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="frame">
+    <div class="appbar"><div class="t-caption">다음 주 팀 회의 · 1시간 · 금요일까지</div></div>
+    <div class="screen" id="screen"></div>
+    <div class="cta-dock" id="dock"></div>
+  </div>
+
+  <script src="engine.js"></script>
+  <script>
+    // ── 상태(시드) ──────────────────────────────────
+    var people = [
+      { id: 'po',     name: '김PO',   required: true,  registered: true,  soft: {} },
+      { id: 'lead',   name: '이팀장', required: true,  registered: true,  soft: { postLunch: true } },
+      { id: 'dev',    name: '박개발', required: true,  registered: true,  hardDays: [1, 3], soft: {} }, // 화,목 외근
+      { id: 'des',    name: '최디자', required: true,  registered: true,  soft: { earlyMorning: true } },
+      { id: 'mkt',    name: '정마케', required: false, registered: true,  soft: {} },
+      { id: 'intern', name: '한인턴', required: false, registered: false }
+    ];
+    var monday = '2026-07-06';
+    var showReasons = false;
+    var showList = false;
+
+    function byId(id) { return people.filter(function (p) { return p.id === id; })[0]; }
+
+    // ── 렌더 ────────────────────────────────────────
+    function render() {
+      var slots = Engine.makeWeekSlots(monday);
+      var res = Engine.rankSlots(people, slots);
+      var screen = document.getElementById('screen');
+      var dock = document.getElementById('dock');
+
+      if (res.floorEmpty) {
+        screen.innerHTML = renderFloorEmpty(res);
+        dock.innerHTML = '';
+      } else {
+        var top = res.ranked[0];
+        screen.innerHTML = regNote() + renderHero(top) + renderReasons(top) + renderList(res);
+        dock.innerHTML = '<button class="btn btn-primary">이 시간으로 정하기</button>';
+      }
+      screen.insertAdjacentHTML('beforeend', renderDemo());
+      bind();
+    }
+
+    function reqLine(e) {
+      if (e.reqUnknown === 0) return '필수 <b>' + e.requiredTotal + '명 모두</b> 가능';
+      return '필수 <b>' + e.requiredOkCount + '/' + e.requiredTotal + '</b> 가능';
+    }
+
+    function regNote() {
+      var reg = people.filter(function (p) { return p.registered; }).length;
+      return '<div class="reg-note">6명 중 ' + reg + '명 규칙 반영 · 미반영돼도 추천은 나와요</div>';
+    }
+
+    function renderHero(e) {
+      var when = Engine.slotLabel(e.slot).replace('요일 ', '요일<br />');
+      var nudge = e.reqUnknown > 0
+        ? '<div class="note" style="color:var(--soft-fg)">' + unknownReq(e) + ' 미응답 · 콕 물어볼까요?</div>'
+        : '';
+      return '' +
+        '<div class="card hero">' +
+          '<div class="tag">추천</div>' +
+          '<div class="when">' + when + '</div>' +
+          '<div class="stat">' + reqLine(e) + '</div>' +
+          '<div class="stat">선택 ' + e.optionalTotal + '명 중 <b>' + e.optionalOk + '명</b> 가능</div>' +
+          (e.softCount > 0
+            ? '<div class="stat">아쉬운 분 <b>' + e.softCount + '명</b> · 선호 살짝 안 맞음</div>' +
+              '<div class="anon-cap">누구인지·이유는 비공개예요</div>'
+            : '<div class="stat">모두에게 편한 시간이에요</div>') +
+        '</div>' + nudge;
+    }
+
+    function unknownReq(e) {
+      return e.states.filter(function (x) { return x.person.required && x.state === Engine.STATE.UNKNOWN; })
+                     .map(function (x) { return x.person.name; }).join(', ');
+    }
+
+    function renderReasons(e) {
+      var rows = [
+        '필수 전원이 가능한 시간 중에서',
+        e.softCount > 0 ? '선호가 어긋나는 사람이 가장 적고 (' + e.softCount + '명)' : '선호를 어기는 사람이 없고',
+        '그 부담이 한 사람에게 몰리지 않아요'
+      ];
+      return '' +
+        '<button class="btn-link" id="btn-why" style="margin-top:8px">' +
+          (showReasons ? '이유 접기' : '왜 이 시간?') + '</button>' +
+        (showReasons
+          ? '<div class="card-flat" style="margin-top:8px">' +
+              rows.map(function (r) { return '<div class="t-body" style="padding:4px 0">· ' + r + '</div>'; }).join('') +
+            '</div>'
+          : '');
+    }
+
+    function stateBadge(state) {
+      var map = { '가능': 'ok', '아쉬움': 'soft', '미응답': 'unk', '불가': 'hard' };
+      return '<span class="badge badge-' + map[state] + '"><span class="dot dot-' + map[state] + '"></span>' + state + '</span>';
+    }
+
+    function slotMeta(e) {
+      var parts = ['필수 ' + e.requiredOkCount + '/' + e.requiredTotal, '선택 ' + e.optionalOk + '/' + e.optionalTotal];
+      if (e.softCount > 0) parts.push('아쉬운 분 ' + e.softCount); // 익명(이름 X)
+      if (e.reqUnknown > 0) parts.push(unknownReq(e) + ' 미응답');   // 팩트=실명
+      return parts.join(' · ');
+    }
+
+    function renderList(res) {
+      var btn = '<button class="btn btn-secondary" id="btn-list" style="margin-top:12px">' +
+        (showList ? '다른 시간 접기' : '다른 시간 보기') + '</button>';
+      if (!showList) return btn;
+      var items = res.ranked.slice(0, 5).map(function (e, i) {
+        return '<div class="slot' + (i === 0 ? ' top' : '') + '">' +
+          '<div class="rank">' + (i + 1) + '</div>' +
+          '<div class="info"><div class="time">' + Engine.slotLabel(e.slot) + '</div>' +
+          '<div class="meta">' + slotMeta(e) + '</div></div></div>';
+      }).join('');
+      return btn + '<div style="margin-top:8px">' + items + '</div>';
+    }
+
+    function renderFloorEmpty(res) {
+      var top = res.blocked.slice(0, 3).map(function (e) {
+        var blockers = e.states
+          .filter(function (x) { return x.person.required && x.state === Engine.STATE.HARD; })
+          .map(function (x) { return x.person.name; }).join(', ');
+        return '<div class="card-flat" style="margin-top:8px">' +
+          '<div class="t-strong">' + Engine.slotLabel(e.slot) + '</div>' +
+          '<div class="t-caption" style="margin:4px 0 10px">' + blockers + ' 외근만 조정되면 열려요</div>' +
+          '<button class="btn btn-sm btn-secondary" data-adjust="' + blockers + '">' + blockers + '에게 조정 요청</button>' +
+        '</div>';
+      }).join('');
+      return '<div class="card hero" style="padding:24px">' +
+          '<div class="t-title">이번 주엔 필수 6명 모두 되는 시간이 없어요</div>' +
+          '<div class="t-body" style="margin-top:8px">이렇게 하면 잡을 수 있어요</div>' +
+        '</div>' + top;
+    }
+
+    // ── 데모 컨트롤 (프로토타입 전용) ─────────────────
+    function renderDemo() {
+      var dev = byId('dev'), lead = byId('lead'), des = byId('des'), intern = byId('intern');
+      var days = Engine.WEEKDAYS.map(function (d, i) {
+        var on = (dev.hardDays || []).indexOf(i) !== -1;
+        return '<div class="chip' + (on ? ' on' : '') + '" data-devday="' + i + '">' + d + '</div>';
+      }).join('');
+      return '' +
+        '<div class="divider" style="margin-top:24px"></div>' +
+        '<div class="section-label">데모 — 참여자 규칙을 바꾸면 추천이 즉시 재랭킹돼요</div>' +
+        '<div class="card">' +
+          '<div class="t-caption" style="margin-bottom:8px">박개발 외근 요일 (하드)</div>' +
+          '<div class="chip-row">' + days + '</div>' +
+          toggleRow('이팀장 · 점심 직후 회피', 'lead-postLunch', lead.soft.postLunch) +
+          toggleRow('최디자 · 이른 아침 회피', 'des-early', des.soft.earlyMorning) +
+          toggleRow('한인턴 · 규칙 등록함', 'intern-reg', intern.registered) +
+        '</div>';
+    }
+    function toggleRow(label, key, on) {
+      return '<div class="row"><div class="grow"><div class="name">' + label + '</div></div>' +
+        '<label class="switch"><input type="checkbox" data-toggle="' + key + '"' + (on ? ' checked' : '') +
+        ' /><span class="track"></span><span class="thumb"></span></label></div>';
+    }
+
+    // ── 이벤트 바인딩 ────────────────────────────────
+    function bind() {
+      var why = document.getElementById('btn-why');
+      if (why) why.onclick = function () { showReasons = !showReasons; render(); };
+      var list = document.getElementById('btn-list');
+      if (list) list.onclick = function () { showList = !showList; render(); };
+
+      document.querySelectorAll('[data-devday]').forEach(function (el) {
+        el.onclick = function () {
+          var dev = byId('dev'); dev.hardDays = dev.hardDays || [];
+          var i = Number(el.getAttribute('data-devday'));
+          var pos = dev.hardDays.indexOf(i);
+          if (pos === -1) dev.hardDays.push(i); else dev.hardDays.splice(pos, 1);
+          render();
+        };
+      });
+      document.querySelectorAll('[data-toggle]').forEach(function (el) {
+        el.onchange = function () {
+          var key = el.getAttribute('data-toggle'), on = el.checked;
+          if (key === 'lead-postLunch') byId('lead').soft.postLunch = on;
+          if (key === 'des-early') byId('des').soft.earlyMorning = on;
+          if (key === 'intern-reg') byId('intern').registered = on;
+          render();
+        };
+      });
+      document.querySelectorAll('[data-adjust]').forEach(function (el) {
+        el.onclick = function () { el.textContent = '조정 요청 보냄'; el.disabled = true; };
+      });
+    }
+
+    render();
+  </script>
+</body>
+</html>

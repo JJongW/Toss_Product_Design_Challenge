@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>실 서비스 화면 · 사용자가 맞닥뜨리는 화면들</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { padding: 24px; }
+    .gallery { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; align-items: flex-start; }
+    .frame-wrap { text-align: center; }
+    .frame-label { font-weight: 800; font-size: 14px; margin-bottom: 4px; }
+    .frame-role { font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; display: inline-block; margin-bottom: 12px; }
+    .role-user { color: var(--ok-fg); background: var(--ok-bg); }
+    .role-org { color: var(--blue); background: var(--blue-weak); }
+    .frame { margin: 0; }
+    h1 { text-align: center; }
+    .lead { text-align: center; color: var(--text-2); max-width: 640px; margin: 8px auto 32px; font-size: 15px; }
+    .field { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--line); }
+    .field .lab { font-weight: 600; }
+    .field .val { color: var(--text-2); }
+    .pill { font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 999px; }
+    .pill-req { color: var(--blue); background: var(--blue-weak); }
+    .pill-opt { color: var(--text-2); background: #F2F4F6; }
+  </style>
+</head>
+<body>
+  <h1 class="t-title">실제 사용자가 맞닥뜨리는 화면</h1>
+  <p class="lead">데모 조작 패널을 걷어낸 실 서비스 화면. 참여자는 자기 규칙만 비공개로 다루고, 조직자는 추천을 받는다. 추천/조정 화면은 <code>engine.js</code>가 실제로 계산한 결과다.</p>
+
+  <div class="gallery">
+
+    <!-- 1. 참여자 온보딩 -->
+    <div class="frame-wrap">
+      <div class="frame-label">① 상시 규칙 등록</div>
+      <div class="frame-role role-user">참여자</div>
+      <div class="frame">
+        <div class="screen">
+          <div style="text-align:center;margin:4px 0 16px"><span class="privacy">선호는 아무에게도 안 보여요</span></div>
+          <div class="t-title">내 시간 규칙, 한 번만 알려주세요</div>
+          <div class="t-body" style="margin-top:8px">딱 한 번만 설정하면 다음부터 자동이에요.</div>
+
+          <div class="section-label">피하고 싶은 시간</div>
+          <div class="card">
+            <div class="row"><div class="grow"><div class="name">점심 직후 (13~14시)</div></div>
+              <label class="switch"><input type="checkbox" checked /><span class="track"></span><span class="thumb"></span></label></div>
+            <div class="row"><div class="grow"><div class="name">이른 아침 (9시대)</div></div>
+              <label class="switch"><input type="checkbox" checked /><span class="track"></span><span class="thumb"></span></label></div>
+            <div class="row"><div class="grow"><div class="name">금요일 오후</div></div>
+              <label class="switch"><input type="checkbox" /><span class="track"></span><span class="thumb"></span></label></div>
+          </div>
+          <button class="btn-link" style="margin-top:8px">+ 직접 추가</button>
+
+          <div class="section-label">못 가는 요일 (외근 등)</div>
+          <div class="card">
+            <div class="chip-row">
+              <div class="chip">월</div><div class="chip">화</div><div class="chip">수</div><div class="chip">목</div><div class="chip">금</div>
+            </div>
+            <div class="note" style="text-align:left;margin-top:10px">없으면 건너뛰어도 괜찮아요</div>
+          </div>
+        </div>
+        <div class="cta-dock"><button class="btn btn-primary">다 됐어요</button></div>
+      </div>
+    </div>
+
+    <!-- 2. 외과적 알림 -->
+    <div class="frame-wrap">
+      <div class="frame-label">② 외과적 알림 (필요할 때만)</div>
+      <div class="frame-role role-user">참여자</div>
+      <div class="frame">
+        <div class="screen" style="display:flex;flex-direction:column;justify-content:center">
+          <div class="t-caption" style="text-align:center">다음 주 팀 회의 · 1시간</div>
+          <div class="t-display" style="text-align:center;margin:12px 0" id="alert-when">…</div>
+          <div class="btn-row" style="margin-top:24px">
+            <button class="btn btn-ghost">어려워요</button>
+            <button class="btn btn-primary">좋아요</button>
+          </div>
+          <div class="note">답 안 해도 등록한 선호로 자동 반영돼요</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 회의 생성 -->
+    <div class="frame-wrap">
+      <div class="frame-label">③ 회의 만들기</div>
+      <div class="frame-role role-org">조직자</div>
+      <div class="frame">
+        <div class="appbar"><span class="back">‹</span></div>
+        <div class="screen">
+          <div class="t-title">새 회의</div>
+          <div style="margin-top:16px">
+            <div class="field"><span class="lab">제목</span><span class="val">스프린트 킥오프</span></div>
+            <div class="field"><span class="lab">소요 시간</span><span class="val">1시간</span></div>
+            <div class="field"><span class="lab">언제까지</span><span class="val">이번 주 금요일</span></div>
+          </div>
+          <div class="section-label">참여자 · 필수/선택 지정</div>
+          <div class="card" id="create-people"></div>
+        </div>
+        <div class="cta-dock"><button class="btn btn-primary">시간 찾기</button></div>
+      </div>
+    </div>
+
+    <!-- 4. 추천 (실제 엔진 결과) -->
+    <div class="frame-wrap">
+      <div class="frame-label">④ 추천 받기 (엔진 실제 결과)</div>
+      <div class="frame-role role-org">조직자</div>
+      <div class="frame">
+        <div class="appbar"><div class="t-caption">다음 주 팀 회의 · 1시간 · 금요일까지</div></div>
+        <div class="screen" id="rec-screen"></div>
+        <div class="cta-dock"><button class="btn btn-primary">이 시간으로 정하기</button></div>
+      </div>
+    </div>
+
+    <!-- 5. Floor-empty 조정 -->
+    <div class="frame-wrap">
+      <div class="frame-label">⑤ 되는 시간이 없을 때</div>
+      <div class="frame-role role-org">조직자</div>
+      <div class="frame">
+        <div class="appbar"><div class="t-caption">다음 주 팀 회의 · 1시간</div></div>
+        <div class="screen" id="floor-screen"></div>
+      </div>
+    </div>
+
+    <!-- 6. 조정 부탁하고 정하기 (조직자) -->
+    <div class="frame-wrap">
+      <div class="frame-label">⑥ 조정 부탁하고 정하기</div>
+      <div class="frame-role role-org">조직자</div>
+      <div class="frame">
+        <div class="appbar"><span class="back">‹</span></div>
+        <div class="screen">
+          <div class="t-title">박개발님만 시간이 안 맞아요</div>
+          <div class="t-body" style="margin-top:8px">이 시간이 팀에 가장 좋아요. 박개발님께 조정을 부탁해볼까요?</div>
+          <div class="card" style="margin-top:20px">
+            <div class="section-label" style="margin-top:0">지금 이 시간 · 목요일 오후 2시</div>
+            <div class="row"><span class="badge badge-hard"><span class="dot dot-hard"></span>불가</span>
+              <div class="grow"><div class="name">박개발</div><div class="sub">외근과 겹쳐요 — 조정 부탁 예정</div></div></div>
+            <div class="row"><span class="badge badge-soft"><span class="dot dot-soft"></span>아쉬움</span>
+              <div class="grow"><div class="name">아쉬운 분 1명</div><div class="sub">누구인지·이유는 비공개</div></div></div>
+          </div>
+        </div>
+        <div class="cta-dock">
+          <button class="btn btn-primary">박개발님께 조정 부탁하고 정하기</button>
+          <button class="btn-link">다른 시간 다시 보기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. 조정 요청 받기 (참여자) -->
+    <div class="frame-wrap">
+      <div class="frame-label">⑦ 조정 요청 받기</div>
+      <div class="frame-role role-user">참여자 · 박개발</div>
+      <div class="frame">
+        <div class="screen" style="display:flex;flex-direction:column;justify-content:center">
+          <div class="t-caption" style="text-align:center">팀 회의 시간 조율</div>
+          <div class="t-title" style="text-align:center;margin:12px 0">이 시간이 유력해요. 외근 조정 가능하실까요?</div>
+          <div class="card-flat" style="text-align:center">
+            <div class="t-strong">목요일 오후 2시</div>
+            <div class="t-caption" style="margin-top:4px">지금은 외근과 겹쳐 있어요</div>
+          </div>
+          <div class="btn-row" style="margin-top:20px">
+            <button class="btn btn-ghost">어려워요</button>
+            <button class="btn btn-primary">조정할게요</button>
+          </div>
+          <div class="note">어려우면 팀이 다른 시간을 다시 찾아요</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. 그래도 어려우면 (조직자) -->
+    <div class="frame-wrap">
+      <div class="frame-label">⑧ 그래도 어려우면</div>
+      <div class="frame-role role-org">조직자</div>
+      <div class="frame">
+        <div class="appbar"><span class="back">‹</span></div>
+        <div class="screen">
+          <div class="t-title">박개발님이 이번엔 조정이 어렵대요</div>
+          <div class="t-body" style="margin-top:8px">비난 없이, 두 가지 중에 고르면 돼요.</div>
+          <div class="card" style="margin-top:20px">
+            <div class="t-strong">다른 시간을 다시 찾기</div>
+            <div class="t-caption" style="margin:4px 0 12px">박개발님도 되는 시간으로. 팀이 다시 골라줄게요.</div>
+            <button class="btn btn-primary">다시 찾기</button>
+          </div>
+          <div class="card">
+            <div class="t-strong">이번엔 박개발님 없이 진행</div>
+            <div class="t-caption" style="margin:4px 0 12px">회의록을 꼭 공유하고, 박개발님껜 정중히 안내돼요.</div>
+            <button class="btn btn-ghost">이렇게 정하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. 정중한 최종 안내 (참여자) -->
+    <div class="frame-wrap">
+      <div class="frame-label">⑨ 정중한 안내</div>
+      <div class="frame-role role-user">참여자 · 박개발</div>
+      <div class="frame">
+        <div class="screen" style="display:flex;flex-direction:column;justify-content:center">
+          <div class="t-title" style="text-align:center">이번 회의는 목요일 오후 2시예요</div>
+          <div class="card-flat" style="margin-top:16px">
+            <div class="t-body">외근과 겹쳐 이번엔 참석이 어려우실 것 같아, <b>회의록을 꼭 공유</b>드릴게요.</div>
+          </div>
+          <div class="t-body" style="text-align:center;margin-top:16px">꼭 필요하면 <b>다시 조율</b>할 수 있어요.</div>
+          <button class="btn btn-secondary" style="margin-top:16px">다시 조율 요청하기</button>
+          <div class="note">이번만 어긋난 거예요. 다음엔 먼저 배려할게요</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="engine.js"></script>
+  <script>
+    // "빡센 팀" 시드 — 근무시간을 소프트 선호가 촘촘히 덮어, 완벽 슬롯이 없다(상전이 근거).
+    var people = [
+      { id: 'po',     name: '김PO',   required: true,  registered: true,  soft: { morningFocus: true, earlyMorning: true } },
+      { id: 'lead',   name: '이팀장', required: true,  registered: true,  soft: { postLunch: true } },
+      { id: 'dev',    name: '박개발', required: true,  registered: true,  hardDays: [1, 3], soft: { lateAfternoon: true } },
+      { id: 'des',    name: '최디자', required: true,  registered: true,  soft: { earlyMorning: true } },
+      { id: 'mkt',    name: '정마케', required: false, registered: true,  soft: { afternoonSlump: true } },
+      { id: 'intern', name: '한인턴', required: false, registered: false }
+    ];
+    var slots = Engine.makeWeekSlots('2026-07-06');
+    var res = Engine.rankSlots(people, slots);
+    var best = res.ranked[0];
+
+    // ② 알림: 실제 1등 후보 시간으로
+    document.getElementById('alert-when').innerHTML = Engine.slotLabel(best.slot) + ' 어때요?';
+
+    // ③ 회의 생성 참여자 리스트
+    document.getElementById('create-people').innerHTML = people.map(function (p) {
+      return '<div class="row"><div class="grow"><div class="name">' + p.name + '</div></div>' +
+        '<span class="pill ' + (p.required ? 'pill-req">필수' : 'pill-opt">선택') + '</span></div>';
+    }).join('');
+
+    // ④ 추천 화면 (실제 엔진 결과, 데모 패널 없음)
+    function unknownReq(e) {
+      return e.states.filter(function (x) { return x.person.required && x.state === Engine.STATE.UNKNOWN; })
+        .map(function (x) { return x.person.name; }).join(', ');
+    }
+    function slotMeta(e) {
+      var parts = ['필수 ' + e.requiredOkCount + '/' + e.requiredTotal, '선택 ' + e.optionalOk + '/' + e.optionalTotal];
+      if (e.softCount > 0) parts.push('아쉬운 분 ' + e.softCount);
+      if (e.reqUnknown > 0) parts.push(unknownReq(e) + ' 미응답');
+      return parts.join(' · ');
+    }
+    var reg = people.filter(function (p) { return p.registered; }).length;
+    var when = Engine.slotLabel(best.slot).replace('요일 ', '요일<br />');
+    var heroStats = '<div class="stat">' + (best.reqUnknown === 0
+        ? '필수 <b>' + best.requiredTotal + '명 모두</b> 가능'
+        : '필수 <b>' + best.requiredOkCount + '/' + best.requiredTotal + '</b> 가능') + '</div>' +
+      '<div class="stat">선택 ' + best.optionalTotal + '명 중 <b>' + best.optionalOk + '명</b> 가능</div>' +
+      (best.softCount > 0
+        ? '<div class="stat">아쉬운 분 <b>' + best.softCount + '명</b></div><div class="anon-cap">누구인지·이유는 비공개예요</div>'
+        : '<div class="stat">모두에게 편한 시간이에요</div>');
+    var list = res.ranked.slice(0, 4).map(function (e, i) {
+      return '<div class="slot' + (i === 0 ? ' top' : '') + '"><div class="rank">' + (i + 1) + '</div>' +
+        '<div class="info"><div class="time">' + Engine.slotLabel(e.slot) + '</div>' +
+        '<div class="meta">' + slotMeta(e) + '</div></div></div>';
+    }).join('');
+    document.getElementById('rec-screen').innerHTML =
+      '<div class="reg-note">6명 중 ' + reg + '명 규칙 반영 · 미반영돼도 추천은 나와요</div>' +
+      '<div class="card hero"><div class="tag">추천</div><div class="when">' + when + '</div>' + heroStats + '</div>' +
+      '<div class="card-flat" style="margin-top:12px">' +
+        '<div class="t-caption" style="margin-bottom:6px">왜 이 시간?</div>' +
+        '<div class="t-body">· 필수 전원이 가능한 시간 중에서</div>' +
+        '<div class="t-body">· 선호 충돌이 가장 적고, 한 사람에게 몰리지 않아요</div>' +
+      '</div>' +
+      '<div class="section-label">다른 시간</div>' + list;
+
+    // ⑤ Floor-empty (박개발이 전 요일 외근인 극단 케이스로 실제 계산)
+    var people2 = people.map(function (p) { return Object.assign({}, p, { soft: p.soft }); });
+    people2[2] = Object.assign({}, people[2], { hardDays: [0, 1, 2, 3, 4] });
+    var res2 = Engine.rankSlots(people2, slots);
+    var blocks = res2.blocked.slice(0, 3).map(function (e) {
+      var who = e.states.filter(function (x) { return x.person.required && x.state === Engine.STATE.HARD; })
+        .map(function (x) { return x.person.name; }).join(', ');
+      return '<div class="card-flat" style="margin-top:8px"><div class="t-strong">' + Engine.slotLabel(e.slot) + '</div>' +
+        '<div class="t-caption" style="margin:4px 0 10px">' + who + ' 외근만 조정되면 열려요</div>' +
+        '<button class="btn btn-sm btn-secondary">' + who + '에게 조정 요청</button></div>';
+    }).join('');
+    document.getElementById('floor-screen').innerHTML =
+      '<div class="card hero" style="padding:24px"><div class="t-title">이번 주엔 필수 6명 모두 되는 시간이 없어요</div>' +
+      '<div class="t-body" style="margin-top:8px">이렇게 하면 잡을 수 있어요</div></div>' + blocks;
+  </script>
+</body>
+</html>

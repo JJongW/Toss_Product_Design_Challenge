@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"UserPromptSubmit\\\",\\\"additionalContext\\\":\\\"[design-log reminder] 직전 교환에 설계 심의(문제 분해/가설/근거/반박/결정)가 있었다면, 이번 턴을 끝내기 전에 docs/design-log.md 맨 아래에 Fact/Hypothesis/Evidence/Weakness/Next Research 포맷으로 새 Entry를 append하라. 설정/잡담/파일편집만 있던 턴은 건너뛴다. (스킬: design-log)\\\"}}\"",
+            "statusMessage": "design-log reminder"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r \".tool_input.file_path // .tool_response.filePath // empty\"); case \"$f\" in *design-log.md) jq -n \"{hookSpecificOutput:{hookEventName:\\\"PostToolUse\\\",additionalContext:\\\"[challenge-sync] design-log가 변경됨. 서비스 문제정의/해결/근거가 바뀌었다면 toss_product_designer_challenge.md의 Q1~Q3(각 700자)와 버전/변경이력도 동기화하라.\\\"}}\" ;; esac",
+            "statusMessage": "challenge-sync check"
+          }
+        ]
+      }
+    ]
+  }
+}
