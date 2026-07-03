@@ -353,4 +353,29 @@
 - **검증(playwright)**: 계산 화면·dot 리스트 스크린샷 확인, 에러 0.
 - **남은 폴리시(파악)**: 제품 이름/아이덴티티 부재, 외과적 알림이 인터랙티브 흐름에서 빠짐, 미세 인터랙션·빈 상태·접근성. → 다음 패스.
 
+## Entry 034 — 핏타임 명명 · 가변 인원 · 배포/푸시 (2026-07-02)
+- **명명**: 제품명 = **핏타임**. 헤더 워드마크(teal 점+로고) 적용.
+- **가변 인원**: "6명" 하드코딩 전부 제거 → people.length 동적. 회의 생성에 "＋ 참여자 추가"(N명 확장). 초대 현황도 regCount/total. (검증: 8명 정상)
+- **Vercel 준비**: 자체완결형 프로토타입을 루트 `index.html`로 복제(배포 진입점). `vercel.json`(cleanUrls) + `.gitignore` 추가.
+- **git**: origin(github.com/JJongW/Toss_Product_Design_Challenge) main에 최초 전체 푸시(31f3da8). 이후 push마다 Vercel 자동 재배포 가능.
+- **Next**: 남은 UX 폴리시(외과적 알림 흐름, 미세 인터랙션) / Q1~Q3 700자 압축.
+
 <!-- 새 항목은 이 줄 아래에 append -->
+
+## Entry 035 — 정적 프로토타입 → Next.js+React+Node 실앱 재구성 · 2명 이상 · 공유 백엔드 (2026-07-03)
+- **Fact**: 단일 HTML 바닐라 프로토타입을 **Next.js 16(App Router) + React 19 + TS**로 재구성. 정적본은 `legacy/`로 이동(App Router가 `app/` 네임 필요). 백엔드는 Next API Routes(Node)로 실제 구현: `POST /api/meetings`(생성), `GET /:code`, `POST /:code/join·preferences·decide·seed`, `GET /:code/recommend`. 저장소는 `store.ts` 인메모리 Map(추후 DB 교체용으로 격리).
+- **Fact**: 인원 하한을 **6명 종속 완전 제거 → 2명 이상 N명**으로 확정. 서버가 참여자 2명 미만 생성을 거부(422 대신 400 + 한국어 메시지). 생성 화면에서 참여자 **추가/삭제(최소 2명 유지)**. 엔진(rankSlots)은 원래 N-독립이라 로직 변경 없이 그대로 이식.
+- **Decision — 프라이버시를 서버에서 강제**: `serialize.ts`가 추천 페이로드를 만들 때 필수 인원의 불가/미응답 이름만 노출하고, **soft(아쉬움)는 개수만** 내보낸다(신원·사유 절대 미전송). 기존 클라이언트 프로토타입은 전 참여자 상태를 클라에서 계산 → 이론상 역추적 가능했음. 서버 경계로 옮겨 "익명 배려" 원칙을 아키텍처로 보장.
+- **Decision — 호스팅: 맥미니 자가호스팅 검토 후 Vercel 채택**. 사용자가 맥미니 백엔드 가능성 문의 → (a)가동시간(잠들면 데모 URL 死) (b)인메모리 재부팅 시 데이터 증발 (c)홈 네트워크 공개 노출 보안 리스크를 근거로 데모/제출엔 Vercel 우위라 판단. 자가호스팅은 "실서버 운영 학습" 목적일 때만 의미(Cloudflare Tunnel+launchd+SQLite 필요).
+- **Hypothesis (미해결·중요)**: **Vercel 서버리스는 요청마다 인스턴스가 달라 인메모리 Map이 조직자↔참여자 기기 간 동기화를 보장 못 함**. 단일 warm 인스턴스 내 짧은 세션은 우연히 되지만 신뢰 불가. → 진짜 크로스디바이스 동기화가 필요하면 `store.ts`만 Upstash Redis/Vercel KV로 교체(1파일). 지금은 미교체 상태로 배포.
+- **Evidence**: 로컬 `next build` 타입체크 통과 + `next start`에서 API E2E 검증 — 1명 생성 거부, 2명 생성·추천(화 10시로 최적: 김 월요일 불가+9시 기피, 이 점심직후 기피 회피), 10명 생성·seed·decide 정상, 홈 렌더 확인. (브라우저 확장 미연결로 클릭 스모크는 생략 — 클라 컴포넌트는 빌드 타입체크로 커버.)
+- **Weakness**: (1) 위 서버리스 상태공유 가설이 실배포에서 데모 신뢰성을 깰 수 있음(가장 큰 리스크). (2) `join`이 이름 문자열 매칭 기반이라 동명이인·자리 도용 방어 없음(데모 수준). (3) 인메모리라 영속성 0. (4) 클릭 단위 UI 회귀 테스트 부재.
+- **Next Research**: Vercel 배포 후 실제로 다른 기기에서 같은 코드 접속 시 참여 현황이 공유되는지 확인 → 깨지면 KV 도입 결정. 제출 답변(Q1~Q3)의 "6명" 프레이밍을 "2명 이상"으로 동기화할지 검토.
+
+## Entry 036 — KV(Upstash Redis) 공유 저장소 도입 · 인메모리 폴백 (2026-07-03)
+- **Fact**: Entry 035에서 미해결로 남긴 서버리스 상태공유 리스크를 해소. `store.ts`를 **async KV 저장소**로 교체 — `@upstash/redis`(REST) 사용. KV env(`KV_REST_API_URL/TOKEN` 또는 `UPSTASH_REDIS_REST_URL/TOKEN`)가 있으면 Redis, 없으면 **인메모리 Map으로 자동 폴백**(로컬 개발 무설정 유지). 회의는 `meeting:<code>` 키에 JSON+TTL 7일로 저장.
+- **Fact**: 저장 모델을 read-modify-write로 단순화 — `getMeeting(code)`로 읽고 객체 수정 후 `saveMeeting(m)`로 저장. 기존 addParticipant/updateParticipant/decideMeeting 헬퍼 제거. 이 단일 모델이 두 백엔드에서 동일 동작. API 라우트 7종 전부 async화.
+- **Decision**: 저장 경계를 `store.ts` 한 파일로 격리한 Entry 035의 설계 덕에 라우트 로직/클라이언트 계약 변경 없이 백엔드만 교체. 클라이언트(FitTime.tsx)는 API 계약이 동일해 수정 0.
+- **Evidence**: 로컬 `next build` 통과 + `next start` E2E(인메모리 폴백 경로) — 1명 거부, 2명 생성·신규 합류(join으로 로스터 밖 참여자 append)·prefs·recommend(화 10시)·decide 정상, **재조회 시 decidedSlotId 영속 확인**, 없는 코드 404. Redis 경로는 실제 Upstash 자격증명 부재로 로컬 미검증(코드 경로는 단순 get/set) → 배포 후 확인 필요.
+- **Weakness**: (1) Redis 경로 실환경 미검증 — Vercel+Upstash 연동 후 크로스디바이스 실측 필요. (2) read-modify-write에 동시성 락 없음 — 두 참여자가 동시에 prefs 저장하면 마지막 쓰기가 이김(참여 규모/빈도상 실질 위험 낮으나 명시). (3) join 이름 문자열 매칭 방어 부재는 그대로.
+- **Next Research**: Vercel에 Upstash 연동 → 서로 다른 기기 2대에서 같은 코드로 참여 현황·추천이 동기화되는지 실측. 동시 쓰기 충돌이 실제로 문제되면 낙관적 락(WATCH/버전 필드) 도입 검토.
