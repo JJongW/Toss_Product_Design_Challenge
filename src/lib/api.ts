@@ -1,14 +1,19 @@
 // 클라이언트 → 서버 API 호출 헬퍼. 실패 시 서버가 준 한국어 메시지를 던진다.
 
 import type { RecommendView } from "./serialize";
-import type { SoftPrefs } from "./types";
+import type { Scope } from "./types";
 
 export interface MeetingSummary {
   code: string;
   title: string;
   durationLabel: string;
+  durationMin: number;
+  stepMin: number;
   deadlineLabel: string;
-  decidedSlotId: string | null;
+  scope: Scope;
+  dates: string[];
+  hourStart: number;
+  hourEnd: number;
   participants: Array<{
     id: string;
     name: string;
@@ -32,7 +37,13 @@ async function req<T>(url: string, init?: RequestInit): Promise<T> {
 export function createMeeting(body: {
   title: string;
   durationLabel: string;
+  durationMin: number;
+  stepMin: number;
   deadlineLabel: string;
+  scope: Scope;
+  dates: string[];
+  hourStart: number;
+  hourEnd: number;
   participants: Array<{ name: string; required: boolean }>;
 }) {
   return req<{ code: string; meeting: MeetingSummary }>("/api/meetings", {
@@ -57,14 +68,14 @@ export function joinMeeting(code: string, name: string) {
 export function savePreferences(
   code: string,
   participantId: string,
-  soft: SoftPrefs,
-  hardDays: number[]
+  busyHard: string[],
+  busySoft: string[]
 ) {
   return req<{ ok: true; meeting: MeetingSummary }>(
     `/api/meetings/${encodeURIComponent(code)}/preferences`,
     {
       method: "POST",
-      body: JSON.stringify({ participantId, soft, hardDays }),
+      body: JSON.stringify({ participantId, busyHard, busySoft }),
     }
   );
 }
@@ -89,4 +100,4 @@ export function seedMeeting(code: string) {
   );
 }
 
-export type { RecommendView, SoftPrefs };
+export type { RecommendView, Scope };

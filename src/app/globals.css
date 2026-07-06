@@ -708,3 +708,180 @@ b {
 :root {
   --line: #e2eae7;
 }
+
+/* ---- 범위/레벨 세그먼트 (넓은 버전) ---- */
+.seg-wide {
+  display: flex;
+  gap: 6px;
+  background: var(--unk-bg);
+  border-radius: 12px;
+  padding: 4px;
+  margin-top: 8px;
+}
+.seg-wide button {
+  flex: 1;
+  padding: 10px 0;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.12s;
+}
+.seg-wide button.on {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(20, 40, 35, 0.1);
+}
+.seg-wide button.on.hard {
+  color: var(--hard-fg);
+}
+.seg-wide button.on.soft {
+  color: var(--soft-fg);
+}
+.lvl-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+}
+.lvl-hard {
+  background: var(--hard-fg);
+}
+.lvl-soft {
+  background: var(--soft-fg);
+}
+.range-note {
+  font-size: 13px;
+  color: var(--text-2);
+  background: var(--accent-weak);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-top: 10px;
+}
+
+/* ---- 참여자 가용성 그리드 ---- */
+.grid-wrap {
+  margin-top: 14px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  -webkit-overflow-scrolling: touch;
+}
+.grid {
+  display: grid;
+  gap: 3px;
+  padding: 8px;
+  min-width: max-content;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* 한 주만 폭에 꽉 채워 렌더(가로 스크롤 제거) */
+.grid.paged {
+  min-width: 0;
+  width: 100%;
+}
+
+/* 월간: 주 단위 페이지네이션 */
+.weeknav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+}
+.wknav-btn {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--text-2);
+  font-size: 18px;
+  line-height: 1;
+}
+.wknav-btn:disabled {
+  opacity: 0.35;
+}
+.wknav-mid {
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.wknav-mid b {
+  font-size: 14px;
+}
+.wknav-mid span {
+  font-size: 12px;
+  color: var(--text-3);
+}
+.gcorner {
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+  z-index: 2;
+}
+.ghead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 4px 0 6px;
+  border-radius: 7px;
+  background: var(--unk-bg);
+}
+.ghead .gwd {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--text-2);
+}
+.ghead .gdt {
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 600;
+}
+.gtime {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+.gtime.half {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-3);
+  opacity: 0.6;
+}
+.gcell {
+  height: 26px;
+  border-radius: 6px;
+  background: var(--ok-bg);
+  border: 1px solid transparent;
+  transition: background 0.08s;
+  touch-action: none; /* 셀에서 드래그 시작하면 스크롤 대신 페인팅 */
+  cursor: pointer;
+}
+/* 30분(반시간) 칸은 살짝 옅게 — 정시 경계가 눈에 들어오게 */
+.gcell.half {
+  background: color-mix(in srgb, var(--ok-bg) 55%, var(--surface));
+}
+.gcell.hard {
+  background: var(--hard-bg);
+  border-color: var(--hard-fg);
+}
+.gcell.soft {
+  background: var(--soft-bg);
+  border-color: var(--soft-fg);
+}

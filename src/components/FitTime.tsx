@@ -1,7 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { WEEKDAYS } from "@/lib/engine";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  buildRange,
+  groupByWeek,
+  shortDate,
+  toISO,
+  weekdayKo,
+  type Scope,
+} from "@/lib/dates";
 import {
   createMeeting,
   decideMeeting,
@@ -12,7 +19,6 @@ import {
   seedMeeting,
   type MeetingSummary,
   type RecommendView,
-  type SoftPrefs,
 } from "@/lib/api";
 
 type Screen =
@@ -49,18 +55,41 @@ const DEFAULT_DRAFT: Draft[] = [
 ];
 
 const MIN_PARTICIPANTS = 2;
+const HOUR_START = 9;
+const HOUR_END = 18;
+const STEP_MIN = 30;
+
+const DURATION_OPTS: Array<{ min: number; label: string }> = [
+  { min: 30, label: "30분" },
+  { min: 60, label: "1시간" },
+  { min: 90, label: "1시간 반" },
+  { min: 120, label: "2시간" },
+];
 
 const ORG_STEPS: Screen[] = ["create", "invite", "recommend", "done"];
 const PART_STEPS: Screen[] = ["join", "onboard", "joined"];
 
+const SCOPES: Array<{ key: Scope; label: string; sub: string }> = [
+  { key: "thisWeek", label: "이번 주", sub: "이번 주 안에" },
+  { key: "nextWeek", label: "다음 주", sub: "다음 주 안에" },
+  { key: "thisMonth", label: "이번 달", sub: "이번 달 안에" },
+];
+
+function stepLabel(m: number) {
+  const h = Math.floor(m / 60);
+  const mm = m % 60;
+  return `${h}:${mm === 0 ? "00" : "30"}`;
+}
+
 function labelWithBreak(label: string) {
-  const parts = label.split("요일 ");
-  if (parts.length === 2)
+  // "7/8(화) 오후 2시" → 날짜 / 시각 두 줄
+  const i = label.indexOf(") ");
+  if (i !== -1)
     return (
       <>
-        {parts[0]}요일
+        {label.slice(0, i + 1)}
         <br />
-        {parts[1]}
+        {label.slice(i + 2)}
       </>
     );
   return label;
@@ -73,9 +102,17 @@ export default function FitTime() {
   const [busy, setBusy] = useState(false);
   const animKey = useRef(0);
 
+  // 그리드 드래그 페인팅 상태(리렌더와 무관하게 유지)
+  const gridRef = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef(false);
+  const dragModeRef = useRef<"add" | "remove">("add");
+  const appliedRef = useRef<Set<string>>(new Set());
+
   // 조직자 상태
   const [draft, setDraft] = useState<Draft[]>(DEFAULT_DRAFT);
   const [meetingTitle] = useState("스프린트 킥오프");
+  const [scope, setScope] = useState<Scope>("thisWeek");
+  const [durationMin, setDurationMin] = useState(60);
   const [code, setCode] = useState("");
   const [summary, setSummary] = useState<MeetingSummary | null>(null);
   const [rec, setRec] = useState<RecommendView | null>(null);
@@ -88,11 +125,13 @@ export default function FitTime() {
   const [joinCode, setJoinCode] = useState("");
   const [joinName, setJoinName] = useState("");
   const [participantId, setParticipantId] = useState("");
-  const [mySoft, setMySoft] = useState<SoftPrefs>({
-    postLunch: true,
-    earlyMorning: true,
-  });
-  const [myHardDays, setMyHardDays] = useState<number[]>([]);
+  // slotId → 칠한 상태. 없으면 "가능".
+  const [paint, setPaint] = useState<Record<string, "hard" | "soft">>({});
+  const [paintLevel, setPaintLevel] = useState<"hard" | "soft">("hard");
+  const [weekIdx, setWeekIdx] = useState(0); // 월간 그리드에서 보고 있는 주
+
+  const todayISO = useMemo(() => toISO(new Date()), []);
+  const range = useMemo(() => buildRange(scope, todayISO), [scope, todayISO]);
 
   function toast(m: string) {
     setToastMsg(m);
@@ -137,12 +176,24 @@ export default function FitTime() {
       toast(`참여자를 ${MIN_PARTICIPANTS}명 이상 넣어주세요`);
       return;
     }
+    if (range.dates.length === 0) {
+      toast("고를 수 있는 날짜가 없어요");
+      return;
+    }
     setBusy(true);
     try {
       const res = await createMeeting({
         title: meetingTitle,
-        durationLabel: "1시간",
-        deadlineLabel: "이번 주 금요일",
+        durationLabel:
+          DURATION_OPTS.find((o) => o.min === durationMin)?.label ??
+          `${durationMin}분`,
+        durationMin,
+        stepMin: STEP_MIN,
+        deadlineLabel: range.deadlineLabel,
+        scope,
+        dates: range.dates,
+        hourStart: HOUR_START,
+        hourEnd: HOUR_END,
         participants,
       });
       setCode(res.code);
@@ -208,6 +259,8 @@ export default function FitTime() {
       setCode(c);
       setParticipantId(res.participantId);
       setSummary(res.meeting);
+      setPaint({});
+      setWeekIdx(0);
       toast(c + " 회의에 참여!");
       go("onboard");
     } catch (e) {
@@ -218,9 +271,15 @@ export default function FitTime() {
   }
 
   async function handleSavePrefs() {
+    const busyHard: string[] = [];
+    const busySoft: string[] = [];
+    for (const [id, lvl] of Object.entries(paint)) {
+      if (lvl === "hard") busyHard.push(id);
+      else busySoft.push(id);
+    }
     setBusy(true);
     try {
-      await savePreferences(code, participantId, mySoft, myHardDays);
+      await savePreferences(code, participantId, busyHard, busySoft);
       go("joined");
     } catch (e) {
       toast((e as Error).message);
@@ -232,6 +291,8 @@ export default function FitTime() {
   function reset() {
     setDraft(DEFAULT_DRAFT);
     setPath(null);
+    setScope("thisWeek");
+    setDurationMin(60);
     setCode("");
     setSummary(null);
     setRec(null);
@@ -241,8 +302,9 @@ export default function FitTime() {
     setAdjusted(false);
     setParticipantId("");
     setJoinName("");
-    setMySoft({ postLunch: true, earlyMorning: true });
-    setMyHardDays([]);
+    setPaint({});
+    setPaintLevel("hard");
+    setWeekIdx(0);
     go("home");
   }
 
@@ -298,6 +360,60 @@ export default function FitTime() {
     return rec.ranked[0] ?? all[0] ?? null;
   })();
 
+  // ---- 참여자 그리드: 드래그로 여러 칸 칠하기(마우스·터치 공용) ----
+  function applyCell(id: string, mode: "add" | "remove", level: "hard" | "soft") {
+    setPaint((prev) => {
+      const cur = prev[id];
+      const next = { ...prev };
+      if (mode === "remove") {
+        if (cur === level) delete next[id]; // 같은 레벨만 지운다
+      } else {
+        next[id] = level;
+      }
+      return next;
+    });
+  }
+  function cellIdFromPoint(x: number, y: number): string | null {
+    const el = document.elementFromPoint(x, y) as HTMLElement | null;
+    const cell = el?.closest?.("[data-slot]");
+    return cell ? cell.getAttribute("data-slot") : null;
+  }
+  function onGridDown(e: React.PointerEvent<HTMLDivElement>) {
+    const id = cellIdFromPoint(e.clientX, e.clientY);
+    if (!id) return; // 헤더·시간칸에서 시작하면 스크롤에 양보
+    dragModeRef.current = paint[id] === paintLevel ? "remove" : "add";
+    draggingRef.current = true;
+    appliedRef.current = new Set([id]);
+    applyCell(id, dragModeRef.current, paintLevel);
+    try {
+      gridRef.current?.setPointerCapture(e.pointerId);
+    } catch {
+      /* noop */
+    }
+  }
+  function onGridMove(e: React.PointerEvent<HTMLDivElement>) {
+    if (!draggingRef.current) return;
+    const id = cellIdFromPoint(e.clientX, e.clientY);
+    if (!id || appliedRef.current.has(id)) return;
+    appliedRef.current.add(id);
+    applyCell(id, dragModeRef.current, paintLevel);
+  }
+  function onGridUp() {
+    draggingRef.current = false;
+  }
+  function toggleDay(date: string, hours: number[]) {
+    setPaint((prev) => {
+      const ids = hours.map((h) => `${date}-${h}`);
+      const allSet = ids.every((id) => prev[id] === paintLevel);
+      const next = { ...prev };
+      for (const id of ids) {
+        if (allSet) delete next[id];
+        else next[id] = paintLevel;
+      }
+      return next;
+    });
+  }
+
   // ================= 화면별 body / cta =================
   let body: React.ReactNode = null;
   let cta: React.ReactNode = null;
@@ -314,7 +430,7 @@ export default function FitTime() {
           핏타임
         </div>
         <div className="t-body" style={{ textAlign: "center", marginTop: 10 }}>
-          여럿이 모이는 회의 시간, 눈치 없이 잡아요
+          팀 전체 일정, 안 되는 시간만 칠하면 끝나요
         </div>
         <button
           className="choice accent"
@@ -324,7 +440,7 @@ export default function FitTime() {
           }}
         >
           <div className="ct">회의 만들기</div>
-          <div className="cs">내가 팀 회의를 잡고, 초대코드를 받아요 · 조직자</div>
+          <div className="cs">기간을 정하고 초대코드를 받아요 · 조직자</div>
         </button>
         <button
           className="choice"
@@ -334,7 +450,7 @@ export default function FitTime() {
           }}
         >
           <div className="ct">초대코드로 참여</div>
-          <div className="cs">코드를 받았어요. 내 시간 규칙만 등록해요 · 참여자</div>
+          <div className="cs">안 되는 시간만 칠해요 · 참여자</div>
         </button>
       </div>
     );
@@ -348,17 +464,47 @@ export default function FitTime() {
             <span className="lab">제목</span>
             <span className="val">{meetingTitle}</span>
           </div>
-          <div className="field">
-            <span className="lab">소요 시간</span>
-            <span className="val">1시간</span>
-          </div>
-          <div className="field">
-            <span className="lab">언제까지</span>
-            <span className="val">이번 주 금요일</span>
-          </div>
+        </div>
+        <div className="section-label">얼마나 오래 하나요?</div>
+        <div className="seg-wide">
+          {DURATION_OPTS.map((o) => (
+            <button
+              key={o.min}
+              className={durationMin === o.min ? "on" : ""}
+              onClick={() => setDurationMin(o.min)}
+            >
+              {o.label}
+            </button>
+          ))}
+        </div>
+        <div className="section-label">언제 안에서 잡을까요?</div>
+        <div className="seg-wide">
+          {SCOPES.map((s) => (
+            <button
+              key={s.key}
+              className={scope === s.key ? "on" : ""}
+              onClick={() => setScope(s.key)}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+        <div className="range-note">
+          {range.dates.length > 0 ? (
+            <>
+              <b>
+                {DURATION_OPTS.find((o) => o.min === durationMin)?.label ??
+                  `${durationMin}분`}
+              </b>
+              짜리를 <b>{range.label}</b> 평일 {range.dates.length}일 ·{" "}
+              {HOUR_START}~{HOUR_END}시에서 찾아요
+            </>
+          ) : (
+            "고를 수 있는 날짜가 없어요"
+          )}
         </div>
         <div className="section-label">
-          누가 오나요? 이름을 적고 필수 / 선택을 정해요 ({validCount}명)
+          누가 오나요? 필수 / 선택을 정해요 ({validCount}명)
         </div>
         <div className="card">
           {draft.map((p, i) => (
@@ -446,12 +592,17 @@ export default function FitTime() {
       <>
         <div className="t-title">팀원을 초대하세요</div>
         <div className="t-body" style={{ marginTop: 8 }}>
-          이 코드를 팀 단톡방에 공유하면, 각자 규칙을 비공개로 등록해요.
+          이 코드를 팀 단톡방에 공유하면, 각자 안 되는 시간을 비공개로 칠해요.
         </div>
         <div className="token">
           <div className="t-caption">초대 코드</div>
           <div className="code">{code}</div>
         </div>
+        {summary && (
+          <div className="range-note" style={{ marginTop: 12 }}>
+            범위 · <b>{range.label}</b>
+          </div>
+        )}
         <button
           className="btn btn-ghost"
           style={{ marginTop: 12 }}
@@ -517,7 +668,7 @@ export default function FitTime() {
           맞춰보고 있어요
         </div>
         <div className="t-body" style={{ marginTop: 8 }}>
-          필수·선호·공정까지 함께 계산 중
+          {range.label} 안에서 · 필수·선호·공정까지 함께 계산 중
         </div>
       </div>
     );
@@ -582,8 +733,8 @@ export default function FitTime() {
       body = (
         <>
           <div className="reg-note">
-            {rec.meeting.participantCount}명 중 {rec.meeting.registeredCount}명 규칙
-            반영 · 미반영돼도 추천은 나와요
+            {rec.meeting.rangeLabel} · {rec.meeting.participantCount}명 중{" "}
+            {rec.meeting.registeredCount}명 응답 · 미응답돼도 추천은 나와요
           </div>
           <div className="card hero">
             <div className="tag">{hardReq.length ? "선택한 시간" : "추천"}</div>
@@ -605,7 +756,7 @@ export default function FitTime() {
           </div>
           {unk.length > 0 && (
             <div className="hint" style={{ color: "var(--soft-fg)" }}>
-              {unk.join(", ")} 규칙 미반영 · 콕 물어볼까요?
+              {unk.join(", ")} 응답 안 함 · 콕 물어볼까요?
             </div>
           )}
           {hardReq.length ? (
@@ -625,7 +776,7 @@ export default function FitTime() {
                 ·{" "}
                 {e.softCount > 0
                   ? "아쉬운 사람이 가장 적고, 한 사람에게 몰리지 않아요"
-                  : "선호를 어기는 사람이 없어요"}
+                  : "안 되는 사람이 없어요"}
               </div>
             </div>
           )}
@@ -735,7 +886,7 @@ export default function FitTime() {
             </span>
             <div className="grow">
               <div className="name">{t}</div>
-              <div className="sub">그날 일정과 겹쳐요 — 조정 부탁 예정</div>
+              <div className="sub">그 시간에 안 된다고 칠했어요 — 조정 부탁 예정</div>
             </div>
           </div>
           {e && e.softCount > 0 && (
@@ -786,7 +937,7 @@ export default function FitTime() {
         <div className="card-flat" style={{ textAlign: "center" }}>
           <div className="t-strong">{e?.label}</div>
           <div className="t-caption" style={{ marginTop: 4 }}>
-            지금은 다른 일정과 겹쳐 있어요
+            지금은 안 된다고 칠해 두셨어요
           </div>
         </div>
         <div className="btn-row" style={{ marginTop: 20 }}>
@@ -944,61 +1095,142 @@ export default function FitTime() {
       </button>
     );
   } else if (screen === "onboard") {
-    const toggle = (label: string, key: keyof SoftPrefs) => (
-      <div className="row">
-        <div className="grow">
-          <div className="name">{label}</div>
-        </div>
-        <label className="switch">
-          <input
-            type="checkbox"
-            checked={!!mySoft[key]}
-            onChange={(e) =>
-              setMySoft((s) => ({ ...s, [key]: e.target.checked }))
-            }
-          />
-          <span className="track" />
-          <span className="thumb" />
-        </label>
-      </div>
+    const allDates = summary?.dates ?? range.dates;
+    const hs = summary?.hourStart ?? HOUR_START;
+    const he = summary?.hourEnd ?? HOUR_END;
+    const step = summary?.stepMin ?? STEP_MIN;
+    const marks: number[] = [];
+    for (let m = hs * 60; m < he * 60; m += step) marks.push(m);
+    const markedCount = Object.keys(paint).length;
+
+    // 주 단위로 묶어 한 번에 한 주(≤5일)만 폭에 꽉 채워 보여준다(월간 폰 사용성).
+    const weeks = groupByWeek(allDates);
+    const wi = Math.min(weekIdx, Math.max(0, weeks.length - 1));
+    const dates = weeks[wi] ?? allDates;
+    const multiWeek = weeks.length > 1;
+    // 이 주에 칠한 칸 수(맥락 표시용)
+    const weekMarked = dates.reduce(
+      (n, d) => n + marks.filter((m) => paint[`${d}-${m}`]).length,
+      0
     );
     body = (
       <>
-        <div style={{ textAlign: "center", margin: "6px 0 16px" }}>
-          <span className="privacy">선호는 아무에게도 안 보여요</span>
+        <div style={{ textAlign: "center", margin: "6px 0 14px" }}>
+          <span className="privacy">칠한 시간은 아무에게도 안 보여요</span>
         </div>
-        <div className="t-title">내 시간 규칙, 한 번만 알려주세요</div>
-        <div className="t-body" style={{ marginTop: 8 }}>
-          흔한 건 미리 켜뒀어요. 안 맞는 것만 끄면 돼요.
+        <div className="t-title">안 되는 시간을 칠해주세요</div>
+        <div className="t-body" style={{ marginTop: 6 }}>
+          {summary ? range.label : ""} 안에서, 겹치는 일정이 있는 칸을 탭하거나
+          쓸어서 칠하세요. 날짜를 탭하면 하루 전체가 돼요.
         </div>
-        <div className="section-label">피하고 싶은 시간</div>
-        <div className="card">
-          {toggle("점심 직후 (13~14시)", "postLunch")}
-          {toggle("이른 아침 (9시대)", "earlyMorning")}
-          {toggle("금요일 오후", "friPM")}
+        <div className="seg-wide" style={{ marginTop: 14 }}>
+          <button
+            className={paintLevel === "hard" ? "on hard" : "hard"}
+            onClick={() => setPaintLevel("hard")}
+          >
+            <span className="lvl-dot lvl-hard" /> 안 돼요
+          </button>
+          <button
+            className={paintLevel === "soft" ? "on soft" : "soft"}
+            onClick={() => setPaintLevel("soft")}
+          >
+            <span className="lvl-dot lvl-soft" /> 되도록 피해요
+          </button>
         </div>
-        <div className="section-label">못 가는 요일이 있다면 (탭)</div>
-        <div className="card">
-          <div className="chip-row">
-            {WEEKDAYS.map((d, i) => (
-              <div
-                key={i}
-                className={"chip" + (myHardDays.includes(i) ? " on" : "")}
-                onClick={() =>
-                  setMyHardDays((days) =>
-                    days.includes(i)
-                      ? days.filter((x) => x !== i)
-                      : [...days, i]
-                  )
-                }
+        {multiWeek && (
+          <div className="weeknav">
+            <button
+              className="wknav-btn"
+              disabled={wi === 0}
+              onClick={() => setWeekIdx(wi - 1)}
+              aria-label="이전 주"
+            >
+              ‹
+            </button>
+            <div className="wknav-mid">
+              <b>
+                {wi + 1}/{weeks.length}주차
+              </b>
+              <span>
+                {shortDate(dates[0])}~{shortDate(dates[dates.length - 1])}
+              </span>
+            </div>
+            <button
+              className="wknav-btn"
+              disabled={wi >= weeks.length - 1}
+              onClick={() => setWeekIdx(wi + 1)}
+              aria-label="다음 주"
+            >
+              ›
+            </button>
+          </div>
+        )}
+        <div className="grid-wrap">
+          <div
+            ref={gridRef}
+            className="grid paged"
+            style={{
+              gridTemplateColumns: `44px repeat(${dates.length}, minmax(0, 1fr))`,
+            }}
+            onPointerDown={onGridDown}
+            onPointerMove={onGridMove}
+            onPointerUp={onGridUp}
+            onPointerCancel={onGridUp}
+          >
+            <div className="gcorner" />
+            {dates.map((d) => (
+              <button
+                key={d}
+                className="ghead"
+                onClick={() => toggleDay(d, marks)}
               >
-                {d}
-              </div>
+                <span className="gwd">{weekdayKo(d)}</span>
+                <span className="gdt">{shortDate(d)}</span>
+              </button>
             ))}
+            {marks.map((m) => {
+              const isHour = m % 60 === 0;
+              return (
+                <div
+                  className="grow-line"
+                  key={m}
+                  style={{ display: "contents" }}
+                >
+                  <div className={"gtime" + (isHour ? "" : " half")}>
+                    {stepLabel(m)}
+                  </div>
+                  {dates.map((d) => {
+                    const id = `${d}-${m}`;
+                    const lvl = paint[id];
+                    return (
+                      <div
+                        key={id}
+                        data-slot={id}
+                        role="button"
+                        className={
+                          "gcell" +
+                          (isHour ? "" : " half") +
+                          (lvl === "hard"
+                            ? " hard"
+                            : lvl === "soft"
+                              ? " soft"
+                              : "")
+                        }
+                        aria-label={`${shortDate(d)} ${stepLabel(m)}`}
+                      />
+                    );
+                  })}
+                </div>
+              );
+            })}
           </div>
-          <div className="hint" style={{ textAlign: "left", marginTop: 10 }}>
-            없으면 그냥 넘어가도 돼요
-          </div>
+        </div>
+        <div className="hint" style={{ marginTop: 12 }}>
+          {multiWeek
+            ? `이 주 ${weekMarked}칸 · 전체 ${markedCount}칸 표시함 · 다른 주는 ‹ ›로`
+            : markedCount > 0
+              ? `${markedCount}칸 표시함 · 안 되는 게 없으면 그냥 넘어가도 돼요`
+              : "안 되는 시간이 없으면 그냥 넘어가도 돼요"}
         </div>
       </>
     );
@@ -1022,7 +1254,7 @@ export default function FitTime() {
         <div className="t-body" style={{ textAlign: "center", marginTop: 8 }}>
           팀이 시간을 정하면 알려드릴게요.
           <br />
-          내 선호는 비공개로 반영돼요.
+          칠한 시간은 비공개로 반영돼요.
         </div>
       </div>
     );

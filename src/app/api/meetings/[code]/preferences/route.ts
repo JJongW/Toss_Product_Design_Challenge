@@ -1,18 +1,10 @@
 import { NextResponse } from "next/server";
 import { getMeeting, saveMeeting } from "@/lib/store";
 import { meetingSummary } from "@/lib/serialize";
-import type { PreferencesBody, SoftPrefs } from "@/lib/types";
+import { meetingSlots } from "@/lib/engine";
+import type { PreferencesBody } from "@/lib/types";
 
-const SOFT_KEYS: (keyof SoftPrefs)[] = [
-  "postLunch",
-  "earlyMorning",
-  "morningFocus",
-  "afternoonSlump",
-  "lateAfternoon",
-  "friPM",
-];
-
-// POST /api/meetings/:code/preferences — 참여자가 자기 시간 규칙을 비공개로 등록.
+// POST /api/meetings/:code/preferences — 참여자가 "안 되는 시간"을 비공개로 등록.
 export async function POST(
   req: Request,
   ctx: { params: Promise<{ code: string }> }
@@ -33,12 +25,16 @@ export async function POST(
     return NextResponse.json({ error: "잘못된 요청이에요." }, { status: 400 });
   }
 
-  const soft: SoftPrefs = {};
-  for (const k of SOFT_KEYS) if (body.soft?.[k]) soft[k] = true;
-
-  const hardDays = Array.isArray(body.hardDays)
-    ? Array.from(new Set(body.hardDays.filter((d) => d >= 0 && d <= 4)))
-    : [];
+  // 등록된 슬롯 id만 허용(범위 밖 id는 버린다).
+  const valid = new Set(meetingSlots(meeting).map((s) => s.id));
+  const clean = (arr: unknown): string[] =>
+    Array.isArray(arr)
+      ? Array.from(new Set(arr.filter((x): x is string => typeof x === "string" && valid.has(x))))
+      : [];
+  const busyHard = clean(body.busyHard);
+  const hardSet = new Set(busyHard);
+  // 같은 슬롯이 hard·soft 둘 다면 hard가 우선.
+  const busySoft = clean(body.busySoft).filter((id) => !hardSet.has(id));
 
   const participant = meeting.participants.find(
     (p) => p.id === body.participantId
@@ -49,8 +45,8 @@ export async function POST(
       { status: 404 }
     );
   }
-  participant.soft = soft;
-  participant.hardDays = hardDays;
+  participant.busyHard = busyHard;
+  participant.busySoft = busySoft;
   participant.registered = true;
   await saveMeeting(meeting);
 

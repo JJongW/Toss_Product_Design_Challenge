@@ -2,8 +2,8 @@
 // - 필수 인원 중 "불가/미응답"인 사람의 이름은 조정 요청을 위해 노출.
 // - "아쉬움(soft)"은 누구인지·이유를 절대 내보내지 않고 개수만 노출.
 
-import { compute, slotLabel, STATE } from "./engine";
-import type { Meeting, SlotEval } from "./types";
+import { compute, meetingDuration, meetingStep, slotLabel, STATE } from "./engine";
+import type { Meeting, Scope, SlotEval } from "./types";
 
 export interface SlotView {
   id: string;
@@ -24,6 +24,8 @@ export interface RecommendView {
     title: string;
     durationLabel: string;
     deadlineLabel: string;
+    scope: Scope;
+    rangeLabel: string;
     decidedSlotId: string | null;
     participantCount: number;
     registeredCount: number;
@@ -35,7 +37,7 @@ export interface RecommendView {
   blocked: SlotView[];
 }
 
-function toView(e: SlotEval): SlotView {
+function toView(e: SlotEval, durationMin: number, stepMin: number): SlotView {
   const hardRequiredNames = e.states
     .filter((x) => x.person.required && x.state === STATE.HARD)
     .map((x) => x.person.name);
@@ -44,7 +46,7 @@ function toView(e: SlotEval): SlotView {
     .map((x) => x.person.name);
   return {
     id: e.slot.id,
-    label: slotLabel(e.slot),
+    label: slotLabel(e.slot, durationMin, stepMin),
     requiredOkCount: e.requiredOkCount,
     requiredTotal: e.requiredTotal,
     optionalOk: e.optionalOk,
@@ -56,8 +58,18 @@ function toView(e: SlotEval): SlotView {
   };
 }
 
+function rangeLabel(meeting: Meeting): string {
+  const d = meeting.dates || [];
+  if (!d.length) return "";
+  const first = d[0].slice(5).replace("-", "/");
+  const last = d[d.length - 1].slice(5).replace("-", "/");
+  return d.length === 1 ? first : `${first}~${last}`;
+}
+
 export function buildRecommend(meeting: Meeting): RecommendView {
-  const r = compute(meeting.participants);
+  const r = compute(meeting);
+  const durMin = meetingDuration(meeting);
+  const stepMin = meetingStep(meeting);
   const registeredCount = meeting.participants.filter((p) => p.registered).length;
   const requiredTotal = meeting.participants.filter((p) => p.required).length;
   return {
@@ -66,6 +78,8 @@ export function buildRecommend(meeting: Meeting): RecommendView {
       title: meeting.title,
       durationLabel: meeting.durationLabel,
       deadlineLabel: meeting.deadlineLabel,
+      scope: meeting.scope,
+      rangeLabel: rangeLabel(meeting),
       decidedSlotId: meeting.decidedSlotId,
       participantCount: meeting.participants.length,
       registeredCount,
@@ -73,8 +87,8 @@ export function buildRecommend(meeting: Meeting): RecommendView {
       optionalTotal: meeting.participants.length - requiredTotal,
     },
     hasFloor: r.ranked.length > 0,
-    ranked: r.ranked.slice(0, 5).map(toView),
-    blocked: r.blocked.slice(0, 2).map(toView),
+    ranked: r.ranked.slice(0, 5).map((e) => toView(e, durMin, stepMin)),
+    blocked: r.blocked.slice(0, 2).map((e) => toView(e, durMin, stepMin)),
   };
 }
 
@@ -84,8 +98,13 @@ export function meetingSummary(meeting: Meeting) {
     code: meeting.code,
     title: meeting.title,
     durationLabel: meeting.durationLabel,
+    durationMin: meeting.durationMin,
+    stepMin: meeting.stepMin,
     deadlineLabel: meeting.deadlineLabel,
-    decidedSlotId: meeting.decidedSlotId,
+    scope: meeting.scope,
+    dates: meeting.dates,
+    hourStart: meeting.hourStart,
+    hourEnd: meeting.hourEnd,
     participants: meeting.participants.map((p) => ({
       id: p.id,
       name: p.name,

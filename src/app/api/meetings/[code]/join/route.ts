@@ -45,8 +45,8 @@ export async function POST(
     name,
     required: false, // 로스터 밖에서 합류한 사람은 기본 선택 인원
     registered: false,
-    soft: {},
-    hardDays: [],
+    busyHard: [],
+    busySoft: [],
   };
   meeting.participants.push(participant);
   await saveMeeting(meeting);
