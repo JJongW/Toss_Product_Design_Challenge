@@ -12,6 +12,7 @@ import {
 import {
   checkHealth,
   createMeeting,
+  updateMeeting,
   decideMeeting,
   getMeeting,
   getRecommend,
@@ -56,6 +57,13 @@ const MIN_PARTICIPANTS = 2;
 const HOUR_START = 9;
 const HOUR_END = 18;
 const STEP_MIN = 30;
+// 조직자가 고를 수 있는 '하루 중 시간대' 경계(정시 단위).
+const HOUR_CHOICES = Array.from({ length: 19 }, (_, i) => i + 6); // 6시~24시
+function hourLabel(h: number): string {
+  if (h === 0 || h === 24) return "자정";
+  if (h === 12) return "정오";
+  return h < 12 ? `오전 ${h}시` : `오후 ${h - 12}시`;
+}
 
 const DURATION_OPTS: Array<{ min: number; label: string }> = [
   { min: 30, label: "30분" },
@@ -111,6 +119,8 @@ export default function FitTime() {
   const [meetingTitle] = useState("스프린트 킥오프");
   const [scope, setScope] = useState<Scope>("thisWeek");
   const [includeWeekend, setIncludeWeekend] = useState(false);
+  const [dayStart, setDayStart] = useState(HOUR_START); // 하루 시작 시각(조직자 선택)
+  const [dayEnd, setDayEnd] = useState(HOUR_END); // 하루 끝 시각
   const [durationMin, setDurationMin] = useState(60);
   const [code, setCode] = useState("");
   const [summary, setSummary] = useState<MeetingSummary | null>(null);
@@ -248,7 +258,7 @@ export default function FitTime() {
     }
     setBusy(true);
     try {
-      const res = await createMeeting({
+      const payload = {
         title: meetingTitle,
         durationLabel:
           DURATION_OPTS.find((o) => o.min === durationMin)?.label ??
@@ -258,10 +268,15 @@ export default function FitTime() {
         deadlineLabel: range.deadlineLabel,
         scope,
         dates: range.dates,
-        hourStart: HOUR_START,
-        hourEnd: HOUR_END,
+        hourStart: dayStart,
+        hourEnd: dayEnd,
         participants,
-      });
+      };
+      // 이미 이 세션에서 코드를 만들었으면 새로 만들지 않고 그 회의를 수정한다
+      // (뒤로 가서 고칠 때 코드가 무한 발급되는 걸 막음).
+      const res = code
+        ? await updateMeeting(code, payload)
+        : await createMeeting(payload);
       setCode(res.code);
       setSummary(res.meeting);
       setJoinCode(res.code); // 참여자 데모용 프리필
@@ -358,6 +373,8 @@ export default function FitTime() {
     setDraft(DEFAULT_DRAFT);
     setPath(null);
     setScope("thisWeek");
+    setDayStart(HOUR_START);
+    setDayEnd(HOUR_END);
     setDurationMin(60);
     setCode("");
     setSummary(null);
@@ -573,6 +590,38 @@ export default function FitTime() {
             주말 포함
           </button>
         </div>
+        <div className="section-label">하루 중 몇 시부터 몇 시까지?</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <select
+            className="textin"
+            style={{ flex: 1, textAlign: "center" }}
+            value={dayStart}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              setDayStart(v);
+              if (dayEnd <= v) setDayEnd(Math.min(24, v + 1));
+            }}
+          >
+            {HOUR_CHOICES.filter((h) => h <= 21).map((h) => (
+              <option key={h} value={h}>
+                {hourLabel(h)}
+              </option>
+            ))}
+          </select>
+          <span style={{ color: "#888" }}>~</span>
+          <select
+            className="textin"
+            style={{ flex: 1, textAlign: "center" }}
+            value={dayEnd}
+            onChange={(e) => setDayEnd(Number(e.target.value))}
+          >
+            {HOUR_CHOICES.filter((h) => h > dayStart).map((h) => (
+              <option key={h} value={h}>
+                {hourLabel(h)}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="range-note">
           {range.dates.length > 0 ? (
             <>
@@ -580,8 +629,8 @@ export default function FitTime() {
                 {DURATION_OPTS.find((o) => o.min === durationMin)?.label ??
                   `${durationMin}분`}
               </b>
-              짜리를 <b>{range.label}</b> 평일 {range.dates.length}일 ·{" "}
-              {HOUR_START}~{HOUR_END}시에서 찾아요
+              짜리를 <b>{range.label}</b> {range.dates.length}일 ·{" "}
+              {hourLabel(dayStart)}~{hourLabel(dayEnd)}에서 찾아요
             </>
           ) : (
             "고를 수 있는 날짜가 없어요"
@@ -660,12 +709,19 @@ export default function FitTime() {
         </button>
         <div className="hint">
           필수를 늘리면 되는 시간이 줄어요. 인원은 2명부터 몇 명이든 돼요.
+          {code && (
+            <>
+              <br />
+              이미 코드 <b>{code}</b>를 만들었어요 — 새로 만들지 않고 이 회의를
+              수정해요.
+            </>
+          )}
         </div>
       </>
     );
     cta = (
       <button className="btn btn-primary" disabled={busy} onClick={handleCreate}>
-        초대코드 만들기
+        {code ? "변경사항 저장하고 계속" : "초대코드 만들기"}
       </button>
     );
   } else if (screen === "invite") {

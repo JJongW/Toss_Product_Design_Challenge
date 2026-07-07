@@ -52,6 +52,27 @@ export function createMeeting(body: {
   });
 }
 
+export function updateMeeting(
+  code: string,
+  body: {
+    title: string;
+    durationLabel: string;
+    durationMin: number;
+    stepMin: number;
+    deadlineLabel: string;
+    scope: Scope;
+    dates: string[];
+    hourStart: number;
+    hourEnd: number;
+    participants: Array<{ name: string; required: boolean }>;
+  }
+) {
+  return req<{ code: string; meeting: MeetingSummary }>(
+    `/api/meetings/${encodeURIComponent(code)}`,
+    { method: "PUT", body: JSON.stringify(body) }
+  );
+}
+
 export function getMeeting(code: string) {
   return req<{ meeting: MeetingSummary }>(
     `/api/meetings/${encodeURIComponent(code)}`
