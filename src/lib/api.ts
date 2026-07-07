@@ -93,6 +93,10 @@ export function decideMeeting(code: string, slotId: string) {
   );
 }
 
+export function checkHealth() {
+  return req<{ kv: boolean; serverless: boolean }>("/api/health");
+}
+
 export function seedMeeting(code: string) {
   return req<{ seeded: number; meeting: MeetingSummary }>(
     `/api/meetings/${encodeURIComponent(code)}/seed`,

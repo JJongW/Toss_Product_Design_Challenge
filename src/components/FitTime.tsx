@@ -10,6 +10,7 @@ import {
   type Scope,
 } from "@/lib/dates";
 import {
+  checkHealth,
   createMeeting,
   decideMeeting,
   getMeeting,
@@ -48,9 +49,6 @@ interface Draft {
 const DEFAULT_DRAFT: Draft[] = [
   { name: "김PO", required: true },
   { name: "이팀장", required: true },
-  { name: "박개발", required: true },
-  { name: "최디자", required: true },
-  { name: "정마케", required: false },
   { name: "나", required: false },
 ];
 
@@ -112,6 +110,7 @@ export default function FitTime() {
   const [draft, setDraft] = useState<Draft[]>(DEFAULT_DRAFT);
   const [meetingTitle] = useState("스프린트 킥오프");
   const [scope, setScope] = useState<Scope>("thisWeek");
+  const [includeWeekend, setIncludeWeekend] = useState(false);
   const [durationMin, setDurationMin] = useState(60);
   const [code, setCode] = useState("");
   const [summary, setSummary] = useState<MeetingSummary | null>(null);
@@ -120,10 +119,17 @@ export default function FitTime() {
   const [showList, setShowList] = useState(false);
   const [overrideTarget, setOverrideTarget] = useState("");
   const [adjusted, setAdjusted] = useState(false);
+  // 저장소 상태: kv=false면 인메모리 폴백(초대코드 유실 위험). null=확인 전.
+  const [health, setHealth] = useState<{ kv: boolean; serverless: boolean } | null>(
+    null
+  );
 
   // 참여자 상태
   const [joinCode, setJoinCode] = useState("");
   const [joinName, setJoinName] = useState("");
+  // 코드로 불러온 회의 로스터(이름 선택용). notFound=코드 조회 실패.
+  const [roster, setRoster] = useState<MeetingSummary | null>(null);
+  const [rosterNotFound, setRosterNotFound] = useState(false);
   const [participantId, setParticipantId] = useState("");
   // slotId → 칠한 상태. 없으면 "가능".
   const [paint, setPaint] = useState<Record<string, "hard" | "soft">>({});
@@ -131,7 +137,10 @@ export default function FitTime() {
   const [weekIdx, setWeekIdx] = useState(0); // 월간 그리드에서 보고 있는 주
 
   const todayISO = useMemo(() => toISO(new Date()), []);
-  const range = useMemo(() => buildRange(scope, todayISO), [scope, todayISO]);
+  const range = useMemo(
+    () => buildRange(scope, todayISO, includeWeekend),
+    [scope, todayISO, includeWeekend]
+  );
 
   function toast(m: string) {
     setToastMsg(m);
@@ -142,6 +151,63 @@ export default function FitTime() {
     animKey.current += 1;
     setScreen(s);
   }
+
+  // ----- 저장소 상태 1회 확인(초대코드 유실 경고용) -----
+  useEffect(() => {
+    let alive = true;
+    checkHealth()
+      .then((h) => {
+        if (alive) setHealth(h);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  // ----- 공유 링크 딥링크: ?join=CODE 로 들어오면 참여 화면에 코드 프리필 -----
+  useEffect(() => {
+    const c = new URLSearchParams(window.location.search)
+      .get("join")
+      ?.trim()
+      .toUpperCase();
+    if (c) {
+      setPath("part");
+      setJoinCode(c);
+      go("join");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ----- 참여 화면: 코드 6자리면 로스터를 불러와 이름 칩을 보여준다 -----
+  useEffect(() => {
+    if (screen !== "join") return;
+    const c = joinCode.trim().toUpperCase();
+    if (c.length !== 6) {
+      setRoster(null);
+      setRosterNotFound(false);
+      return;
+    }
+    let alive = true;
+    setRosterNotFound(false);
+    getMeeting(c)
+      .then((res) => {
+        if (!alive) return;
+        setRoster(res.meeting);
+        // 다른 회의 명단이면 이전 선택은 무효화
+        setJoinName((prev) =>
+          res.meeting.participants.some((p) => p.name === prev) ? prev : ""
+        );
+      })
+      .catch(() => {
+        if (!alive) return;
+        setRoster(null);
+        setRosterNotFound(true);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [screen, joinCode]);
 
   // ----- computing → recommend 자동 진행 -----
   useEffect(() => {
@@ -301,7 +367,11 @@ export default function FitTime() {
     setOverrideTarget("");
     setAdjusted(false);
     setParticipantId("");
+    setJoinCode("");
     setJoinName("");
+    setRoster(null);
+    setRosterNotFound(false);
+    setIncludeWeekend(false);
     setPaint({});
     setPaintLevel("hard");
     setWeekIdx(0);
@@ -489,6 +559,20 @@ export default function FitTime() {
             </button>
           ))}
         </div>
+        <div className="seg-wide" style={{ marginTop: 8 }}>
+          <button
+            className={!includeWeekend ? "on" : ""}
+            onClick={() => setIncludeWeekend(false)}
+          >
+            평일만
+          </button>
+          <button
+            className={includeWeekend ? "on" : ""}
+            onClick={() => setIncludeWeekend(true)}
+          >
+            주말 포함
+          </button>
+        </div>
         <div className="range-note">
           {range.dates.length > 0 ? (
             <>
@@ -598,20 +682,80 @@ export default function FitTime() {
           <div className="t-caption">초대 코드</div>
           <div className="code">{code}</div>
         </div>
+        {health && !health.kv && (
+          <div
+            role="alert"
+            style={{
+              marginTop: 12,
+              padding: "12px 14px",
+              borderRadius: 12,
+              textAlign: "left",
+              lineHeight: 1.5,
+              border: health.serverless
+                ? "1px solid #f0b4b4"
+                : "1px solid #f0dca8",
+              background: health.serverless ? "#fdf2f2" : "#fdf9ec",
+              color: health.serverless ? "#a11" : "#7a5b00",
+            }}
+          >
+            {health.serverless ? (
+              <>
+                <b>⚠️ 공유 저장소가 연결되지 않았어요</b>
+                <div style={{ marginTop: 4 }}>
+                  이 코드로 <b>다른 기기에서 접속하면</b> “그런 초대 코드를 찾지
+                  못했어요” 오류가 날 수 있어요. 공유 전에 관리자가 Upstash Redis를
+                  연동하고 재배포해야 해요.
+                </div>
+              </>
+            ) : (
+              <>
+                <b>ℹ️ 로컬 메모리 모드예요</b>
+                <div style={{ marginTop: 4 }}>
+                  서버를 재시작하면 이 코드가 사라져요. 배포 시엔 KV(Upstash) 연동이
+                  필요해요.
+                </div>
+              </>
+            )}
+          </div>
+        )}
         {summary && (
           <div className="range-note" style={{ marginTop: 12 }}>
             범위 · <b>{range.label}</b>
           </div>
         )}
         <button
-          className="btn btn-ghost"
+          className="btn btn-primary"
           style={{ marginTop: 12 }}
+          onClick={async () => {
+            const url = `${window.location.origin}/?join=${code}`;
+            const shareData = {
+              title: "회의 참여",
+              text: `‘${meetingTitle}’ 회의에 참여해요. 안 되는 시간만 칠하면 끝!`,
+              url,
+            };
+            if (navigator.share) {
+              try {
+                await navigator.share(shareData);
+                return;
+              } catch {
+                /* 취소하면 클립보드 폴백 */
+              }
+            }
+            navigator.clipboard?.writeText(url).catch(() => {});
+            toast("참여 링크 복사됨");
+          }}
+        >
+          참여 링크 공유
+        </button>
+        <button
+          className="btn btn-ghost"
+          style={{ marginTop: 8 }}
           onClick={() => {
             navigator.clipboard?.writeText(code).catch(() => {});
             toast("코드 " + code + " 복사됨");
           }}
         >
-          코드 복사
+          코드만 복사 ({code})
         </button>
         <div className="section-label">참여 현황</div>
         <div className="card-flat">
@@ -1068,7 +1212,7 @@ export default function FitTime() {
           className="t-body"
           style={{ textAlign: "center", margin: "8px 0 20px" }}
         >
-          조직자가 공유한 초대 코드와 이름을 넣어주세요
+          초대 코드를 넣고, 명단에서 <b>본인 이름</b>을 골라주세요
         </div>
         <input
           className="codein"
@@ -1077,20 +1221,69 @@ export default function FitTime() {
           placeholder="K7P2QX"
           onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
         />
-        <input
-          className="textin"
-          style={{ marginTop: 12, textAlign: "center" }}
-          value={joinName}
-          placeholder="내 이름"
-          onChange={(e) => setJoinName(e.target.value)}
-        />
-        <div className="hint">
-          {code ? "방금 만든 코드가 미리 입력돼 있어요" : "코드는 6자리예요"}
-        </div>
+        {roster ? (
+          <>
+            <div className="section-label" style={{ textAlign: "center" }}>
+              ‘{roster.title}’ · 본인 이름 선택
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 8,
+                justifyContent: "center",
+              }}
+            >
+              {roster.participants.map((p) => {
+                const on = joinName === p.name;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => setJoinName(p.name)}
+                    style={{
+                      padding: "8px 14px",
+                      borderRadius: 999,
+                      border: on
+                        ? "1.5px solid #2b6ef2"
+                        : "1px solid #d5d9e0",
+                      background: on ? "#eaf1ff" : "#fff",
+                      color: on ? "#1b4fc0" : "#333",
+                      fontWeight: on ? 700 : 500,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {p.name}
+                    {p.registered ? " ✓" : ""}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="hint">
+              찾는 이름이 없으면 조직자에게 명단 추가를 요청하세요
+              {roster.participants.some((p) => p.registered)
+                ? " · ✓는 이미 제출한 사람(다시 골라 수정 가능)"
+                : ""}
+            </div>
+          </>
+        ) : (
+          <div className="hint">
+            {rosterNotFound
+              ? "그런 초대 코드를 찾지 못했어요 · 코드를 확인해 주세요"
+              : joinCode.length === 6
+                ? "명단을 불러오는 중…"
+                : code
+                  ? "방금 만든 코드가 미리 입력돼 있어요"
+                  : "코드는 6자리예요"}
+          </div>
+        )}
       </div>
     );
     cta = (
-      <button className="btn btn-primary" disabled={busy} onClick={handleJoin}>
+      <button
+        className="btn btn-primary"
+        disabled={busy || !roster || !joinName}
+        onClick={handleJoin}
+      >
         참여하기
       </button>
     );

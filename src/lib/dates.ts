@@ -44,11 +44,17 @@ function mondayOf(d: Date): Date {
   return addDays(d, diff);
 }
 
-/** base가 속한 주(weekOffset 주 뒤)의 월~금 ISO 목록 */
-export function weekdaysOfWeek(base: Date, weekOffset: number): string[] {
+/** base가 속한 주(weekOffset 주 뒤)의 날짜 ISO 목록.
+ *  includeWeekend면 월~일(7일), 아니면 월~금(5일). */
+export function daysOfWeek(
+  base: Date,
+  weekOffset: number,
+  includeWeekend = false
+): string[] {
   const mon = addDays(mondayOf(base), weekOffset * 7);
   const out: string[] = [];
-  for (let i = 0; i < 5; i++) out.push(toISO(addDays(mon, i)));
+  const n = includeWeekend ? 7 : 5;
+  for (let i = 0; i < n; i++) out.push(toISO(addDays(mon, i)));
   return out;
 }
 
@@ -67,15 +73,15 @@ export function groupByWeek(dates: string[]): string[][] {
   return groups;
 }
 
-/** base가 속한 달의 모든 평일(월~금) ISO 목록 */
-export function weekdaysOfMonth(base: Date): string[] {
+/** base가 속한 달의 날짜 ISO 목록. includeWeekend면 전부, 아니면 평일(월~금)만. */
+export function daysOfMonth(base: Date, includeWeekend = false): string[] {
   const y = base.getFullYear();
   const m = base.getMonth();
   const out: string[] = [];
   const d = new Date(y, m, 1);
   while (d.getMonth() === m) {
     const wd = d.getDay();
-    if (wd >= 1 && wd <= 5) out.push(toISO(d));
+    if (includeWeekend || (wd >= 1 && wd <= 5)) out.push(toISO(d));
     d.setDate(d.getDate() + 1);
   }
   return out;
@@ -95,24 +101,29 @@ export interface RangeSpec {
   deadlineLabel: string;
 }
 
-/** 스코프 → 실제 날짜 범위. today는 ISO 문자열(테스트/SSR 안전). */
-export function buildRange(scope: Scope, todayISO: string): RangeSpec {
+/** 스코프 → 실제 날짜 범위. today는 ISO 문자열(테스트/SSR 안전).
+ *  includeWeekend=true면 토·일도 후보에 포함한다(기본은 평일만). */
+export function buildRange(
+  scope: Scope,
+  todayISO: string,
+  includeWeekend = false
+): RangeSpec {
   const today = parseISO(todayISO);
   let dates: string[];
   let name: string;
   if (scope === "nextWeek") {
-    dates = weekdaysOfWeek(today, 1);
+    dates = daysOfWeek(today, 1, includeWeekend);
     name = "다음 주";
   } else if (scope === "thisMonth") {
-    dates = fromTodayOnward(weekdaysOfMonth(today), todayISO);
+    dates = fromTodayOnward(daysOfMonth(today, includeWeekend), todayISO);
     name = "이번 달";
   } else {
-    dates = fromTodayOnward(weekdaysOfWeek(today, 0), todayISO);
+    dates = fromTodayOnward(daysOfWeek(today, 0, includeWeekend), todayISO);
     name = "이번 주";
   }
   // 이번 주가 오늘 기준 하루 이하만 남으면 다음 주까지 이어 붙인다(빈 그리드 방지).
   if (scope === "thisWeek" && dates.length <= 1) {
-    dates = dates.concat(weekdaysOfWeek(today, 1));
+    dates = dates.concat(daysOfWeek(today, 1, includeWeekend));
     name = "이번·다음 주";
   }
   const range =

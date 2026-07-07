@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
-import { genId, getMeeting, saveMeeting } from "@/lib/store";
+import { getMeeting } from "@/lib/store";
 import { meetingSummary } from "@/lib/serialize";
-import type { JoinBody, Participant } from "@/lib/types";
+import type { JoinBody } from "@/lib/types";
 
-// POST /api/meetings/:code/join — 초대코드로 참여자 추가.
-// 로스터에 같은 이름의 미등록 슬롯이 있으면 그 슬롯을 돌려주고(자기 자리 찾기),
-// 없으면 새 참여자로 합류시킨다.
+// POST /api/meetings/:code/join — 초대코드로 자기 자리 찾기.
+// 로스터-락: 조직자가 넣은 명단에 있는 이름만 입장할 수 있다.
+// 명단에 없는 이름은 거절해 무단 입장·중복 신원(민수/김민수/…)을 막는다.
+// 명단에 있으면 등록 여부와 무관하게 그 슬롯을 돌려줘, 링크로 다시 들어와
+// 자기 시간을 수정하는 것도 허용한다.
 export async function POST(
   req: Request,
   ctx: { params: Promise<{ code: string }> }
@@ -30,28 +32,16 @@ export async function POST(
     return NextResponse.json({ error: "이름을 알려주세요." }, { status: 400 });
   }
 
-  const existing = meeting.participants.find(
-    (p) => p.name === name && !p.registered
-  );
-  if (existing) {
-    return NextResponse.json({
-      participantId: existing.id,
-      meeting: meetingSummary(meeting),
-    });
+  const slot = meeting.participants.find((p) => p.name === name);
+  if (!slot) {
+    return NextResponse.json(
+      { error: "명단에 없는 이름이에요. 조직자에게 확인해 주세요." },
+      { status: 403 }
+    );
   }
 
-  const participant: Participant = {
-    id: genId("p"),
-    name,
-    required: false, // 로스터 밖에서 합류한 사람은 기본 선택 인원
-    registered: false,
-    busyHard: [],
-    busySoft: [],
-  };
-  meeting.participants.push(participant);
-  await saveMeeting(meeting);
-  return NextResponse.json(
-    { participantId: participant.id, meeting: meetingSummary(meeting) },
-    { status: 201 }
-  );
+  return NextResponse.json({
+    participantId: slot.id,
+    meeting: meetingSummary(meeting),
+  });
 }
