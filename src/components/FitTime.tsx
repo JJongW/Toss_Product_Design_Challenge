@@ -823,8 +823,47 @@ export default function FitTime() {
               <i style={{ width: pct + "%" }} />
             </div>
           </div>
-          <div className="hint" style={{ textAlign: "left", marginTop: 10 }}>
-            다 안 모여도 지금 정보로 추천이 나와요 (non-blocking)
+          <div
+            style={{
+              marginTop: 12,
+              display: "flex",
+              flexDirection: "column",
+              gap: 8,
+            }}
+          >
+            {summary?.participants.map((p) => (
+              <div
+                key={p.id}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span>
+                  {p.name}
+                  <span
+                    style={{ color: "#9aa0aa", fontSize: 12, marginLeft: 6 }}
+                  >
+                    {p.required ? "필수" : "선택"}
+                  </span>
+                </span>
+                <span
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    color: p.registered ? "#1b9e57" : "#b0b4bb",
+                  }}
+                >
+                  {p.registered ? "등록함 ✓" : "대기 중"}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div className="hint" style={{ textAlign: "left", marginTop: 12 }}>
+            등록 여부만 보여요 · 칠한 시간은 비공개예요. 다 안 모여도 아래{" "}
+            <b>‘지금 추천 보기’</b>를 누르면, 지금까지 등록된 정보로 추천을 볼 수
+            있어요.
           </div>
         </div>
         {reg < total && (
