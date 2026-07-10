@@ -513,3 +513,12 @@
 - **Evidence**: 재배포 후 `fittime-walkthrough.vercel.app`에서 "완벽한 시간이 없을 땐"·"막힐 때·조정"·"가장 덜 무리한" 라이브 확인, HTTP 200. 신/트리거/anno 정합 = 7개씩. Q1 여전히 700자 이내.
 - **Weakness**: (1) **Top2 미해결** — 여전히 스크롤 재생 시뮬이지 실조작 아님(실앱 미연결, CTA→GitHub). "judge actual behavior" 기준 완전 방어 못 함. (2) 엣지 신도 정적 목업. (3) 실기기·모바일 스크롤 육안 미검증.
 - **Next Research**: (a) Top2 — 실앱 KV(Upstash) 연동 후 배포해 CTA를 실제 조작 가능한 앱으로 연결. (b) 실기기에서 7신 스크롤·모바일 하단 콜아웃 확인. (c) 원하면 재심사(`/toss-eval`)로 축2 상승 확인.
+
+## Entry 053 — 워크스루 렌더 버그(sticky) 수정 + 데모에서 제출답변 제거 (2026-07-10)
+- **Fact (실제 렌더 첫 확인)**: 배포본을 사용자가 처음 열자 "아래 동작하는 게 안 보인다" — 스크롤형 워크스루(sticky 중앙 폰+7신)가 뜨지 않음. 또 데모 하단에 **제출 답변 Q1~Q3 전문**이 노출돼 있었음(공개 데모에 답안 박제).
+- **Root cause**: `.page { overflow-x: hidden }` — `overflow-x:hidden`은 조상에 스크롤 컨테이너를 생성해 자식의 `position:sticky`를 무력화. 그래서 `.stage`가 뷰포트에 고정되지 않고 흘러가 워크스루가 동작 안 함(초기 커밋부터 잠복, curl로만 검증해 못 잡음).
+- **Decision**: (1) `.page` overflow-x를 **`clip`**으로 교체(스크롤 컨테이너 미생성 → sticky 정상). (2) `#answers`(제출 답변 3문항) 섹션 통째 제거 — 답변은 토스 폼에만, 공개 데모엔 흐름만. 근거(#sources)·푸터는 유지.
+- **Fact (URL 지도 확정)**: `fittime-walkthrough.vercel.app`(내 CLI 정적 배포, root=워크스루) vs `schedulechallenge.vercel.app`(사용자 옛 프로젝트, GitHub 연동, root=Next.js 실앱, `/portfolio.html`=워크스루). 사용자가 본 "UI 달라짐"은 schedulechallenge root(실앱)가 push된 커밋으로 자동배포돼 바뀐 것. **제출 URL은 root=워크스루인 `fittime-walkthrough.vercel.app` 권장.**
+- **Evidence**: 재배포 후 `overflow-x: clip` 라이브, 제출답변 섹션 제거 확인, scrolly 존재. schedulechallenge/portfolio.html도 워크스루 서빙 확인(git 연동).
+- **Weakness**: (1) 스티키 실동작을 여전히 헤드리스로 육안 확인 못 함 — 사용자 실기기 재확인 필요. (2) 두 배포 공존(fittime-walkthrough 수동·schedulechallenge 자동)이라 갱신 시 양쪽 동기화 주의. (3) schedulechallenge root가 실앱이라 평가자가 root를 열면 혼동 가능(제출은 fittime-walkthrough root로).
+- **Next Research**: (a) 사용자 실기기에서 sticky 7신 동작 확인. (b) 확정되면 시뮬 개선(스크롤 스크러빙·화면 리얼리티·커서 자연입력) 착수.

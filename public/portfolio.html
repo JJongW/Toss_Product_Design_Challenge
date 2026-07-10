@@ -48,7 +48,7 @@
     -webkit-font-smoothing: antialiased;
     line-height: 1.6;
     letter-spacing: 0;
-    overflow-x: hidden;
+    overflow-x: clip;   /* clip (NOT hidden) — hidden creates a scroll container that breaks position:sticky */
   }
   .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
   .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
@@ -535,35 +535,6 @@
       <div class="trig" data-step="7"></div>
     </div>
   </div>
-
-  <!-- ===================== CLOSING: 3 ANSWERS ===================== -->
-  <section class="block wrap" id="answers">
-    <div class="sec-head reveal">
-      <span class="sec-num">제출 답변 · Q1–Q3</span>
-      <h2>흐름을 관통하는 3가지 답</h2>
-      <p class="lede">각 700자 이내. 근거의 단일 진실 소스는 <span class="mono">docs/design-log.md</span>(설계 심의 48개 Entry 누적).</p>
-    </div>
-    <div class="qa">
-      <div class="qbox reveal">
-        <div class="q"><span class="qn">Q1.</span><h3>어떤 문제를 발견했고, 왜 문제인가?</h3></div>
-        <p class="a">6명이 다음 주 안에 1시간 회의를 잡을 때 주최자가 겪는 가장 큰 어려움은 빈 시간을 모으는 것이 아니라, 서로 다른 조건을 해석해 “이 시간으로 정해도 괜찮다”고 판단하는 일이다. 게다가 사람이 늘수록 모두에게 완벽한 시간은 급격히 사라져, 결국 완벽이 아니라 ‘가장 덜 무리한’ 하나를 근거를 갖고 골라야 한다. 외근처럼 절대 불가능한 시간, 점심 직후처럼 되도록 피하고 싶은 선호, 필수/선택 참석 여부는 무게가 다르지만 기존 도구는 이를 모두 비슷한 가능/불가능 정보로 보여준다. 그래서 주최자는 후보를 봐도 누가 반드시 안 되는지, 누가 그냥 아쉬운지, 미응답자를 기다려야 하는지 알기 어렵다. 결국 다시 묻거나 감으로 결정하게 되고, 회의 확정은 늦어지며 누군가의 불편은 보이지 않게 된다.</p>
-        <span class="cnt">상태: 제출 후보 · 700자 이내</span>
-      </div>
-      <div class="qbox reveal">
-        <div class="q"><span class="qn">Q2.</span><h3>그 문제를 어떻게 해결했나?</h3></div>
-        <p class="a">해결은 ‘입력은 가장 가볍게, 판단은 가장 명확하게’ 설계했다. 주최자는 회의 길이와 범위, 필수/선택 참석자를 정해 링크를 공유한다. 참여자는 명단에서 본인 이름을 고르고 날짜 그리드에서 안 되는 시간만 칠한다. 이때 절대 불가와 되도록 피함을 분리해 입력받고, 선호 정보는 익명으로만 집계한다. 시스템은 회의 길이만큼 연속으로 가능한 블록을 찾아 필수 전원 가능 여부, 선택 참석 가능 인원, 선호 충돌 수, 미응답자를 함께 계산한다. 주최자에게는 후보 목록보다 먼저 하나의 추천 시간과 그 이유를 보여준다. 모두 응답하지 않아도 현재 정보로 추천을 볼 수 있고, 필요한 경우 결과를 바꿀 사람에게만 조정을 요청한다.</p>
-        <span class="cnt">상태: 제출 후보 · 700자 이내</span>
-      </div>
-      <div class="qbox reveal">
-        <div class="q"><span class="qn">Q3.</span><h3>왜 이 방식으로 설계했나?</h3></div>
-        <p class="a">이 방식은 일정 조율을 ‘투표’가 아니라 ‘판단을 돕는 의사결정’으로 봤기 때문에 선택했다. Doodle·When2Meet처럼 가능 시간을 모으는 방식은 입력은 쉽지만, 마지막 해석을 주최자에게 남긴다. 반대로 캘린더 자동 매칭은 모두가 캘린더를 정확히 관리해야 작동해 부담이 참여자에게 옮겨간다. 그래서 실제 날짜 기반의 가벼운 입력을 쓰되, 결과 화면에서는 시스템이 필수/선택/선호/미응답을 구분해 추천 이유를 설명하게 했다. 단일 추천은 주최자의 인지 부담을 줄이고, 근거와 다른 후보는 열어 통제감을 지킨다. 선호를 익명 집계한 이유는 관계 부담 없이 솔직히 표시해야 더 좋은 시간이 나오기 때문이다.</p>
-        <span class="cnt">상태: 제출 후보 · 700자 이내</span>
-      </div>
-    </div>
-    <div class="cta-final reveal">
-      <a class="btn btn-primary" id="demoBtn" href="https://github.com/JJongW/Toss_Product_Design_Challenge" target="_blank" rel="noopener">프로토타입 코드 보기 →</a>
-    </div>
-  </section>
 
   <!-- ===================== SOURCES ===================== -->
   <section class="block wrap" id="sources">
