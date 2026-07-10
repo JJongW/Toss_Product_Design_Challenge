@@ -328,8 +328,8 @@
   .screen[data-screen="5"].on .wkstrip .wd.pick .wn { color: var(--screen-ink); font-weight: 800; }
 
   /* scene 6 — 확정 체크가 팝업되는 것처럼 */
-  .screen[data-screen="6"] .confirmed .chk { transform: scale(0); }
-  .screen[data-screen="6"].on .confirmed .chk { animation: pop .5s .55s both; }
+  .screen[data-screen="7"] .confirmed .chk { transform: scale(0); }
+  .screen[data-screen="7"].on .confirmed .chk { animation: pop .5s .55s both; }
 
   @media (prefers-reduced-motion: reduce) {
     /* 모션 없이도 최종 상태(선택/칠해짐/채워짐/확정)는 그대로 보이게 */
@@ -459,8 +459,25 @@
             <div class="a a6 btn-fill">이 시간으로 제안하기</div>
           </div>
 
-          <!-- Screen 6 -->
+          <!-- Screen 6 · 엣지: 필수 슬롯이 없을 때 -->
           <div class="screen" data-screen="6">
+            <div class="sbar"><span>9:41</span><span>주최자</span></div>
+            <div class="a a1"><div class="stitle">완벽한 시간이 없을 땐</div><div class="ssub">필수 4명이 모두 되는 1시간이 없어요. 강제 대신 길을 열어요.</div></div>
+            <div class="a a2 ask" style="margin-top:12px">
+              <div class="tag" style="color:var(--no)">막힌 이유 · 하드</div>
+              <div class="q">수 14:00 — 태호님 외근</div>
+              <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+                <span class="pill" style="background:var(--no-bg);border-color:transparent;color:#a3382f">태호 · 필수 · 절대 불가</span>
+              </div>
+            </div>
+            <div class="a a4 flabel" style="margin:14px 0 7px">막히면 이렇게 풉니다</div>
+            <div class="a a5 btn-line" style="margin-top:0">태호님께 조정을 정중히 요청하기</div>
+            <div class="a a6 btn-line">이번 회의는 태호를 ‘선택 참석’으로 두기</div>
+            <div class="a a6 info-banner">누구에게도 강제하지 않아요. 당사자가 스스로 고칠 기회를 줍니다.</div>
+          </div>
+
+          <!-- Screen 7 · 알림 · 확정 -->
+          <div class="screen" data-screen="7">
             <div class="sbar"><span>9:41</span><span>주최자</span></div>
             <div class="a a1"><div class="stitle">한 사람만 확인하면 돼요</div><div class="ssub">결과를 바꿀 수 있는 분에게만 물어봐요.</div></div>
             <div class="a a2 ask" style="margin-top:12px">
@@ -498,9 +515,13 @@
       <div class="anno sl" data-anno="5" style="top:18%"><span class="k">왜 · 단일 추천</span><h4>나열이 아니라 하나</h4><p>주최자의 진짜 문제는 ‘정해도 되는지 확신이 없음’. 그래서 시스템이 대신 계산해 <b style="color:var(--ink)">하나</b>를 제안하고 근거를 붙입니다.</p><span class="zen">Yugen — 결론만, 근거는 접어둔다</span></div>
       <div class="anno sr sec" data-anno="5" style="top:56%"><span class="k">왜 · 익명 4색</span><h4>아쉬움은 익명으로</h4><p>소프트 선호는 익명 집계, 외근 같은 하드 팩트만 실명. 눈치 없이 ‘아쉽다’고 말할 창구예요.</p><span class="zen">Shizen — 알고리즘은 숨긴다</span></div>
 
-      <!-- step 6 -->
-      <div class="anno sr" data-anno="6" style="top:20%"><span class="k">왜 · 외과적 알림</span><h4>결과 바꿀 사람에게만</h4><p>답이 정해진 사람은 안 건드려요. 필요한 한 명에게만 원탭으로 물어 소란을 만들지 않습니다.</p><span class="zen">Seijaku — 바쁜 중의 고요함</span></div>
-      <div class="anno sl sec" data-anno="6" style="top:58%"><span class="k">왜 · 주최자 확정</span><h4>자동 확정을 피한다</h4><p>회의 시간은 되돌리기 비싼 결정. 마감은 자동 확정이 아니라 주최자에게 결정을 요청하는 트리거로만 씁니다.</p></div>
+      <!-- step 6 · 엣지 -->
+      <div class="anno sl" data-anno="6" style="top:17%"><span class="k">왜 · 강제 대신 요청</span><h4>완벽한 슬롯이 없을 때</h4><p>필수 인원이 겹치면 임의로 밀어붙이지 않아요. ‘조정 요청’ 또는 ‘선택 참석으로 전환’ 두 길을 열어 <b style="color:var(--ink)">당사자가 스스로 고치게</b> 합니다.</p><span class="zen">강제 스케줄링이 아니라 투명한 조정</span></div>
+      <div class="anno sr sec" data-anno="6" style="top:55%"><span class="k">왜 · 두 갈래</span><h4>사람 vs 규칙</h4><p>사람을 바꿀지(조정 요청), 조건을 바꿀지(선택 제외)를 주최자가 고른다 — 막다른 길을 만들지 않는다.</p></div>
+
+      <!-- step 7 -->
+      <div class="anno sr" data-anno="7" style="top:20%"><span class="k">왜 · 외과적 알림</span><h4>결과 바꿀 사람에게만</h4><p>답이 정해진 사람은 안 건드려요. 필요한 한 명에게만 원탭으로 물어 소란을 만들지 않습니다.</p><span class="zen">Seijaku — 바쁜 중의 고요함</span></div>
+      <div class="anno sl sec" data-anno="7" style="top:58%"><span class="k">왜 · 주최자 확정</span><h4>자동 확정을 피한다</h4><p>회의 시간은 되돌리기 비싼 결정. 마감은 자동 확정이 아니라 주최자에게 결정을 요청하는 트리거로만 씁니다.</p></div>
     </div>
 
     <!-- invisible scroll sentinels -->
@@ -511,6 +532,7 @@
       <div class="trig" data-step="4"></div>
       <div class="trig" data-step="5"></div>
       <div class="trig" data-step="6"></div>
+      <div class="trig" data-step="7"></div>
     </div>
   </div>
 
@@ -524,7 +546,7 @@
     <div class="qa">
       <div class="qbox reveal">
         <div class="q"><span class="qn">Q1.</span><h3>어떤 문제를 발견했고, 왜 문제인가?</h3></div>
-        <p class="a">6명이 다음 주 안에 1시간 회의를 잡을 때 주최자가 겪는 가장 큰 어려움은 빈 시간을 모으는 것이 아니라, 서로 다른 조건을 해석해 “이 시간으로 정해도 괜찮다”고 판단하는 일이다. 외근처럼 절대 불가능한 시간, 점심 직후처럼 되도록 피하고 싶은 선호, 필수/선택 참석 여부는 무게가 다르지만 기존 도구는 이를 모두 비슷한 가능/불가능 정보로 보여준다. 그래서 주최자는 후보를 봐도 누가 반드시 안 되는지, 누가 그냥 아쉬운지, 미응답자를 기다려야 하는지 알기 어렵다. 결국 다시 묻거나 감으로 결정하게 되고, 회의 확정은 늦어지며 누군가의 불편은 보이지 않게 된다.</p>
+        <p class="a">6명이 다음 주 안에 1시간 회의를 잡을 때 주최자가 겪는 가장 큰 어려움은 빈 시간을 모으는 것이 아니라, 서로 다른 조건을 해석해 “이 시간으로 정해도 괜찮다”고 판단하는 일이다. 게다가 사람이 늘수록 모두에게 완벽한 시간은 급격히 사라져, 결국 완벽이 아니라 ‘가장 덜 무리한’ 하나를 근거를 갖고 골라야 한다. 외근처럼 절대 불가능한 시간, 점심 직후처럼 되도록 피하고 싶은 선호, 필수/선택 참석 여부는 무게가 다르지만 기존 도구는 이를 모두 비슷한 가능/불가능 정보로 보여준다. 그래서 주최자는 후보를 봐도 누가 반드시 안 되는지, 누가 그냥 아쉬운지, 미응답자를 기다려야 하는지 알기 어렵다. 결국 다시 묻거나 감으로 결정하게 되고, 회의 확정은 늦어지며 누군가의 불편은 보이지 않게 된다.</p>
         <span class="cnt">상태: 제출 후보 · 700자 이내</span>
       </div>
       <div class="qbox reveal">
@@ -571,8 +593,8 @@
 <script>
 (function () {
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var TOTAL = 6;
-  var names = { 1:["주최자","회의 만들기"], 2:["참여자","본인 선택"], 3:["참여자","안 되는 시간 칠하기"], 4:["주최자","참여 현황"], 5:["주최자","단일 추천"], 6:["주최자","알림 · 확정"] };
+  var TOTAL = 7;
+  var names = { 1:["주최자","회의 만들기"], 2:["참여자","본인 선택"], 3:["참여자","안 되는 시간 칠하기"], 4:["주최자","참여 현황"], 5:["주최자","단일 추천"], 6:["주최자","막힐 때 · 조정 요청"], 7:["주최자","알림 · 확정"] };
   var screens = document.querySelectorAll(".screen");
   var annos = document.querySelectorAll(".anno");
   var stStep = document.getElementById("stStep"), stName = document.getElementById("stName"), stWho = document.getElementById("stWho");
