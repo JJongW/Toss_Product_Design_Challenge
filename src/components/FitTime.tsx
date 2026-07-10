@@ -48,9 +48,12 @@ interface Draft {
 }
 
 const DEFAULT_DRAFT: Draft[] = [
-  { name: "김PO", required: true },
-  { name: "이팀장", required: true },
-  { name: "나", required: false },
+  { name: "이가영", required: true },
+  { name: "윤지은", required: true },
+  { name: "박은주", required: true },
+  { name: "정지훈", required: true },
+  { name: "최인영", required: false },
+  { name: "준", required: false },
 ];
 
 const MIN_PARTICIPANTS = 2;
@@ -421,7 +424,7 @@ export default function FitTime() {
     if (screen === "ask" || screen === "notice")
       return { text: "참여자 · " + overrideTarget, cls: "role-user" };
     if (screen === "done") return { text: "모두에게", cls: "role-org" };
-    return { text: "조직자 · 나", cls: "role-org" };
+    return { text: "주최자 · 나", cls: "role-org" };
   }
 
   function dots() {
@@ -517,7 +520,7 @@ export default function FitTime() {
           핏타임
         </div>
         <div className="t-body" style={{ textAlign: "center", marginTop: 10 }}>
-          팀 전체 일정, 안 되는 시간만 칠하면 끝나요
+          6명의 조건을 모아, 정해도 되는 근거까지 보여줘요
         </div>
         <button
           className="choice accent"
@@ -527,7 +530,7 @@ export default function FitTime() {
           }}
         >
           <div className="ct">회의 만들기</div>
-          <div className="cs">기간을 정하고 초대코드를 받아요 · 조직자</div>
+          <div className="cs">필수 참석자와 범위를 정해요 · 주최자</div>
         </button>
         <button
           className="choice"
@@ -536,8 +539,8 @@ export default function FitTime() {
             go("join");
           }}
         >
-          <div className="ct">초대코드로 참여</div>
-          <div className="cs">안 되는 시간만 칠해요 · 참여자</div>
+          <div className="ct">링크로 참여</div>
+          <div className="cs">명단에서 나를 고르고 안 되는 시간만 칠해요</div>
         </button>
       </div>
     );
@@ -545,7 +548,11 @@ export default function FitTime() {
     const validCount = draft.filter((d) => d.name.trim().length > 0).length;
     body = (
       <>
-        <div className="t-title">새 회의</div>
+        <div className="t-title">회의 기준 만들기</div>
+        <div className="t-body" style={{ marginTop: 8 }}>
+          주최자가 판단해야 할 조건을 먼저 정해요. 필수와 선택을 나누면 추천의
+          기준이 분명해져요.
+        </div>
         <div style={{ marginTop: 12 }}>
           <div className="field">
             <span className="lab">제목</span>
@@ -637,7 +644,7 @@ export default function FitTime() {
           )}
         </div>
         <div className="section-label">
-          누가 오나요? 필수 / 선택을 정해요 ({validCount}명)
+          참석자와 중요도를 정해요 ({validCount}명)
         </div>
         <div className="card">
           {draft.map((p, i) => (
@@ -708,7 +715,7 @@ export default function FitTime() {
           ＋ 참여자 추가
         </button>
         <div className="hint">
-          필수를 늘리면 되는 시간이 줄어요. 인원은 2명부터 몇 명이든 돼요.
+          필수는 반드시 맞추고, 선택은 좋은 후보를 고르는 근거로 써요.
           {code && (
             <>
               <br />
@@ -721,7 +728,7 @@ export default function FitTime() {
     );
     cta = (
       <button className="btn btn-primary" disabled={busy} onClick={handleCreate}>
-        {code ? "변경사항 저장하고 계속" : "초대코드 만들기"}
+        {code ? "변경사항 저장하고 계속" : "공유 링크 만들기"}
       </button>
     );
   } else if (screen === "invite") {
@@ -730,12 +737,13 @@ export default function FitTime() {
     const pct = total ? Math.round((reg / total) * 100) : 0;
     body = (
       <>
-        <div className="t-title">팀원을 초대하세요</div>
+        <div className="t-title">참여 링크를 공유하세요</div>
         <div className="t-body" style={{ marginTop: 8 }}>
-          이 코드를 팀 단톡방에 공유하면, 각자 안 되는 시간을 비공개로 칠해요.
+          링크를 보내면 팀원은 본인 이름을 고르고, 안 되는 시간만 비공개로
+          표시해요.
         </div>
         <div className="token">
-          <div className="t-caption">초대 코드</div>
+          <div className="t-caption">참여 코드 · 보조 입력용</div>
           <div className="code">{code}</div>
         </div>
         {health && !health.kv && (
@@ -813,7 +821,7 @@ export default function FitTime() {
         >
           코드만 복사 ({code})
         </button>
-        <div className="section-label">참여 현황</div>
+        <div className="section-label">판단에 필요한 응답 현황</div>
         <div className="card-flat">
           <div className="status">
             <b>
@@ -823,22 +831,11 @@ export default function FitTime() {
               <i style={{ width: pct + "%" }} />
             </div>
           </div>
-          <div
-            style={{
-              marginTop: 12,
-              display: "flex",
-              flexDirection: "column",
-              gap: 8,
-            }}
-          >
+          <div className="participant-stack">
             {summary?.participants.map((p) => (
               <div
                 key={p.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
+                className={"participant-row" + (p.registered ? " done" : "")}
               >
                 <span>
                   {p.name}
@@ -848,13 +845,7 @@ export default function FitTime() {
                     {p.required ? "필수" : "선택"}
                   </span>
                 </span>
-                <span
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 600,
-                    color: p.registered ? "#1b9e57" : "#b0b4bb",
-                  }}
-                >
+                <span className="participant-state">
                   {p.registered ? "등록함 ✓" : "대기 중"}
                 </span>
               </div>
@@ -907,7 +898,7 @@ export default function FitTime() {
           맞춰보고 있어요
         </div>
         <div className="t-body" style={{ marginTop: 8 }}>
-          {range.label} 안에서 · 필수·선호·공정까지 함께 계산 중
+          {range.label} 안에서 · 필수·선호·미응답까지 함께 계산 중
         </div>
       </div>
     );
@@ -976,21 +967,35 @@ export default function FitTime() {
             {rec.meeting.registeredCount}명 응답 · 미응답돼도 추천은 나와요
           </div>
           <div className="card hero">
-            <div className="tag">{hardReq.length ? "선택한 시간" : "추천"}</div>
+            <div className="tag">{hardReq.length ? "선택한 시간" : "추천 시간"}</div>
             <div className="when">{labelWithBreak(e.label)}</div>
-            <div className="stat">{reqLine}</div>
-            <div className="stat">
-              선택 {e.optionalTotal}명 중 <b>{e.optionalOk}명</b> 가능
-            </div>
-            {e.softCount > 0 ? (
-              <>
-                <div className="stat">
-                  아쉬운 분 <b>{e.softCount}명</b>
+            <div className="evidence-stack" aria-label="추천 근거">
+              <div className="evidence-item primary">
+                <span>필수 참석</span>
+                <div className="evidence-value">{reqLine}</div>
+              </div>
+              <div className="evidence-item">
+                <span>선택 참석</span>
+                <div className="evidence-value">
+                  {e.optionalTotal}명 중 {e.optionalOk}명 가능
                 </div>
-                <div className="anon-cap">누구인지·이유는 비공개예요</div>
-              </>
-            ) : hardReq.length ? null : (
-              <div className="stat">모두에게 편한 시간이에요</div>
+              </div>
+              {e.softCount > 0 ? (
+                <div className="evidence-item soft">
+                  <span>선호 충돌</span>
+                  <div className="evidence-value">
+                    아쉬운 분 {e.softCount}명 · 익명 집계
+                  </div>
+                </div>
+              ) : hardReq.length ? null : (
+                <div className="evidence-item good">
+                  <span>선호 충돌</span>
+                  <div className="evidence-value">아쉬운 사람이 없어요</div>
+                </div>
+              )}
+            </div>
+            {e.softCount > 0 && (
+              <div className="anon-cap">누구인지·이유는 비공개예요</div>
             )}
           </div>
           {unk.length > 0 && (
@@ -1008,13 +1013,12 @@ export default function FitTime() {
           ) : (
             <div className="card-flat" style={{ marginTop: 12 }}>
               <div className="t-caption" style={{ marginBottom: 6 }}>
-                왜 이 시간?
+                정하는 근거
               </div>
-              <div className="t-body">· 필수 전원이 가능한 시간 중에서</div>
-              <div className="t-body">
-                ·{" "}
+              <div className="t-body">필수 전원이 가능한 시간 중에서</div>
+              <div className="t-body" style={{ marginTop: 4 }}>
                 {e.softCount > 0
-                  ? "아쉬운 사람이 가장 적고, 한 사람에게 몰리지 않아요"
+                  ? "아쉬운 사람이 가장 적은 후보예요"
                   : "안 되는 사람이 없어요"}
               </div>
             </div>
@@ -1101,7 +1105,7 @@ export default function FitTime() {
             }
           }}
         >
-          이 시간으로 정하기
+          이 시간으로 제안하기
         </button>
       );
     }
@@ -1146,7 +1150,7 @@ export default function FitTime() {
     cta = (
       <>
         <button className="btn btn-primary" onClick={() => go("ask")}>
-          {t}님께 조정 부탁하고 정하기
+          {t}님께 조정 부탁하고 제안하기
         </button>
         <button
           className="btn-link"
@@ -1307,7 +1311,7 @@ export default function FitTime() {
           className="t-body"
           style={{ textAlign: "center", margin: "8px 0 20px" }}
         >
-          초대 코드를 넣고, 명단에서 <b>본인 이름</b>을 골라주세요
+          참여 코드를 넣고, 명단에서 <b>본인 이름</b>을 골라주세요
         </div>
         <input
           className="codein"
@@ -1354,7 +1358,7 @@ export default function FitTime() {
               })}
             </div>
             <div className="hint">
-              찾는 이름이 없으면 조직자에게 명단 추가를 요청하세요
+              찾는 이름이 없으면 주최자에게 명단 추가를 요청하세요
               {roster.participants.some((p) => p.registered)
                 ? " · ✓는 이미 제출한 사람(다시 골라 수정 가능)"
                 : ""}

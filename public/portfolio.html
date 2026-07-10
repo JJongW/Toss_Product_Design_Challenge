@@ -1,0 +1,552 @@
+<title>핏타임 — 6명이 회의 잡는 전체 흐름</title>
+<style>
+  /* ===== Committed identity: Dark Gray #171717 × Spring Green #21F1A8 × Beige #F5EFE0 ===== */
+  :root {
+    --paper: #0F0F0F;
+    --surface: #171717;
+    --surface-2: #1C1C1C;
+    --screen: #FBF7EC;        /* phone screen (beige paper) */
+    --screen-ink: #1A1A17;
+    --screen-muted: #7C7768;
+    --screen-line: #E7E0CE;
+    --ink: #F5EFE0;
+    --ink-soft: #CFC8B7;
+    --muted: #948D7D;
+    --faint: #635E52;
+    --hairline: #29271F;
+    --hairline-strong: #3A362D;
+    --accent: #21F1A8;
+    --accent-soft: #10241C;
+    --accent-ink: #08120D;
+    --beige: #F5EFE0;
+    --ok: #16B57E;
+    --ok-bg: #DFF4EB;
+    --soft: #E0A31C;
+    --soft-bg: #FAEFD3;
+    --unknown: #B7B2A4;
+    --unknown-bg: #EFEADB;
+    --no: #E5564E;
+    --no-bg: #FBE3E1;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 24px 60px -20px rgba(0,0,0,.75);
+    --font-sans: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Menlo", monospace;
+    --maxw: 1180px;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .page {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+    letter-spacing: 0;
+    overflow-x: hidden;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+  .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  h1, h2, h3, h4 { margin: 0; text-wrap: balance; letter-spacing: 0; line-height: 1.14; }
+  a { color: inherit; }
+
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--accent); font-weight: 600;
+    display: inline-flex; align-items: center; gap: 9px;
+  }
+  .eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--accent); }
+
+  /* ===================== HERO ===================== */
+  .hero { padding: 92px 0 56px; text-align: center; }
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 800; margin: 22px auto 0; max-width: 16ch;
+  }
+  .hero h1 .g { color: var(--accent); }
+  .hero p {
+    font-size: clamp(1.05rem, 1.7vw, 1.24rem); color: var(--ink-soft);
+    margin: 22px auto 0; max-width: 46ch;
+  }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 30px; }
+  .chip {
+    font-family: var(--font-mono); font-size: 12.5px; padding: 7px 12px;
+    border: 1px solid var(--hairline-strong); border-radius: 999px; color: var(--muted); background: var(--surface);
+  }
+  .scrollcue { margin-top: 44px; display: inline-flex; flex-direction: column; align-items: center; gap: 10px; color: var(--faint); font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .14em; }
+  .scrollcue .bar { width: 1px; height: 42px; background: linear-gradient(var(--accent), transparent); animation: cue 1.8s ease-in-out infinite; }
+  @keyframes cue { 0%,100% { opacity:.3; transform: scaleY(.6);} 50% { opacity:1; transform: scaleY(1);} }
+
+  /* ===================== SCROLLY WALKTHROUGH ===================== */
+  .scrolly { position: relative; }
+  .stage {
+    position: sticky; top: 0; height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .stage-label {
+    position: absolute; top: 26px; left: 50%; transform: translateX(-50%);
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--faint); display: flex; align-items: center; gap: 10px; z-index: 5; white-space: nowrap;
+  }
+  .stage-label b { color: var(--accent); font-weight: 600; }
+  .stage-label .who { color: var(--ink-soft); font-weight: 600; }
+
+  /* progress dots */
+  .progress { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 6; }
+  .progress i { width: 8px; height: 8px; border-radius: 50%; background: var(--hairline-strong); transition: all .3s ease; }
+  .progress i.on { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+
+  /* ---- phone ---- */
+  .phone {
+    position: relative; width: 306px; height: 636px; flex: none;
+    background: #0A0A0A; border-radius: 42px; padding: 11px;
+    box-shadow: var(--shadow), 0 0 0 1px var(--hairline-strong);
+    z-index: 4;
+  }
+  .phone::before { /* notch */
+    content: ""; position: absolute; top: 11px; left: 50%; transform: translateX(-50%);
+    width: 116px; height: 26px; background: #0A0A0A; border-radius: 0 0 16px 16px; z-index: 3;
+  }
+  .screenframe { position: relative; width: 100%; height: 100%; border-radius: 32px; overflow: hidden; background: var(--screen); }
+  .screen {
+    position: absolute; inset: 0; padding: 46px 18px 18px; color: var(--screen-ink);
+    display: flex; flex-direction: column;
+    opacity: 0; transform: scale(.98) translateY(10px); pointer-events: none;
+    transition: opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1);
+  }
+  .screen.on { opacity: 1; transform: none; pointer-events: auto; }
+  .sbar { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10.5px; color: var(--screen-muted); position: absolute; top: 16px; left: 20px; right: 20px; }
+  .stitle { font-size: 1.18rem; font-weight: 800; letter-spacing: 0; color: var(--screen-ink); }
+  .ssub { font-size: 0.78rem; color: var(--screen-muted); margin-top: 5px; line-height: 1.5; }
+
+  /* screen animated bits */
+  .screen .a { opacity: 0; transform: translateY(9px); }
+  .screen.on .a { opacity: 1; transform: none; transition: opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1); }
+  .screen.on .a1 { transition-delay: .10s; } .screen.on .a2 { transition-delay: .18s; }
+  .screen.on .a3 { transition-delay: .26s; } .screen.on .a4 { transition-delay: .34s; }
+  .screen.on .a5 { transition-delay: .42s; } .screen.on .a6 { transition-delay: .50s; }
+
+  /* generic screen UI atoms (light/beige) */
+  .flabel { font-size: 0.66rem; font-family: var(--font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--screen-muted); margin: 15px 0 7px; }
+  .field { background: #fff; border: 1px solid var(--screen-line); border-radius: 12px; padding: 12px 13px; font-size: 0.86rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+  .field .v { color: var(--screen-ink); } .field .m { color: var(--screen-muted); font-weight: 500; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pill { font-size: 0.78rem; font-weight: 700; padding: 8px 12px; border-radius: 10px; background: #fff; border: 1px solid var(--screen-line); color: var(--screen-muted); }
+  .pill.sel { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .toggle { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--screen-line); border-radius: 12px; padding: 11px 13px; font-size: 0.84rem; font-weight: 600; }
+  .sw { width: 40px; height: 24px; border-radius: 999px; background: #DDD6C5; position: relative; flex: none; transition: background .3s; }
+  .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: left .3s; }
+  .sw.on { background: var(--accent); } .sw.on::after { left: 19px; }
+  .btn-fill { margin-top: auto; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 0.9rem; text-align: center; padding: 14px; border-radius: 14px; }
+  .btn-line { margin-top: 10px; border: 1px solid var(--screen-line); color: var(--screen-ink); font-weight: 700; font-size: 0.84rem; text-align: center; padding: 11px; border-radius: 12px; background:#fff; }
+
+  /* roster */
+  .roster { display: flex; flex-direction: column; gap: 7px; margin-top: 4px; }
+  .rrow { display: flex; align-items: center; gap: 10px; background: #fff; border: 1px solid var(--screen-line); border-radius: 11px; padding: 10px 12px; font-size: 0.86rem; font-weight: 600; }
+  .rrow .rt { font-size: 0.62rem; font-family: var(--font-mono); color: var(--screen-muted); margin-left: auto; letter-spacing: .04em; }
+  .rrow.me { border-color: var(--accent); background: var(--accent-soft); background: #EAFBF3; box-shadow: 0 0 0 1px var(--accent); }
+  .rrow .av { width: 26px; height: 26px; border-radius: 50%; background: var(--unknown-bg); color: var(--screen-muted); display: grid; place-items: center; font-size: 0.72rem; font-weight: 800; flex: none; }
+  .rrow.me .av { background: var(--accent); color: var(--accent-ink); }
+  .rrow .ck { color: var(--ok); font-weight: 900; }
+
+  /* grid paint */
+  .seg { display: flex; background: #EFE9D8; border-radius: 10px; padding: 3px; gap: 3px; }
+  .seg button { flex: 1; border: none; background: transparent; font-size: 0.74rem; font-weight: 700; padding: 7px; border-radius: 8px; color: var(--screen-muted); font-family: inherit; }
+  .seg button.on { background: #fff; color: var(--screen-ink); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  .seg button.on.hard { color: var(--no); }
+  .daytabs { display: flex; gap: 5px; margin: 11px 0 8px; }
+  .daytabs span { flex: 1; text-align: center; font-size: 0.7rem; font-weight: 700; padding: 6px 0; border-radius: 8px; color: var(--screen-muted); }
+  .daytabs span.on { background: var(--screen-ink); color: var(--beige); }
+  .pgrid { display: grid; grid-template-columns: 30px repeat(5, 1fr); gap: 4px; }
+  .pgrid .th { font-family: var(--font-mono); font-size: 8.5px; color: var(--screen-muted); display: flex; align-items: center; justify-content: flex-end; padding-right: 3px; }
+  .pcell { aspect-ratio: 1/.82; border-radius: 5px; background: var(--ok-bg); }
+  .pcell.no { background: var(--no-bg); box-shadow: inset 0 0 0 1px rgba(229,86,78,.35); }
+  .pcell.soft { background: var(--soft-bg); box-shadow: inset 0 0 0 1px rgba(224,163,28,.35); }
+
+  /* status list */
+  .prog-line { display: flex; align-items: baseline; gap: 8px; }
+  .prog-line b { font-size: 1.8rem; font-weight: 800; color: var(--screen-ink); font-family: var(--font-mono); }
+  .prog-line span { font-size: 0.82rem; color: var(--screen-muted); }
+  .ptrack { height: 7px; border-radius: 999px; background: #EAE3D2; overflow: hidden; margin: 9px 0 3px; }
+  .ptrack i { display: block; height: 100%; width: 66%; background: var(--accent); border-radius: 999px; }
+  .stat-row { display: flex; align-items: center; gap: 9px; font-size: 0.83rem; font-weight: 600; padding: 8px 2px; border-bottom: 1px solid var(--screen-line); }
+  .stat-row .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .stat-row .dot.done { background: var(--ok); } .stat-row .dot.wait { background: var(--unknown); }
+  .stat-row .tail { margin-left: auto; font-size: 0.66rem; font-family: var(--font-mono); color: var(--screen-muted); }
+  .info-banner { background: var(--accent-soft); background: #EAFBF3; border: 1px solid var(--accent); border-radius: 12px; padding: 11px 12px; font-size: 0.78rem; color: #0C6B48; font-weight: 600; margin-top: 12px; }
+
+  /* recommendation */
+  .rec-card { background: var(--screen-ink); color: var(--beige); border-radius: 16px; padding: 16px; }
+  .rec-card .rk { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+  .rec-card .rday { font-size: 1.5rem; font-weight: 800; margin-top: 7px; letter-spacing: 0; }
+  .rec-card .rmeta { font-size: 0.76rem; color: #C9C3B4; margin-top: 6px; }
+  .rec-card .rmeta b { color: var(--accent); }
+  .wkstrip { display: grid; grid-template-columns: repeat(5,1fr); gap: 5px; margin-top: 13px; }
+  .wkstrip .wd { text-align: center; }
+  .wkstrip .wn { font-size: 0.6rem; font-family: var(--font-mono); color: var(--screen-muted); margin-bottom: 4px; }
+  .wkstrip .wc { height: 34px; border-radius: 7px; background: var(--ok-bg); }
+  .wkstrip .wd.pick .wc { background: var(--accent); box-shadow: 0 0 0 2px var(--accent-ink); }
+  .wkstrip .wd.pick .wn { color: var(--screen-ink); font-weight: 800; }
+  .wkstrip .wc.soft { background: var(--soft-bg); }
+  .legend4 { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+  .legend4 span { display: inline-flex; align-items: center; gap: 5px; font-size: 0.64rem; color: var(--screen-muted); font-family: var(--font-mono); }
+  .legend4 i { width: 9px; height: 9px; border-radius: 3px; }
+
+  /* ask / confirm */
+  .ask { background: #fff; border: 1px solid var(--screen-line); border-radius: 15px; padding: 15px; }
+  .ask .q { font-size: 0.92rem; font-weight: 700; color: var(--screen-ink); }
+  .ask .tag { font-size: 0.62rem; font-family: var(--font-mono); color: var(--soft); margin-bottom: 8px; letter-spacing: .04em; }
+  .ask .btns { display: flex; gap: 8px; margin-top: 13px; }
+  .ask .btns div { flex: 1; text-align: center; font-size: 0.82rem; font-weight: 700; padding: 10px; border-radius: 11px; }
+  .ask .btns .y { background: var(--accent); color: var(--accent-ink); }
+  .ask .btns .n { background: #F0EADB; color: var(--screen-muted); }
+  .confirmed { margin-top: 13px; background: #EAFBF3; border: 1px solid var(--accent); border-radius: 15px; padding: 16px; text-align: center; }
+  .confirmed .big { font-size: 1.05rem; font-weight: 800; color: #0C6B48; }
+  .confirmed .chk { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-size: 1.2rem; font-weight: 900; margin: 0 auto 9px; }
+  .confirmed .sub { font-size: 0.72rem; color: var(--screen-muted); margin-top: 5px; }
+
+  /* ---- annotations (말풍선) ---- */
+  .anno {
+    position: absolute; width: 244px; z-index: 5;
+    background: var(--surface); border: 1px solid var(--hairline-strong); border-radius: 16px;
+    padding: 15px 16px; box-shadow: var(--shadow);
+    opacity: 0; transform: translateY(12px); pointer-events: none;
+    transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1);
+  }
+  .anno.on { opacity: 1; transform: none; }
+  .anno .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  .anno h4 { font-size: 0.98rem; font-weight: 700; margin-top: 8px; color: var(--ink); }
+  .anno p { font-size: 0.83rem; color: var(--ink-soft); margin: 7px 0 0; line-height: 1.62; }
+  .anno .zen { display: inline-block; margin-top: 9px; font-family: var(--font-mono); font-size: 10px; color: var(--faint); border-top: 1px solid var(--hairline); padding-top: 8px; }
+  .anno.sl { right: calc(50% + 176px); }
+  .anno.sr { left: calc(50% + 176px); }
+  /* pointer triangles */
+  .anno.sl::after, .anno.sr::after { content: ""; position: absolute; top: 28px; width: 12px; height: 12px; background: var(--surface); border: 1px solid var(--hairline-strong); transform: rotate(45deg); }
+  .anno.sl::after { right: -7px; border-left: none; border-bottom: none; }
+  .anno.sr::after { left: -7px; border-right: none; border-top: none; }
+
+  /* scroll triggers (invisible sentinels) */
+  .triggers { position: relative; z-index: 0; }
+  .trig { height: 100vh; }
+
+  /* ===================== CLOSING ===================== */
+  section.block { padding: 66px 0; border-top: 1px solid var(--hairline); }
+  .sec-num { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; color: var(--accent); font-weight: 600; }
+  .sec-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); font-weight: 800; margin-top: 13px; max-width: 24ch; }
+  .sec-head .lede { font-size: clamp(1.02rem, 1.5vw, 1.14rem); color: var(--ink-soft); margin-top: 15px; max-width: 52ch; }
+
+  .qa { margin-top: 34px; display: flex; flex-direction: column; gap: 15px; }
+  .qbox { background: var(--surface); border: 1px solid var(--hairline); border-radius: 16px; padding: 24px 26px; }
+  .qbox .q { display: flex; gap: 11px; align-items: baseline; }
+  .qbox .qn { font-family: var(--font-mono); font-weight: 700; color: var(--accent); font-size: 0.92rem; }
+  .qbox h3 { font-size: 1.04rem; font-weight: 700; }
+  .qbox .a { font-size: 0.94rem; color: var(--ink-soft); margin: 13px 0 0; line-height: 1.72; }
+  .qbox .a b { color: var(--ink); font-weight: 700; }
+  .qbox .cnt { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-top: 13px; display: block; }
+
+  .sources { margin-top: 30px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 26px; }
+  .sources a { display: flex; gap: 10px; align-items: baseline; font-size: 0.84rem; color: var(--muted); text-decoration: none; padding: 8px 0; border-bottom: 1px solid var(--hairline); }
+  .sources a:hover { color: var(--accent); }
+  .sources a .sn { font-family: var(--font-mono); font-size: 11px; color: var(--faint); flex: none; }
+
+  .btn { display: inline-flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 700; padding: 14px 22px; border-radius: 13px; text-decoration: none; }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .cta-final { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+  footer.foot { padding: 46px 0 66px; border-top: 1px solid var(--hairline); color: var(--faint); font-size: 0.85rem; }
+  .foot .fr { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  .foot .fmono { font-family: var(--font-mono); }
+
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, .a, .anno, .screen, .reveal { transition: none !important; animation: none !important; }
+    .reveal { opacity: 1 !important; transform: none !important; }
+    .screen .a { opacity: 1 !important; transform: none !important; }
+  }
+
+  /* ---- responsive: below 1024, annotations move under phone as caption ---- */
+  @media (max-width: 1024px) {
+    .anno { position: fixed; left: 14px; right: 14px; bottom: 18px; top: auto !important; width: auto; }
+    .anno.sl, .anno.sr { left: 14px; right: 14px; }
+    .anno.sl::after, .anno.sr::after { display: none; }
+    .anno.sec { display: none; }
+    .progress { display: none; }
+    .phone { transform: scale(.92); }
+  }
+  @media (max-width: 560px) {
+    .phone { width: 280px; height: 582px; transform: scale(1); }
+    .sources { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="page">
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero wrap">
+    <span class="eyebrow" style="justify-content:center">Toss Product Design 2026 · 사용 흐름</span>
+    <h1>여섯 명이 회의를 잡는 <span class="g">전체 흐름</span>을 스크롤로.</h1>
+    <p>‘6명이 다음 주까지 1시간 회의를 잡는’ 상황을, 실제 서비스 <b style="color:var(--ink)">핏타임</b> 화면으로 처음 진입부터 확정까지 따라갑니다. 각 화면 옆 말풍선은 <b style="color:var(--ink)">왜 이렇게 설계했는지</b>를 설명합니다.</p>
+    <div class="hero-meta">
+      <span class="chip">필수 4 · 선택 2</span>
+      <span class="chip">다음 주 · 1시간</span>
+      <span class="chip">점심 직후 회피 · 외근 · 필수/선택 반영</span>
+    </div>
+    <div class="cta-final" style="justify-content:center;margin-top:28px">
+      <a class="btn btn-primary" href="/" target="_blank" rel="noopener">제품 직접 써보기 →</a>
+    </div>
+    <div class="scrollcue">SCROLL<div class="bar"></div></div>
+  </header>
+
+  <!-- ===================== SCROLLY ===================== -->
+  <div class="scrolly" id="scrolly">
+    <div class="stage">
+      <div class="stage-label"><span class="who" id="stWho">주최자</span> · <b><span id="stStep">01</span></b> <span id="stName">회의 만들기</span></div>
+      <div class="progress" id="dots"></div>
+
+      <!-- PHONE -->
+      <div class="phone">
+        <div class="screenframe">
+
+          <!-- Screen 1 -->
+          <div class="screen on" data-screen="1">
+            <div class="sbar"><span>9:41</span><span>핏타임</span></div>
+            <div class="a a1"><div class="stitle">회의 만들기</div><div class="ssub">언제, 얼마나 만날지만 정하면 링크가 나와요.</div></div>
+            <div class="a a2"><div class="flabel">기간</div><div class="field"><span class="v">다음 주 · 7/13–7/17</span><span class="m">주간 ▾</span></div></div>
+            <div class="a a3"><div class="toggle">주말 포함<div class="sw"></div></div></div>
+            <div class="a a4"><div class="flabel">회의 길이</div><div class="chips"><span class="pill">30분</span><span class="pill sel">1시간</span><span class="pill">1.5시간</span><span class="pill">2시간</span></div></div>
+            <div class="a a5"><div class="flabel">회의 가능 시간대</div><div class="field"><span class="v">09:00 – 18:00</span><span class="m">근무시간</span></div></div>
+            <div class="a a6 btn-fill">공유 링크 만들기</div>
+          </div>
+
+          <!-- Screen 2 -->
+          <div class="screen" data-screen="2">
+            <div class="sbar"><span>9:41</span><span>핏타임 · 링크</span></div>
+            <div class="a a1"><div class="stitle">누구세요?</div><div class="ssub">디자인팀 주간회의 · 명단에서 본인을 선택하세요.</div></div>
+            <div class="a a2 roster" style="margin-top:14px">
+              <div class="rrow me"><div class="av">지</div>지민<span class="ck">✓</span></div>
+              <div class="rrow"><div class="av">현</div>현우<span class="rt">필수</span></div>
+              <div class="rrow"><div class="av">서</div>서연<span class="rt">필수</span></div>
+              <div class="rrow"><div class="av">태</div>태호<span class="rt">필수</span></div>
+              <div class="rrow"><div class="av">민</div>민아<span class="rt">선택</span></div>
+              <div class="rrow"><div class="av">준</div>준<span class="rt">선택</span></div>
+            </div>
+            <div class="a a4 info-banner">명단에 없는 이름은 들어올 수 없어요. 중복 신원도 차단돼요.</div>
+            <div class="a a5 btn-fill">지민으로 시작하기</div>
+          </div>
+
+          <!-- Screen 3 -->
+          <div class="screen" data-screen="3">
+            <div class="sbar"><span>9:41</span><span>지민</span></div>
+            <div class="a a1"><div class="stitle">안 되는 시간만</div><div class="ssub">되는 시간을 다 고를 필요 없어요. 안 되는 칸만 칠하세요.</div></div>
+            <div class="a a2" style="margin-top:12px"><div class="seg"><button class="on hard">절대 불가</button><button>되도록 피함</button></div></div>
+            <div class="a a3 daytabs"><span>월</span><span class="on">화</span><span>수</span><span>목</span><span>금</span></div>
+            <div class="a a4 pgrid">
+              <div class="th">10</div><div class="pcell"></div><div class="pcell no"></div><div class="pcell"></div><div class="pcell"></div><div class="pcell soft"></div>
+              <div class="th">12</div><div class="pcell soft"></div><div class="pcell no"></div><div class="pcell"></div><div class="pcell"></div><div class="pcell"></div>
+              <div class="th">14</div><div class="pcell"></div><div class="pcell"></div><div class="pcell"></div><div class="pcell no"></div><div class="pcell"></div>
+              <div class="th">16</div><div class="pcell no"></div><div class="pcell"></div><div class="pcell soft"></div><div class="pcell"></div><div class="pcell"></div>
+            </div>
+            <div class="a a5 info-banner" style="color:#8a6d12;background:#FAEFD3;border-color:var(--soft)">빈 일정이 대부분이라 몇 초면 끝나요. 선호는 비공개예요.</div>
+            <div class="a a6 btn-fill">칠하기 완료</div>
+          </div>
+
+          <!-- Screen 4 -->
+          <div class="screen" data-screen="4">
+            <div class="sbar"><span>9:41</span><span>주최자</span></div>
+            <div class="a a1"><div class="stitle">판단에 필요한 응답</div></div>
+            <div class="a a2"><div class="prog-line"><b>4</b><span>/ 6명 등록</span></div><div class="ptrack"><i></i></div></div>
+            <div class="a a3" style="margin-top:8px">
+              <div class="stat-row"><span class="dot done"></span>지민<span class="tail">등록함</span></div>
+              <div class="stat-row"><span class="dot done"></span>현우<span class="tail">등록함</span></div>
+              <div class="stat-row"><span class="dot done"></span>서연<span class="tail">등록함</span></div>
+              <div class="stat-row"><span class="dot done"></span>태호<span class="tail">등록함</span></div>
+              <div class="stat-row"><span class="dot wait"></span>민아<span class="tail">대기 · 선택</span></div>
+              <div class="stat-row"><span class="dot wait"></span>준<span class="tail">대기 · 선택</span></div>
+            </div>
+            <div class="a a5 info-banner">전원을 기다리지 않아요. 지금 정보로도 추천을 볼 수 있어요.</div>
+            <div class="a a6 btn-fill">추천 시간 보기</div>
+          </div>
+
+          <!-- Screen 5 -->
+          <div class="screen" data-screen="5">
+            <div class="sbar"><span>9:41</span><span>주최자</span></div>
+            <div class="a a1"><div class="stitle">추천 시간</div></div>
+            <div class="a a2 rec-card" style="margin-top:12px">
+              <div class="rk">한 곳으로 모았어요</div>
+              <div class="rday">수 7/15 · 14:00–15:00</div>
+              <div class="rmeta">필수 4명 <b>전원 가능</b> · 아쉬운 분 <b>1명</b> · 익명</div>
+              <div class="wkstrip">
+                <div class="wd"><div class="wn">월</div><div class="wc soft"></div></div>
+                <div class="wd"><div class="wn">화</div><div class="wc"></div></div>
+                <div class="wd pick"><div class="wn">수</div><div class="wc"></div></div>
+                <div class="wd"><div class="wn">목</div><div class="wc soft"></div></div>
+                <div class="wd"><div class="wn">금</div><div class="wc"></div></div>
+              </div>
+            </div>
+            <div class="a a3 legend4">
+              <span><i style="background:var(--ok-bg)"></i>가능</span>
+              <span><i style="background:var(--soft-bg)"></i>아쉬움</span>
+              <span><i style="background:var(--unknown-bg)"></i>미응답</span>
+              <span><i style="background:var(--no-bg)"></i>불가</span>
+            </div>
+            <div class="a a5 btn-line">다른 후보 3개 · 판단 근거 펼치기 ▾</div>
+            <div class="a a6 btn-fill">이 시간으로 제안하기</div>
+          </div>
+
+          <!-- Screen 6 -->
+          <div class="screen" data-screen="6">
+            <div class="sbar"><span>9:41</span><span>주최자</span></div>
+            <div class="a a1"><div class="stitle">한 사람만 확인하면 돼요</div><div class="ssub">결과를 바꿀 수 있는 분에게만 물어봐요.</div></div>
+            <div class="a a2 ask" style="margin-top:12px">
+              <div class="tag">선택 참석 · 민아</div>
+              <div class="q">수요일 14시, 괜찮으세요?</div>
+              <div class="btns"><div class="y">괜찮아요</div><div class="n">어려워요</div></div>
+            </div>
+            <div class="a a4 confirmed">
+              <div class="chk">✓</div>
+              <div class="big">회의 확정 · 수 7/15 14:00</div>
+              <div class="sub">마감이 와도 자동 확정하지 않고, 주최자가 결정해요.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ANNOTATIONS -->
+      <!-- step 1 -->
+      <div class="anno sl" data-anno="1" style="top:20%"><span class="k">왜 · 범위부터</span><h4>추상 요일이 아니라 실제 날짜</h4><p>‘다음 주’ 같은 실제 범위를 못 정하면 회의 하나도 못 잡아요. 그래서 첫 화면부터 진짜 날짜로 시작합니다.</p><span class="zen">Datsuzoku — 히트맵 공식을 깬다</span></div>
+      <div class="anno sr sec" data-anno="1" style="top:56%"><span class="k">왜 · 주말 토글</span><h4>대부분 팀엔 불필요</h4><p>기본은 평일. 필요한 팀만 켜도록 옵션으로 숨겨 화면을 비웁니다.</p><span class="zen">Kanso — 필요한 것만 남긴다</span></div>
+
+      <!-- step 2 -->
+      <div class="anno sr" data-anno="2" style="top:24%"><span class="k">왜 · 명단에서 선택</span><h4>입력이 아니라 선택</h4><p>6명은 이미 정해진 팀이에요. 코드·이름을 타이핑하는 대신 <b style="color:var(--ink)">본인만 고르면</b> 끝 — 마찰을 없앱니다.</p><span class="zen">Kanso — 빼기</span></div>
+      <div class="anno sl sec" data-anno="2" style="top:58%"><span class="k">왜 · 로스터-락</span><h4>집계 신뢰를 지킨다</h4><p>명단 밖 이름·중복 신원(민수/김민수)을 처음부터 차단해 결과를 믿을 수 있게.</p></div>
+
+      <!-- step 3 -->
+      <div class="anno sl" data-anno="3" style="top:20%"><span class="k">왜 · 빼기식 입력</span><h4>‘안 되는 칸’만 칠한다</h4><p>일정은 대개 비어 있어요. 되는 시간을 다 고르게 하면 노동이 커집니다. 안 되는 곳만 칠하면 몇 초.</p><span class="zen">Grudin 함정 회피 · 캘린더 비의존</span></div>
+      <div class="anno sr sec" data-anno="3" style="top:56%"><span class="k">왜 · 하드/소프트</span><h4>무게가 다른 두 제약</h4><p>‘외근(절대 불가)’과 ‘점심 직후 회피(되도록 피함)’를 입력부터 분리해 나중에 뭉개지지 않게.</p></div>
+
+      <!-- step 4 -->
+      <div class="anno sr" data-anno="4" style="top:26%"><span class="k">왜 · 논블로킹</span><h4>전원 등록을 안 기다린다</h4><p>등록을 진행 조건으로 걸면 무응답이 다시 병목이 돼 결국 Doodle이 됩니다. 늘 지금 정보로 진행해요.</p><span class="zen">등록 = 정밀도 향상일 뿐</span></div>
+
+      <!-- step 5 -->
+      <div class="anno sl" data-anno="5" style="top:18%"><span class="k">왜 · 단일 추천</span><h4>나열이 아니라 하나</h4><p>주최자의 진짜 문제는 ‘정해도 되는지 확신이 없음’. 그래서 시스템이 대신 계산해 <b style="color:var(--ink)">하나</b>를 제안하고 근거를 붙입니다.</p><span class="zen">Yugen — 결론만, 근거는 접어둔다</span></div>
+      <div class="anno sr sec" data-anno="5" style="top:56%"><span class="k">왜 · 익명 4색</span><h4>아쉬움은 익명으로</h4><p>소프트 선호는 익명 집계, 외근 같은 하드 팩트만 실명. 눈치 없이 ‘아쉽다’고 말할 창구예요.</p><span class="zen">Shizen — 알고리즘은 숨긴다</span></div>
+
+      <!-- step 6 -->
+      <div class="anno sr" data-anno="6" style="top:20%"><span class="k">왜 · 외과적 알림</span><h4>결과 바꿀 사람에게만</h4><p>답이 정해진 사람은 안 건드려요. 필요한 한 명에게만 원탭으로 물어 소란을 만들지 않습니다.</p><span class="zen">Seijaku — 바쁜 중의 고요함</span></div>
+      <div class="anno sl sec" data-anno="6" style="top:58%"><span class="k">왜 · 주최자 확정</span><h4>자동 확정을 피한다</h4><p>회의 시간은 되돌리기 비싼 결정. 마감은 자동 확정이 아니라 주최자에게 결정을 요청하는 트리거로만 씁니다.</p></div>
+    </div>
+
+    <!-- invisible scroll sentinels -->
+    <div class="triggers" id="triggers">
+      <div class="trig" data-step="1"></div>
+      <div class="trig" data-step="2"></div>
+      <div class="trig" data-step="3"></div>
+      <div class="trig" data-step="4"></div>
+      <div class="trig" data-step="5"></div>
+      <div class="trig" data-step="6"></div>
+    </div>
+  </div>
+
+  <!-- ===================== CLOSING: 3 ANSWERS ===================== -->
+  <section class="block wrap" id="answers">
+    <div class="sec-head reveal">
+      <span class="sec-num">제출 답변 · Q1–Q3</span>
+      <h2>흐름을 관통하는 3가지 답</h2>
+      <p class="lede">각 700자 이내. 근거의 단일 진실 소스는 <span class="mono">docs/design-log.md</span>(설계 심의 48개 Entry 누적).</p>
+    </div>
+    <div class="qa">
+      <div class="qbox reveal">
+        <div class="q"><span class="qn">Q1.</span><h3>어떤 문제를 발견했고, 왜 문제인가?</h3></div>
+        <p class="a">6명이 다음 주 안에 1시간 회의를 잡을 때 주최자가 겪는 가장 큰 어려움은 빈 시간을 모으는 것이 아니라, 서로 다른 조건을 해석해 “이 시간으로 정해도 괜찮다”고 판단하는 일이다. 외근처럼 절대 불가능한 시간, 점심 직후처럼 되도록 피하고 싶은 선호, 필수/선택 참석 여부는 무게가 다르지만 기존 도구는 이를 모두 비슷한 가능/불가능 정보로 보여준다. 그래서 주최자는 후보를 봐도 누가 반드시 안 되는지, 누가 그냥 아쉬운지, 미응답자를 기다려야 하는지 알기 어렵다. 결국 다시 묻거나 감으로 결정하게 되고, 회의 확정은 늦어지며 누군가의 불편은 보이지 않게 된다.</p>
+        <span class="cnt">상태: 제출 후보 · 700자 이내</span>
+      </div>
+      <div class="qbox reveal">
+        <div class="q"><span class="qn">Q2.</span><h3>그 문제를 어떻게 해결했나?</h3></div>
+        <p class="a">해결은 ‘입력은 가장 가볍게, 판단은 가장 명확하게’ 설계했다. 주최자는 회의 길이와 범위, 필수/선택 참석자를 정해 링크를 공유한다. 참여자는 명단에서 본인 이름을 고르고 날짜 그리드에서 안 되는 시간만 칠한다. 이때 절대 불가와 되도록 피함을 분리해 입력받고, 선호 정보는 익명으로만 집계한다. 시스템은 회의 길이만큼 연속으로 가능한 블록을 찾아 필수 전원 가능 여부, 선택 참석 가능 인원, 선호 충돌 수, 미응답자를 함께 계산한다. 주최자에게는 후보 목록보다 먼저 하나의 추천 시간과 그 이유를 보여준다. 모두 응답하지 않아도 현재 정보로 추천을 볼 수 있고, 필요한 경우 결과를 바꿀 사람에게만 조정을 요청한다.</p>
+        <span class="cnt">상태: 제출 후보 · 700자 이내</span>
+      </div>
+      <div class="qbox reveal">
+        <div class="q"><span class="qn">Q3.</span><h3>왜 이 방식으로 설계했나?</h3></div>
+        <p class="a">이 방식은 일정 조율을 ‘투표’가 아니라 ‘판단을 돕는 의사결정’으로 봤기 때문에 선택했다. Doodle·When2Meet처럼 가능 시간을 모으는 방식은 입력은 쉽지만, 마지막 해석을 주최자에게 남긴다. 반대로 캘린더 자동 매칭은 모두가 캘린더를 정확히 관리해야 작동해 부담이 참여자에게 옮겨간다. 그래서 실제 날짜 기반의 가벼운 입력을 쓰되, 결과 화면에서는 시스템이 필수/선택/선호/미응답을 구분해 추천 이유를 설명하게 했다. 단일 추천은 주최자의 인지 부담을 줄이고, 근거와 다른 후보는 열어 통제감을 지킨다. 선호를 익명 집계한 이유는 관계 부담 없이 솔직히 표시해야 더 좋은 시간이 나오기 때문이다.</p>
+        <span class="cnt">상태: 제출 후보 · 700자 이내</span>
+      </div>
+    </div>
+    <div class="cta-final reveal">
+      <a class="btn btn-primary" id="demoBtn" href="/" target="_blank" rel="noopener">제품 직접 써보기 →</a>
+    </div>
+  </section>
+
+  <!-- ===================== SOURCES ===================== -->
+  <section class="block wrap" id="sources">
+    <div class="sec-head reveal">
+      <span class="sec-num">EVIDENCE</span>
+      <h2>근거 · 리서치 소스</h2>
+      <p class="lede">CHI/CSCW·NN/g·기존 서비스(When2Meet·Doodle·Calendly) 분석과 국내 맥락 검증을 누적. 주요 출처:</p>
+    </div>
+    <div class="sources reveal">
+      <a href="https://scitechdaily.com/a-mathematical-nightmare-new-research-explains-why-scheduling-meetings-is-so-hard/" target="_blank" rel="noopener"><span class="sn">S1</span> 스케줄링의 상전이(EPJ B) — SciTechDaily</a>
+      <a href="https://doodle.com/en/resources/blog/study-reveals-time-spent-with-scheduling/" target="_blank" rel="noopener"><span class="sn">S2</span> 조율에 드는 시간 — Doodle / ETH</a>
+      <a href="https://meetergo.com/en/magazine/when2meet" target="_blank" rel="noopener"><span class="sn">S3</span> When2Meet의 한계 — meetergo</a>
+      <a href="https://help.doodle.com/en/articles/10295132-group-poll-troubleshooting-and-faq" target="_blank" rel="noopener"><span class="sn">S4</span> 비응답자 미통지 — Doodle FAQ</a>
+      <a href="https://calendly.com/blog/is-calendly-rude" target="_blank" rel="noopener"><span class="sn">S5</span> ‘Calendly는 무례한가’ — Calendly / Fortune</a>
+      <a href="https://www.usecarly.com/blog/schedule-meetings-without-back-and-forth/" target="_blank" rel="noopener"><span class="sn">S6</span> 백앤포스 조율 비용 — Carly</a>
+    </div>
+  </section>
+
+  <footer class="foot wrap">
+    <div class="fr">
+      <span>핏타임 — Toss Product Design 2026 · 사용 흐름 워크스루</span>
+      <span class="fmono">근거: docs/design-log.md · v0.6</span>
+    </div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var TOTAL = 6;
+  var names = { 1:["주최자","회의 만들기"], 2:["참여자","본인 선택"], 3:["참여자","안 되는 시간 칠하기"], 4:["주최자","참여 현황"], 5:["주최자","단일 추천"], 6:["주최자","알림 · 확정"] };
+  var screens = document.querySelectorAll(".screen");
+  var annos = document.querySelectorAll(".anno");
+  var stStep = document.getElementById("stStep"), stName = document.getElementById("stName"), stWho = document.getElementById("stWho");
+
+  // build progress dots
+  var dotsWrap = document.getElementById("dots"), dots = [];
+  for (var i = 1; i <= TOTAL; i++) { var d = document.createElement("i"); dotsWrap.appendChild(d); dots.push(d); }
+
+  var current = 0;
+  function setStep(n) {
+    if (n === current) return;
+    current = n;
+    screens.forEach(function (s) { s.classList.toggle("on", +s.dataset.screen === n); });
+    annos.forEach(function (a) { a.classList.toggle("on", +a.dataset.anno === n); });
+    dots.forEach(function (d, i) { d.classList.toggle("on", i === n - 1); });
+    stStep.textContent = ("0" + n).slice(-2);
+    if (names[n]) { stWho.textContent = names[n][0]; stName.textContent = names[n][1]; }
+  }
+  setStep(1);
+
+  var trigs = document.querySelectorAll(".trig");
+  if (!("IntersectionObserver" in window)) {
+    // fallback: show step 1 (already set)
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) setStep(+e.target.dataset.step); });
+    }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
+    trigs.forEach(function (t) { io.observe(t); });
+  }
+
+  // reveal closing
+  var items = document.querySelectorAll(".reveal");
+  if (!("IntersectionObserver" in window) || reduce) {
+    items.forEach(function (el) { el.classList.add("in"); });
+  } else {
+    var io2 = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io2.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    items.forEach(function (el) { io2.observe(el); });
+  }
+})();
+</script>

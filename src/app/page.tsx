@@ -5,7 +5,7 @@ export default function Page() {
     <>
       <div className="head">
         <div className="wordmark">핏타임</div>
-        <div className="sub">모두가 괜찮은 회의 시간, 눈치 없이</div>
+        <div className="sub">6명의 조건을 한 번에 읽고 결정하기</div>
       </div>
       <FitTime />
     </>

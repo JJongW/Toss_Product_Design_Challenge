@@ -35,7 +35,7 @@ export async function POST(
   const slot = meeting.participants.find((p) => p.name === name);
   if (!slot) {
     return NextResponse.json(
-      { error: "명단에 없는 이름이에요. 조직자에게 확인해 주세요." },
+      { error: "명단에 없는 이름이에요. 주최자에게 확인해 주세요." },
       { status: 403 }
     );
   }
