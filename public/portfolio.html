@@ -125,7 +125,6 @@
     transition: opacity .5s ease, transform .5s cubic-bezier(.2,.8,.2,1);
   }
   .screen.on { opacity: 1; transform: none; pointer-events: auto; }
-  .sbar { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10.5px; color: var(--screen-muted); position: absolute; top: 16px; left: 20px; right: 20px; }
   .stitle { font-size: 1.18rem; font-weight: 800; letter-spacing: 0; color: var(--screen-ink); }
   .ssub { font-size: 0.78rem; color: var(--screen-muted); margin-top: 5px; line-height: 1.5; }
 
@@ -261,39 +260,12 @@
   .trig { height: 100vh; }
 
   /* ===================== CLOSING ===================== */
-  section.block { padding: 66px 0; border-top: 1px solid var(--hairline); }
-  .sec-num { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.14em; color: var(--accent); font-weight: 600; }
-  .sec-head h2 { font-size: clamp(1.7rem, 3.2vw, 2.4rem); font-weight: 800; margin-top: 13px; max-width: 24ch; }
-  .sec-head .lede { font-size: clamp(1.02rem, 1.5vw, 1.14rem); color: var(--ink-soft); margin-top: 15px; max-width: 52ch; }
-
-  .qa { margin-top: 34px; display: flex; flex-direction: column; gap: 15px; }
-  .qbox { background: var(--surface); border: 1px solid var(--hairline); border-radius: 16px; padding: 24px 26px; }
-  .qbox .q { display: flex; gap: 11px; align-items: baseline; }
-  .qbox .qn { font-family: var(--font-mono); font-weight: 700; color: var(--accent); font-size: 0.92rem; }
-  .qbox h3 { font-size: 1.04rem; font-weight: 700; }
-  .qbox .a { font-size: 0.94rem; color: var(--ink-soft); margin: 13px 0 0; line-height: 1.72; }
-  .qbox .a b { color: var(--ink); font-weight: 700; }
-  .qbox .cnt { font-family: var(--font-mono); font-size: 11px; color: var(--faint); margin-top: 13px; display: block; }
-
-  .sources { margin-top: 30px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 26px; }
-  .sources a { display: flex; gap: 10px; align-items: baseline; font-size: 0.84rem; color: var(--muted); text-decoration: none; padding: 8px 0; border-bottom: 1px solid var(--hairline); }
-  .sources a:hover { color: var(--accent); }
-  .sources a .sn { font-family: var(--font-mono); font-size: 11px; color: var(--faint); flex: none; }
-
-  .btn { display: inline-flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 700; padding: 14px 22px; border-radius: 13px; text-decoration: none; }
-  .btn-primary { background: var(--accent); color: var(--accent-ink); }
-  .cta-final { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; }
-
   footer.foot { padding: 46px 0 66px; border-top: 1px solid var(--hairline); color: var(--faint); font-size: 0.85rem; }
   .foot .fr { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
   .foot .fmono { font-family: var(--font-mono); }
 
-  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
-  .reveal.in { opacity: 1; transform: none; }
-
   @media (prefers-reduced-motion: reduce) {
-    *, .a, .anno, .screen, .reveal { transition: none !important; animation: none !important; }
-    .reveal { opacity: 1 !important; transform: none !important; }
+    *, .a, .anno, .screen { transition: none !important; animation: none !important; }
     .screen .a { opacity: 1 !important; transform: none !important; }
   }
 
@@ -308,7 +280,6 @@
   }
   @media (max-width: 560px) {
     .phone { width: 280px; height: 582px; transform: scale(1); }
-    .sources { grid-template-columns: 1fr; }
   }
 
   /* ============ scroll-driven "실제 입력" 시뮬레이션 ============ */
@@ -367,16 +338,7 @@
     .screen[data-screen="5"] .wkstrip .wd.pick .wc { background: var(--accent); }
   }
 
-  /* ============ 리얼리티: 상태바 · 화면 반사 ============ */
-  .statusbar { position: absolute; top: 15px; left: 21px; right: 21px; height: 13px; display: flex; align-items: center; justify-content: space-between; z-index: 5; color: var(--screen-ink); font-family: var(--font-mono); pointer-events: none; }
-  .sb-time { font-size: 11px; font-weight: 700; letter-spacing: .01em; }
-  .sb-ico { display: flex; align-items: center; gap: 5px; }
-  .sb-ico svg { display: block; fill: var(--screen-ink); }
-  .sb-batt { position: relative; width: 22px; height: 11px; border: 1px solid var(--screen-ink); border-radius: 3px; opacity: .9; }
-  .sb-batt::after { content: ""; position: absolute; right: -2.6px; top: 3px; width: 2px; height: 5px; background: var(--screen-ink); border-radius: 0 1px 1px 0; }
-  .sb-batt i { position: absolute; left: 1.5px; top: 1.5px; bottom: 1.5px; width: 68%; background: var(--screen-ink); border-radius: 1.5px; }
-  .sbar > span:first-child { display: none; }   /* 상태바가 시간 담당 → 화면별 sbar는 역할만 */
-  .sbar { top: 15px; }
+  /* ============ 리얼리티: 화면 반사 ============ */
   .screenframe::after { content: ""; position: absolute; inset: 0; border-radius: 32px; pointer-events: none; z-index: 3; box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -34px 40px -32px rgba(0,0,0,.07); }
 
   /* ============ 가상 커서(손) ============ */
@@ -423,21 +385,11 @@
       <div class="phone">
         <div class="screenframe">
 
-          <!-- device status bar (realism) -->
-          <div class="statusbar" aria-hidden="true">
-            <span class="sb-time">9:41</span>
-            <span class="sb-ico">
-              <svg class="sb-sig" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.7" y="5" width="3" height="6" rx="1"/><rect x="9.4" y="2.5" width="3" height="8.5" rx="1"/><rect x="14" y="0" width="3" height="11" rx="1"/></svg>
-              <svg class="sb-wifi" width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.1c2.5 0 4.8 1 6.4 2.6l-1.3 1.3A7.3 7.3 0 0 0 7.5 4a7.3 7.3 0 0 0-5.1 2L1.1 4.7A9.1 9.1 0 0 1 7.5 2.1Zm0 3.5c1.5 0 2.8.6 3.8 1.6l-1.3 1.3a3.3 3.3 0 0 0-4.9 0L3.7 7.2a5.3 5.3 0 0 1 3.8-1.6Zm0 3.4c.7 0 1.2.3 1.6.7L7.5 11 5.9 9.1c.4-.4 1-.7 1.6-.7Z"/></svg>
-              <span class="sb-batt"><i></i></span>
-            </span>
-          </div>
           <!-- virtual finger cursor -->
           <div class="cursor" id="cursor" aria-hidden="true"></div>
 
           <!-- Screen 1 -->
           <div class="screen on" data-screen="1">
-            <div class="sbar"><span>9:41</span><span>핏타임</span></div>
             <div class="a a1"><div class="stitle">회의 만들기</div><div class="ssub">언제, 얼마나 만날지만 정하면 링크가 나와요.</div></div>
             <div class="a a2"><div class="flabel">참석자</div><div class="field"><span class="v">6명</span><span class="m">필수 4 · 선택 2</span></div></div>
             <div class="a a3"><div class="flabel">기간</div><div class="field"><span class="v">다음 주 · 7/13–7/17</span><span class="m">주간 ▾</span></div></div>
@@ -449,7 +401,6 @@
 
           <!-- Screen 2 -->
           <div class="screen" data-screen="2">
-            <div class="sbar"><span>9:41</span><span>핏타임 · 링크</span></div>
             <div class="a a1"><div class="stitle">누구세요?</div><div class="ssub">디자인팀 주간회의 · 명단에서 본인을 선택하세요.</div></div>
             <div class="a a2 roster" style="margin-top:14px">
               <div class="rrow me"><div class="av">지</div>지민<span class="ck">✓</span></div>
@@ -465,7 +416,6 @@
 
           <!-- Screen 3 -->
           <div class="screen" data-screen="3">
-            <div class="sbar"><span>9:41</span><span>지민</span></div>
             <div class="a a1"><div class="stitle">안 되는 시간만</div><div class="ssub">되는 시간을 다 고를 필요 없어요. 안 되는 칸만 칠하세요.</div></div>
             <div class="a a2" style="margin-top:12px"><div class="seg"><button class="on hard">절대 불가</button><button>되도록 피함</button></div></div>
             <div class="a a3 daytabs"><span>월</span><span class="on">화</span><span>수</span><span>목</span><span>금</span></div>
@@ -481,7 +431,6 @@
 
           <!-- Screen 4 -->
           <div class="screen" data-screen="4">
-            <div class="sbar"><span>9:41</span><span>주최자</span></div>
             <div class="a a1"><div class="stitle">판단에 필요한 응답</div></div>
             <div class="a a2"><div class="prog-line"><b>4</b><span>/ 6명 등록</span></div><div class="ptrack"><i></i></div></div>
             <div class="a a3" style="margin-top:8px">
@@ -498,7 +447,6 @@
 
           <!-- Screen 5 -->
           <div class="screen" data-screen="5">
-            <div class="sbar"><span>9:41</span><span>주최자</span></div>
             <div class="a a1"><div class="stitle">추천 시간</div></div>
             <div class="a a2 rec-card" style="margin-top:12px">
               <div class="rk">한 곳으로 모았어요</div>
@@ -529,7 +477,6 @@
 
           <!-- Screen 6 · 엣지: 필수 슬롯이 없을 때 -->
           <div class="screen" data-screen="6">
-            <div class="sbar"><span>9:41</span><span>주최자</span></div>
             <div class="a a1"><div class="stitle">완벽한 시간이 없을 땐</div><div class="ssub">필수 4명이 모두 되는 1시간이 없어요. 강제 대신 길을 열어요.</div></div>
             <div class="a a2 ask" style="margin-top:12px">
               <div class="tag" style="color:var(--no)">막힌 이유 · 하드</div>
@@ -546,7 +493,6 @@
 
           <!-- Screen 7 · 알림 · 확정 -->
           <div class="screen" data-screen="7">
-            <div class="sbar"><span>9:41</span><span>주최자</span></div>
             <div class="a a1"><div class="stitle">한 사람만 확인하면 돼요</div><div class="ssub">결과를 바꿀 수 있는 분에게만 물어봐요.</div></div>
             <div class="a a2 ask" style="margin-top:12px">
               <div class="tag">선택 참석 · 민아</div>
@@ -604,27 +550,10 @@
     </div>
   </div>
 
-  <!-- ===================== SOURCES ===================== -->
-  <section class="block wrap" id="sources">
-    <div class="sec-head reveal">
-      <span class="sec-num">EVIDENCE</span>
-      <h2>근거 · 리서치 소스</h2>
-      <p class="lede">CHI/CSCW·NN/g·기존 서비스(When2Meet·Doodle·Calendly) 분석과 국내 맥락 검증을 누적. 주요 출처:</p>
-    </div>
-    <div class="sources reveal">
-      <a href="https://scitechdaily.com/a-mathematical-nightmare-new-research-explains-why-scheduling-meetings-is-so-hard/" target="_blank" rel="noopener"><span class="sn">S1</span> 스케줄링의 상전이(EPJ B) — SciTechDaily</a>
-      <a href="https://doodle.com/en/resources/blog/study-reveals-time-spent-with-scheduling/" target="_blank" rel="noopener"><span class="sn">S2</span> 조율에 드는 시간 — Doodle / ETH</a>
-      <a href="https://meetergo.com/en/magazine/when2meet" target="_blank" rel="noopener"><span class="sn">S3</span> When2Meet의 한계 — meetergo</a>
-      <a href="https://help.doodle.com/en/articles/10295132-group-poll-troubleshooting-and-faq" target="_blank" rel="noopener"><span class="sn">S4</span> 비응답자 미통지 — Doodle FAQ</a>
-      <a href="https://calendly.com/blog/is-calendly-rude" target="_blank" rel="noopener"><span class="sn">S5</span> ‘Calendly는 무례한가’ — Calendly / Fortune</a>
-      <a href="https://www.usecarly.com/blog/schedule-meetings-without-back-and-forth/" target="_blank" rel="noopener"><span class="sn">S6</span> 백앤포스 조율 비용 — Carly</a>
-    </div>
-  </section>
-
   <footer class="foot wrap">
     <div class="fr">
       <span>핏타임 — Toss Product Design 2026 · 사용 흐름 워크스루</span>
-      <span class="fmono">근거: docs/design-log.md · v1.1 · 2026.07</span>
+      <span class="fmono">v1.1 · 2026.07</span>
     </div>
   </footer>
 </div>
@@ -729,16 +658,6 @@
   window.addEventListener("resize", onScroll);
   onScroll();
 
-  // reveal closing sections
-  var items = document.querySelectorAll(".reveal");
-  if (!("IntersectionObserver" in window) || reduce) {
-    items.forEach(function (el) { el.classList.add("in"); });
-  } else {
-    var io2 = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io2.unobserve(e.target); } });
-    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
-    items.forEach(function (el) { io2.observe(el); });
-  }
 })();
 </script>
 

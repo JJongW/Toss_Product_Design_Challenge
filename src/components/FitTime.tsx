@@ -133,9 +133,10 @@ export default function FitTime() {
   const [overrideTarget, setOverrideTarget] = useState("");
   const [adjusted, setAdjusted] = useState(false);
   // 저장소 상태: kv=false면 인메모리 폴백(초대코드 유실 위험). null=확인 전.
-  const [health, setHealth] = useState<{ kv: boolean; serverless: boolean } | null>(
-    null
-  );
+  const [health, setHealth] = useState<{
+    kv: boolean;
+    serverless: boolean;
+  } | null>(null);
 
   // 참여자 상태
   const [joinCode, setJoinCode] = useState("");
@@ -152,7 +153,7 @@ export default function FitTime() {
   const todayISO = useMemo(() => toISO(new Date()), []);
   const range = useMemo(
     () => buildRange(scope, todayISO, includeWeekend),
-    [scope, todayISO, includeWeekend]
+    [scope, todayISO, includeWeekend],
   );
 
   function toast(m: string) {
@@ -209,7 +210,7 @@ export default function FitTime() {
         setRoster(res.meeting);
         // 다른 회의 명단이면 이전 선택은 무효화
         setJoinName((prev) =>
-          res.meeting.participants.some((p) => p.name === prev) ? prev : ""
+          res.meeting.participants.some((p) => p.name === prev) ? prev : "",
         );
       })
       .catch(() => {
@@ -410,7 +411,8 @@ export default function FitTime() {
       go(back);
       return;
     }
-    const order = path === "org" ? ORG_STEPS : path === "part" ? PART_STEPS : [];
+    const order =
+      path === "org" ? ORG_STEPS : path === "part" ? PART_STEPS : [];
     const i = order.indexOf(screen);
     if (i > 0) go(order[i - 1]);
     else reset();
@@ -431,13 +433,9 @@ export default function FitTime() {
     const order =
       path === "org" ? ORG_STEPS : path === "part" ? PART_STEPS : [];
     let idx = order.indexOf(screen);
-    if (
-      ["computing", "override", "ask", "stuck", "notice"].includes(screen)
-    )
+    if (["computing", "override", "ask", "stuck", "notice"].includes(screen))
       idx = order.indexOf("recommend");
-    return order.map((_, k) => (
-      <i key={k} className={k === idx ? "on" : ""} />
-    ));
+    return order.map((_, k) => <i key={k} className={k === idx ? "on" : ""} />);
   }
 
   const chosen: SlotView | null = (() => {
@@ -451,7 +449,11 @@ export default function FitTime() {
   })();
 
   // ---- 참여자 그리드: 드래그로 여러 칸 칠하기(마우스·터치 공용) ----
-  function applyCell(id: string, mode: "add" | "remove", level: "hard" | "soft") {
+  function applyCell(
+    id: string,
+    mode: "add" | "remove",
+    level: "hard" | "soft",
+  ) {
     setPaint((prev) => {
       const cur = prev[id];
       const next = { ...prev };
@@ -653,9 +655,7 @@ export default function FitTime() {
                 className="iconbtn"
                 aria-label="참여자 삭제"
                 disabled={draft.length <= MIN_PARTICIPANTS}
-                onClick={() =>
-                  setDraft((d) => d.filter((_, k) => k !== i))
-                }
+                onClick={() => setDraft((d) => d.filter((_, k) => k !== i))}
               >
                 −
               </button>
@@ -667,8 +667,8 @@ export default function FitTime() {
                   onChange={(e) =>
                     setDraft((d) =>
                       d.map((x, k) =>
-                        k === i ? { ...x, name: e.target.value } : x
-                      )
+                        k === i ? { ...x, name: e.target.value } : x,
+                      ),
                     )
                   }
                 />
@@ -678,9 +678,7 @@ export default function FitTime() {
                   className={p.required ? "on" : ""}
                   onClick={() =>
                     setDraft((d) =>
-                      d.map((x, k) =>
-                        k === i ? { ...x, required: true } : x
-                      )
+                      d.map((x, k) => (k === i ? { ...x, required: true } : x)),
                     )
                   }
                 >
@@ -691,8 +689,8 @@ export default function FitTime() {
                   onClick={() =>
                     setDraft((d) =>
                       d.map((x, k) =>
-                        k === i ? { ...x, required: false } : x
-                      )
+                        k === i ? { ...x, required: false } : x,
+                      ),
                     )
                   }
                 >
@@ -705,12 +703,7 @@ export default function FitTime() {
         <button
           className="btn-link"
           style={{ marginTop: 8 }}
-          onClick={() =>
-            setDraft((d) => [
-              ...d,
-              { name: "", required: false },
-            ])
-          }
+          onClick={() => setDraft((d) => [...d, { name: "", required: false }])}
         >
           ＋ 참여자 추가
         </button>
@@ -727,7 +720,11 @@ export default function FitTime() {
       </>
     );
     cta = (
-      <button className="btn btn-primary" disabled={busy} onClick={handleCreate}>
+      <button
+        className="btn btn-primary"
+        disabled={busy}
+        onClick={handleCreate}
+      >
         {code ? "변경사항 저장하고 계속" : "공유 링크 만들기"}
       </button>
     );
@@ -767,16 +764,16 @@ export default function FitTime() {
                 <b>⚠️ 공유 저장소가 연결되지 않았어요</b>
                 <div style={{ marginTop: 4 }}>
                   이 코드로 <b>다른 기기에서 접속하면</b> “그런 초대 코드를 찾지
-                  못했어요” 오류가 날 수 있어요. 공유 전에 관리자가 Upstash Redis를
-                  연동하고 재배포해야 해요.
+                  못했어요” 오류가 날 수 있어요. 공유 전에 관리자가 Upstash
+                  Redis를 연동하고 재배포해야 해요.
                 </div>
               </>
             ) : (
               <>
                 <b>ℹ️ 로컬 메모리 모드예요</b>
                 <div style={{ marginTop: 4 }}>
-                  서버를 재시작하면 이 코드가 사라져요. 배포 시엔 KV(Upstash) 연동이
-                  필요해요.
+                  서버를 재시작하면 이 코드가 사라져요. 배포 시엔 KV(Upstash)
+                  연동이 필요해요.
                 </div>
               </>
             )}
@@ -853,8 +850,8 @@ export default function FitTime() {
           </div>
           <div className="hint" style={{ textAlign: "left", marginTop: 12 }}>
             등록 여부만 보여요 · 칠한 시간은 비공개예요. 다 안 모여도 아래{" "}
-            <b>‘지금 추천 보기’</b>를 누르면, 지금까지 등록된 정보로 추천을 볼 수
-            있어요.
+            <b>‘지금 추천 보기’</b>를 누르면, 지금까지 등록된 정보로 추천을 볼
+            수 있어요.
           </div>
         </div>
         {reg < total && (
@@ -904,7 +901,11 @@ export default function FitTime() {
     );
   } else if (screen === "recommend") {
     if (!rec) {
-      body = <div className="t-body" style={{ margin: "auto 0" }}>불러오는 중…</div>;
+      body = (
+        <div className="t-body" style={{ margin: "auto 0" }}>
+          불러오는 중…
+        </div>
+      );
     } else if (!rec.hasFloor) {
       body = (
         <>
@@ -948,8 +949,11 @@ export default function FitTime() {
       const unk = e.unknownRequiredNames;
       const reqLine = hardReq.length ? (
         <>
-          필수 <b>{e.requiredOkCount}/{e.requiredTotal}</b> · {hardReq.join(",")}{" "}
-          조정 필요
+          필수{" "}
+          <b>
+            {e.requiredOkCount}/{e.requiredTotal}
+          </b>{" "}
+          · {hardReq.join(",")} 조정 필요
         </>
       ) : e.reqUnknown === 0 ? (
         <>
@@ -957,7 +961,11 @@ export default function FitTime() {
         </>
       ) : (
         <>
-          필수 <b>{e.requiredOkCount}/{e.requiredTotal}</b> 가능
+          필수{" "}
+          <b>
+            {e.requiredOkCount}/{e.requiredTotal}
+          </b>{" "}
+          가능
         </>
       );
       body = (
@@ -967,7 +975,9 @@ export default function FitTime() {
             {rec.meeting.registeredCount}명 응답 · 미응답돼도 추천은 나와요
           </div>
           <div className="card hero">
-            <div className="tag">{hardReq.length ? "선택한 시간" : "추천 시간"}</div>
+            <div className="tag">
+              {hardReq.length ? "선택한 시간" : "추천 시간"}
+            </div>
             <div className="when">{labelWithBreak(e.label)}</div>
             <div className="evidence-stack" aria-label="추천 근거">
               <div className="evidence-item primary">
@@ -1006,8 +1016,8 @@ export default function FitTime() {
           {hardReq.length ? (
             <div className="card-flat" style={{ marginTop: 12 }}>
               <div className="t-body">
-                {hardReq.join(",")}님이 이 시간에 안 돼요. 정하면 조정을 부탁할 수
-                있어요.
+                {hardReq.join(",")}님이 이 시간에 안 돼요. 정하면 조정을 부탁할
+                수 있어요.
               </div>
             </div>
           ) : (
@@ -1023,10 +1033,7 @@ export default function FitTime() {
               </div>
             </div>
           )}
-          <button
-            className="btn-link"
-            onClick={() => setShowList((v) => !v)}
-          >
+          <button className="btn-link" onClick={() => setShowList((v) => !v)}>
             {showList ? "접기" : "다른 시간 보기"}
           </button>
           {showList && (
@@ -1129,7 +1136,9 @@ export default function FitTime() {
             </span>
             <div className="grow">
               <div className="name">{t}</div>
-              <div className="sub">그 시간에 안 된다고 칠했어요 — 조정 부탁 예정</div>
+              <div className="sub">
+                그 시간에 안 된다고 칠했어요 — 조정 부탁 예정
+              </div>
             </div>
           </div>
           {e && e.softCount > 0 && (
@@ -1246,7 +1255,8 @@ export default function FitTime() {
         </div>
         <div className="card-flat" style={{ marginTop: 16 }}>
           <div className="t-body">
-            다른 일정과 겹쳐 이번엔 참석이 어려우실 것 같아, <b>회의록을 꼭 공유</b>
+            다른 일정과 겹쳐 이번엔 참석이 어려우실 것 같아,{" "}
+            <b>회의록을 꼭 공유</b>
             드릴게요.
           </div>
         </div>
@@ -1343,10 +1353,10 @@ export default function FitTime() {
                       padding: "8px 14px",
                       borderRadius: 999,
                       border: on
-                        ? "1.5px solid #2b6ef2"
-                        : "1px solid #d5d9e0",
-                      background: on ? "#eaf1ff" : "#fff",
-                      color: on ? "#1b4fc0" : "#333",
+                        ? "1.5px solid var(--accent)"
+                        : "1px solid var(--line)",
+                      background: on ? "var(--accent-weak)" : "#fff",
+                      color: on ? "var(--accent-dark)" : "#333",
                       fontWeight: on ? 700 : 500,
                       cursor: "pointer",
                     }}
@@ -1403,7 +1413,7 @@ export default function FitTime() {
     // 이 주에 칠한 칸 수(맥락 표시용)
     const weekMarked = dates.reduce(
       (n, d) => n + marks.filter((m) => paint[`${d}-${m}`]).length,
-      0
+      0,
     );
     body = (
       <>

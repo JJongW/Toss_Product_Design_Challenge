@@ -1,24 +1,24 @@
 :root {
-  --accent: #0e9f8e;
-  --accent-dark: #0b7e71;
-  --accent-weak: #e3f3f0;
-  --bg: #f3f7f6;
+  --accent: #2F6BFF;
+  --accent-dark: #1F55E0;
+  --accent-weak: #EAF1FF;
+  --bg: #F5F7FA;
   --surface: #fff;
-  --line: #e2eae7;
-  --text: #16241f;
-  --text-2: #4b5b55;
-  --text-3: #8a9994;
-  --ok-fg: #0e9f8e;
-  --ok-bg: #e3f3f0;
-  --soft-fg: #d98324;
-  --soft-bg: #fbf0de;
-  --unk-fg: #8a9994;
-  --unk-bg: #eef2f1;
-  --hard-fg: #e5544b;
-  --hard-bg: #fbe9e7;
+  --line: #E7ECF2;
+  --text: #14161A;
+  --text-2: #414A57;
+  --text-3: #8A93A3;
+  --ok-fg: #12A866;
+  --ok-bg: #E5F6EE;
+  --soft-fg: #E68A0C;
+  --soft-bg: #FDEFD8;
+  --unk-fg: #8A93A3;
+  --unk-bg: #EDF0F4;
+  --hard-fg: #E5484D;
+  --hard-bg: #FDE9E9;
   --r-md: 12px;
   --r-lg: 16px;
-  --shadow: 0 1px 2px rgba(20, 40, 35, 0.04), 0 8px 24px rgba(20, 40, 35, 0.05);
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.05);
 }
 
 * {
@@ -601,7 +601,7 @@ select:focus-visible {
   transform: translateY(6px);
   transition: opacity 0.22s, transform 0.22s;
   pointer-events: none;
-  box-shadow: 0 8px 24px rgba(20, 40, 35, 0.18);
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.18);
 }
 .toast.on {
   opacity: 1;
@@ -815,7 +815,7 @@ select:focus-visible {
 .seg-wide button.on {
   background: var(--surface);
   color: var(--text);
-  box-shadow: 0 1px 3px rgba(20, 40, 35, 0.1);
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1);
 }
 .seg-wide button.on.hard {
   color: var(--hard-fg);

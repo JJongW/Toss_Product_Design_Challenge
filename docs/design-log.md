@@ -586,3 +586,11 @@
 - **Evidence**: grep 확인 — `v0.6` 제거됨, `.scrolly.out`/`.rec-ev`/`참석자` 삽입 확인, anno 13개 균형 유지. 문제정의·해결·설계근거(Q1~Q3) 텍스트는 불변이므로 `toss_product_designer_challenge.md` 동기화 불필요(UI 완성도 강화만 해당).
 - **Weakness**: 실물 렌더 육안 재검증 미완 — 데스크톱 1280px·모바일 390px에서 (a) Evidence/footer 진입 시 잔류 UI 실제 소멸, (b) 다크 rec-card 위 evidence row 대비, (c) screen 1에 필드 1개 추가로 세로 공간 빠듯한지 확인 필요. `.scrolly`가 ~800vh라 `out`은 hero(위)·Evidence(아래)에서만 토글되는 게 맞지만 브라우저별 sticky 해제 타이밍은 실측 권장.
 - **Next Research**: 사용자 실물 확인 후 rec-card 톤/간격 미세조정. 필요 시 배포(Vercel) 후 라이브 URL에서 모바일 fixed 캡션 소멸 최종 확인.
+
+## Entry 061 — 실앱 코발트 마이그레이션 완결 + 포폴 고아 CSS/JS 일괄 정리 (2026-07-11)
+- **Fact**: 직전 세션에서 미커밋 상태로 남아 있던 진행 중 작업 2건을 이어받아 완결. (1) 실제 Next.js 앱(`src/app/globals.css`·`src/components/FitTime.tsx`)의 컬러 토큰을 옛 teal(#0e9f8e 계열)에서 클린 프로덕트 코발트(#2F6BFF)로 마이그레이션 — 포폴 워크스루(Entry 055)와 실앱 톤 통일. FitTime.tsx의 하드코딩 `#2b6ef2/#eaf1ff/#1b4fc0`도 `var(--accent)/--accent-weak/--accent-dark`로 치환. (2) `public/portfolio.html`에서 이미 제거돼 있던 device statusbar(9:41)·화면별 sbar·EVIDENCE/sources 섹션의 잔여 DOM 정리에 이어, 그로 인해 고아가 된 CSS/JS를 일괄 스윕.
+- **Decision(검증 우선)**: 솔루션·문제정의 텍스트(Q1~Q3)는 불변이므로 `toss_product_designer_challenge.md` 동기화 불필요 — 이번 작업은 시각 통일 + 코드 위생만 해당. 먼저 `npm run build`로 실앱 컴파일 검증(exit 0, `/` 정적 프리렌더 정상) 후 정리 진행.
+- **Decision(고아 스윕 범위)**: DOM class 사용 0을 전수 확인한 것만 제거 — `.statusbar/.sb-*`, `.sbar`(2곳), `.sources`(반응형 포함), `section.block/.sec-num/.sec-head`, `.qa/.qbox`(이전 커밋서 섹션 제거된 잔재), `.btn/.btn-primary/.cta-final`, `.reveal` CSS + reduced-motion 내 `.reveal` 참조 + reveal IntersectionObserver JS 블록. `public/portfolio.html` −84줄. 워크스루 핵심(step IntersectionObserver, cursor, anno, scrolly.out 가드)과 `reduce` 변수는 타 위치에서 사용되어 보존.
+- **Evidence**: 정리 후 grep — 위 고아 클래스 잔여 참조 0. `node`로 script 블록 파싱 OK. 정합 카운트 — `.screen` 7, anno DOM 13 = data-anno 13, data-step 트리거 7. `public/portfolio.html`은 `docs/portfolio.html`이 아니라 실제 제출 정적 파일(후자는 미존재)임을 확인.
+- **Weakness**: (1) 실앱·포폴 실물 렌더 육안 재검증 미완 — 데스크톱/모바일에서 코발트 톤·rec-card 대비·워크스루 스크럽 실동작은 사용자 확인 필요. (2) 아직 미커밋·미배포. 배포는 라이브 제출 URL을 갱신하는 외부 노출 작업이라 사용자 승인 후 진행.
+- **Next Research**: 사용자 실물 확인 → 이상 없으면 커밋 + Vercel 재배포하여 `fittime-walkthrough` 라이브 URL에 반영, 모바일 390px/데스크톱 1280px에서 최종 검수.
