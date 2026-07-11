@@ -119,7 +119,7 @@ export default function FitTime() {
 
   // 조직자 상태
   const [draft, setDraft] = useState<Draft[]>(DEFAULT_DRAFT);
-  const [meetingTitle] = useState("스프린트 킥오프");
+  const [meetingTitle, setMeetingTitle] = useState("스프린트 킥오프");
   const [scope, setScope] = useState<Scope>("thisWeek");
   const [includeWeekend, setIncludeWeekend] = useState(false);
   const [dayStart, setDayStart] = useState(HOUR_START); // 하루 시작 시각(조직자 선택)
@@ -556,10 +556,16 @@ export default function FitTime() {
           기준이 분명해져요.
         </div>
         <div style={{ marginTop: 12 }}>
-          <div className="field">
+          <label className="field">
             <span className="lab">제목</span>
-            <span className="val">{meetingTitle}</span>
-          </div>
+            <input
+              className="field-input"
+              value={meetingTitle}
+              onChange={(e) => setMeetingTitle(e.target.value)}
+              placeholder="회의 이름"
+              maxLength={40}
+            />
+          </label>
         </div>
         <div className="section-label">얼마나 오래 하나요?</div>
         <div className="seg-wide">
