@@ -669,3 +669,10 @@
 - **Evidence**: app build exit 0(수 회), push 21e7760 → schedulechallenge 자동배포(라이브 CSS에 `ev-row`/`rec-day`/`ledger` 클래스 8개 확인). Q 글자수 재측정 688/691/675(전부 700 이내이나 한도 근접 — 사용자가 답변을 확장한 듯). URL 200·구글드라이브 아님·임베드 정상.
 - **Weakness**: (1) 참여자 칠하기 그리드·override/ask·done(성공)·joined 등 일부 화면은 여전히 개별 육안 검수 미완(자가 렌더 불가). (2) Q2 691자 한도 근접 — 압축 필요. (3) 홈 2택지 하단 여백 잔존. (4) 재생 워크스루+임베드 중복 인상.
 - **Next Research**: 사용자 실기기 최종 리뷰 후 남은 화면(칠하기·성공) 미세 정렬, Q2 640자 내 압축 + Q1 외부 근거 1줄, 홈 하단 구성 보강.
+
+## Entry 068 — 실동작 버그·임베드·워크스루/앱 일치 (2026-07-11)
+- **Fact**: 사용자 실기기 배포본 검수에서 코드/구조 판단만 하는 심사로는 못 잡는 픽셀·실동작 버그 다수 발견 — (a)시간 셀렉트가 네이티브 `<select>`라 열면 OS 다크 팝업, (b)코드 복사 버튼이 `navigator.clipboard?.writeText().catch()`에서 clipboard 차단(임베드 iframe) 시 `.catch` 크래시로 토스트도 안 뜸, (c)임베드 폰 프레임 비율이 실기기와 불일치 + 하단 CTA 안 붙고 스크롤 어긋남, (d)워크스루 스크롤 목업과 실제 앱 디자인 불일치.
+- **Decision**: (1)네이티브 select → 커스텀 `Dropdown` 컴포넌트(앱 스타일 메뉴·체크·회전 chevron·바깥클릭 닫기). (2)복사: try/catch 가드로 크래시 제거, 토스트 항상 발화, 임베드 iframe에 `allow="clipboard-write"`. (3)임베드 폰 프레임 `aspect-ratio: 9/19.5`(실기기) + 앱 `.frame`을 `min-height:100dvh`로 뷰포트 채워 CTA 바닥 도킹(자체 카드 radius/shadow 제거 — iframe이 폰 베젤 역할). (4)하단 임베드를 주최자(`?as=org`)·참여자(`?as=part`) 2개로 분리(앱에 딥링크 추가). (5)워크스루/앱 불일치는 사용자 선택대로 **스크롤 유지 + 추천 목업(5신)만 앱 판결카드+원장 언어로 재구성**(태그·날짜 작게·시간 크게·SVG 컬러 원형 아이콘·값 위계).
+- **Evidence**: app build exit 0, push fb5fcea·e824be2 등 → schedulechallenge 라이브(dd-menu 클래스·100dvh·?as=org 200 확인). 워크스루 재배포, JS OK·anno 13=13.
+- **Weakness**: (1)참여자 칠하기·확정 등 일부 화면 여전히 자가 렌더 검증 불가. (2)워크스루 다른 목업(설정·현황 등)은 색만 앱과 일치, 구조는 기존 유지(사용자 결정). (3)임베드가 외부 라이브 앱·clipboard 정책 의존.
+- **Next Research**: 사용자 실기기 재검수 후 남은 화면 미세정렬, Q2 691자 압축.
