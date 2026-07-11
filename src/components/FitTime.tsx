@@ -104,6 +104,84 @@ function labelWithBreak(label: string) {
   return label;
 }
 
+// 커스텀 드롭다운 — 네이티브 select의 OS 팝업 대신 앱 스타일 메뉴로.
+function Dropdown({
+  value,
+  options,
+  onChange,
+  ariaLabel,
+}: {
+  value: number;
+  options: Array<{ v: number; label: string }>;
+  onChange: (v: number) => void;
+  ariaLabel: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const h = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node))
+        setOpen(false);
+    };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, [open]);
+  const cur = options.find((o) => o.v === value);
+  return (
+    <div className="dd" ref={ref}>
+      <button
+        type="button"
+        className={"dd-btn" + (open ? " open" : "")}
+        aria-label={ariaLabel}
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+      >
+        <span>{cur?.label ?? ""}</span>
+        <svg className="dd-chev" viewBox="0 0 18 18" fill="none">
+          <path
+            d="M4.5 7l4.5 4.5L13.5 7"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+      {open && (
+        <div className="dd-menu" role="listbox">
+          {options.map((o) => (
+            <button
+              type="button"
+              key={o.v}
+              role="option"
+              aria-selected={o.v === value}
+              className={"dd-opt" + (o.v === value ? " sel" : "")}
+              onClick={() => {
+                onChange(o.v);
+                setOpen(false);
+              }}
+            >
+              <span>{o.label}</span>
+              {o.v === value && (
+                <svg className="dd-check" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M3.5 8.2l3 3L12.5 5"
+                    stroke="currentColor"
+                    strokeWidth="1.9"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function FitTime() {
   const [screen, setScreen] = useState<Screen>("home");
   const [path, setPath] = useState<Path>(null);
@@ -179,15 +257,22 @@ export default function FitTime() {
     };
   }, []);
 
-  // ----- 공유 링크 딥링크: ?join=CODE 로 들어오면 참여 화면에 코드 프리필 -----
+  // ----- 딥링크: ?join=CODE(참여 프리필) · ?as=org|part(임베드용 시작 지점) -----
   useEffect(() => {
-    const c = new URLSearchParams(window.location.search)
-      .get("join")
-      ?.trim()
-      .toUpperCase();
+    const q = new URLSearchParams(window.location.search);
+    const c = q.get("join")?.trim().toUpperCase();
     if (c) {
       setPath("part");
       setJoinCode(c);
+      go("join");
+      return;
+    }
+    const as = q.get("as");
+    if (as === "org") {
+      setPath("org");
+      go("create");
+    } else if (as === "part") {
+      setPath("part");
       go("join");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -614,35 +699,28 @@ export default function FitTime() {
         </div>
         <div className="section-label">하루 중 몇 시부터 몇 시까지?</div>
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <select
-            className="textin"
-            style={{ flex: 1, textAlign: "center" }}
+          <Dropdown
+            ariaLabel="시작 시각"
             value={dayStart}
-            onChange={(e) => {
-              const v = Number(e.target.value);
+            options={HOUR_CHOICES.filter((h) => h <= 21).map((h) => ({
+              v: h,
+              label: hourLabel(h),
+            }))}
+            onChange={(v) => {
               setDayStart(v);
               if (dayEnd <= v) setDayEnd(Math.min(24, v + 1));
             }}
-          >
-            {HOUR_CHOICES.filter((h) => h <= 21).map((h) => (
-              <option key={h} value={h}>
-                {hourLabel(h)}
-              </option>
-            ))}
-          </select>
+          />
           <span style={{ color: "var(--text-3)" }}>~</span>
-          <select
-            className="textin"
-            style={{ flex: 1, textAlign: "center" }}
+          <Dropdown
+            ariaLabel="종료 시각"
             value={dayEnd}
-            onChange={(e) => setDayEnd(Number(e.target.value))}
-          >
-            {HOUR_CHOICES.filter((h) => h > dayStart).map((h) => (
-              <option key={h} value={h}>
-                {hourLabel(h)}
-              </option>
-            ))}
-          </select>
+            options={HOUR_CHOICES.filter((h) => h > dayStart).map((h) => ({
+              v: h,
+              label: hourLabel(h),
+            }))}
+            onChange={(v) => setDayEnd(v)}
+          />
         </div>
         <div className="range-note">
           {range.dates.length > 0 ? (
@@ -817,7 +895,11 @@ export default function FitTime() {
                 /* 취소하면 클립보드 폴백 */
               }
             }
-            navigator.clipboard?.writeText(url).catch(() => {});
+            try {
+              await navigator.clipboard?.writeText(url);
+            } catch {
+              /* 클립보드 미지원/차단 */
+            }
             toast("참여 링크 복사됨");
           }}
         >
@@ -827,7 +909,11 @@ export default function FitTime() {
           className="btn btn-ghost"
           style={{ marginTop: 8 }}
           onClick={() => {
-            navigator.clipboard?.writeText(code).catch(() => {});
+            try {
+              navigator.clipboard?.writeText(code);
+            } catch {
+              /* 클립보드 미지원/차단 */
+            }
             toast("코드 " + code + " 복사됨");
           }}
         >

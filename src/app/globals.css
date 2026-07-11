@@ -885,16 +885,78 @@ select:focus-visible {
   padding: 13px 14px;
   background: var(--surface);
 }
-/* 커스텀 셀렉트 — 네이티브 chevron 대신 통일된 아이콘 */
-select.textin {
-  appearance: none;
-  -webkit-appearance: none;
-  padding-right: 40px;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18' fill='none'%3E%3Cpath d='M4.5 7l4.5 4.5L13.5 7' stroke='%238b93a3' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-size: 18px 18px;
-  cursor: pointer;
+/* 커스텀 드롭다운 — 네이티브 select 팝업 대신 앱 스타일 메뉴 */
+.dd {
+  position: relative;
+  flex: 1;
+}
+.dd-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 13px 14px;
+  background: var(--surface);
+  transition: border-color 0.12s;
+}
+.dd-btn.open {
+  border-color: var(--accent);
+}
+.dd-chev {
+  width: 16px;
+  height: 16px;
+  color: var(--text-3);
+  flex: none;
+  transition: transform 0.15s;
+}
+.dd-btn.open .dd-chev {
+  transform: rotate(180deg);
+}
+.dd-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 6px;
+  max-height: 264px;
+  overflow-y: auto;
+  animation: enter 0.14s ease;
+}
+.dd-opt {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: left;
+}
+.dd-opt:hover {
+  background: var(--unk-bg);
+}
+.dd-opt.sel {
+  color: var(--accent);
+}
+.dd-check {
+  width: 15px;
+  height: 15px;
+  color: var(--accent);
+  flex: none;
 }
 .textin:focus {
   outline: none;

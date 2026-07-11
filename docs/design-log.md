@@ -661,3 +661,11 @@
 - **Evidence**: 승인 목업 `scratchpad/mock-verdict.html`. `src/app/globals.css :root`를 확정 토큰으로 교체, `.btn-primary`→네이비, `.hero`(추천)→틴트 위 흰 카드+코너 태그+센터 시간+원형아이콘 원장. app build exit 0, push(b589247)로 schedulechallenge 배포.
 - **Weakness**: (1) 워크스루 `public/portfolio.html`는 아직 이전 다크 차콜 상태 — 동일 시스템으로 remap 미완. (2) 앱의 추천 외 화면(home/create/invite/edge)은 토큰 상속으로 라이트화됐으나 화면별 카드/위계 최적화는 부분적. (3) OKLCH는 최신 브라우저만 — 구형 폴백 미설정(제출 데모엔 무방).
 - **Next Research**: portfolio.html을 확정 시스템으로 remap 후 재배포. 앱 각 화면(특히 create의 필수/선택, edge 조정) 카드/위계 다듬기. CLAUDE.md 시각 원칙 갱신.
+
+## Entry 067 — 확정 시스템 전 화면 통일 + 추천 화면 재구성 (2026-07-11)
+- **Fact**: 승인된 디자인 언어(Entry 066)를 앱 전 화면에 적용하는 과정에서, 토큰만 상속받고 화면별 조판이 안 된 화면들(홈·create 제목입력·시간 셀렉트·추천)이 러프하게 보인다는 사용자 실기기 피드백. 특히 추천 화면이 (a)시간 한 덩어리 40px 줄바꿈, (b)근거 원형 아이콘이 빈 원(CSS ::before, 글리프 없음), (c)선택참석 2/2인데 회색 모순, (d)evidence가 판결카드 안·why가 별도 카드로 목업과 구조 반대. toss-eval 재심사 23/30(통과 가능 경계-상): 축1 문제정의 8·축2 솔루션 8·축3 시각 7. 축3 감점은 화면 간 완성도 불균일 + 자가 렌더 검증 불가.
+- **Decision(추천 재구성)**: 목업 정밀 매칭 — 판결카드(코너 태그 + 날짜 작게 + 시간 크게 34 + why) + **별도 근거 원장 카드**(SVG 컬러 원형 아이콘: 체크/시계/삼각/점선원, 정확한 상태색 g/a/s, 라벨·서브·값 3열 위계). `e.label`을 날짜/시간으로 분리, 선택참석 전원가능 시 green, 미응답 행 추가. 미사용 `reqLine`/`.evidence-*` 제거.
+- **Decision(통일)**: `word-break: keep-all` 전역(단어 중간 끊김 수정), 제목 입력 무거운 파란 focus 박스 → `.field-input:focus-visible outline:none` + `.field:focus-within` 서브틀, 네이티브 셀렉트 → `select.textin` 커스텀(appearance none + 통일 chevron data-URI), 홈·엣지·안내 화면 `margin:auto 0` 정중앙 → 상단정렬(void 제거), 워드마크·`.choice.accent` 밝은블루 → 딥네이비. globals 하드코딩 색 전수 스캔 결과 잔여는 무해한 그림자 2건·의도된 흰 SVG stroke/흰 텍스트뿐.
+- **Evidence**: app build exit 0(수 회), push 21e7760 → schedulechallenge 자동배포(라이브 CSS에 `ev-row`/`rec-day`/`ledger` 클래스 8개 확인). Q 글자수 재측정 688/691/675(전부 700 이내이나 한도 근접 — 사용자가 답변을 확장한 듯). URL 200·구글드라이브 아님·임베드 정상.
+- **Weakness**: (1) 참여자 칠하기 그리드·override/ask·done(성공)·joined 등 일부 화면은 여전히 개별 육안 검수 미완(자가 렌더 불가). (2) Q2 691자 한도 근접 — 압축 필요. (3) 홈 2택지 하단 여백 잔존. (4) 재생 워크스루+임베드 중복 인상.
+- **Next Research**: 사용자 실기기 최종 리뷰 후 남은 화면(칠하기·성공) 미세 정렬, Q2 640자 내 압축 + Q1 외부 근거 1줄, 홈 하단 구성 보강.

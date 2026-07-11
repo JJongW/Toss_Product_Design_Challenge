@@ -97,10 +97,13 @@
   .try .eyebrow { justify-content: center; margin: 0 auto; }
   .try h2 { font-size: clamp(1.8rem, 4.4vw, 2.9rem); font-weight: 800; margin-top: 18px; }
   .try p { margin: 18px auto 0; max-width: 34ch; color: var(--ink-soft); font-size: clamp(1.02rem, 1.6vw, 1.18rem); line-height: 1.6; }
-  .live-phone { display: flex; justify-content: center; margin-top: 44px; }
-  /* iframe 내부 앱은 390px×760(min) 기준으로 한 화면에 맞게 설계됨 → 프레임을 그 크기에 맞춰 내부 스크롤 없이 */
-  .live-frame { position: relative; width: 414px; max-width: 94vw; height: 824px; background: #0A0A0A; border-radius: 46px; padding: 12px; box-shadow: var(--shadow), 0 0 0 1px var(--hairline-strong); }
-  .live-frame iframe { width: 100%; height: 100%; border: 0; border-radius: 34px; background: var(--screen); display: block; }
+  .live-row { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 46px; }
+  .live-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .live-cap { font-size: 0.92rem; font-weight: 700; color: var(--ink-soft); }
+  .live-cap b { color: var(--ink); }
+  /* 실기기 비율(9:19.5) · iframe이 앱 전체를 담게 */
+  .live-frame { position: relative; width: 358px; max-width: 92vw; aspect-ratio: 9 / 19.5; background: #0A0A0A; border-radius: 48px; padding: 11px; box-shadow: var(--shadow), 0 0 0 1px var(--hairline-strong); }
+  .live-frame iframe { width: 100%; height: 100%; border: 0; border-radius: 38px; background: var(--screen); display: block; }
   .try-btn { display: inline-flex; align-items: center; gap: 9px; margin-top: 28px; background: var(--navy); color: #fff; font-weight: 800; font-size: 1.02rem; padding: 15px 28px; border-radius: 14px; text-decoration: none; transition: transform .16s ease, box-shadow .28s ease; }
   .try-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px oklch(0.3 0.06 265 / .5); }
 
@@ -567,10 +570,19 @@
   <section class="try wrap">
     <span class="eyebrow">직접 써보기</span>
     <h2>재생만 보지 말고,<br>직접 만져보세요</h2>
-    <p>아래는 실제로 작동하는 화면이에요. 회의를 만들고, 데모로 나머지 응답을 채워 추천까지 바로 확인해보세요.</p>
-    <div class="live-phone">
-      <div class="live-frame">
-        <iframe src="https://schedulechallenge.vercel.app/" title="회의 시간 정하기 — 실제 작동 화면" loading="lazy"></iframe>
+    <p>실제로 작동하는 화면이에요. 주최자·참여자 두 쪽을 각각 만져보세요.<br>주최자 쪽에서 데모로 응답을 채우면 추천까지 바로 확인돼요.</p>
+    <div class="live-row">
+      <div class="live-col">
+        <div class="live-cap"><b>주최자</b> · 회의를 만드는 쪽</div>
+        <div class="live-frame">
+          <iframe src="https://schedulechallenge.vercel.app/?as=org" title="주최자 화면" loading="lazy" allow="clipboard-write"></iframe>
+        </div>
+      </div>
+      <div class="live-col">
+        <div class="live-cap"><b>참여자</b> · 초대받은 쪽</div>
+        <div class="live-frame">
+          <iframe src="https://schedulechallenge.vercel.app/?as=part" title="참여자 화면" loading="lazy" allow="clipboard-write"></iframe>
+        </div>
       </div>
     </div>
     <a class="try-btn" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">새 탭에서 크게 보기 →</a>
