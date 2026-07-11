@@ -258,8 +258,17 @@ The walkthrough should make these three points visible without a separate answer
 
 Current highest-priority walkthrough fixes:
 
-1. Mobile bug: bottom annotation cards use fixed positioning and continue into the Evidence/footer section. Hide annotations when outside the scrolly walkthrough, or scope mobile captions to the walkthrough stage only.
+Latest deployed-state notes for `https://fittime-walkthrough.vercel.app`:
+
+- The URL is public and loads without an auth wall.
+- The walkthrough currently has no Q1/Q2/Q3 answer section; keep it that way.
+- The latest visual direction is a clean white / cobalt product UI using Pretendard. Preserve this direction unless the user explicitly asks to revisit the visual concept.
+- Desktop has no obvious horizontal overflow.
+
+Must-fix before final submission:
+
+1. Stage / annotation leak: this is not only a mobile bug. On desktop, the sticky stage and the active annotation can remain visible when the Evidence/footer sections are in view. Hide the phone/stage label/progress/cursor/annotations outside the scrolly walkthrough, or add an explicit "outside walkthrough" state. Mobile fixed bottom captions must also be scoped to the walkthrough only.
 2. Recommendation screen: make the decision evidence explicit in the phone UI, ideally as separate rows such as `필수 참석 4/4 가능`, `선택 참석 1/2 가능`, `선호 충돌 1명 · 익명`, and optionally `미응답 0명`.
 3. First host screen: show the challenge's required/optional-attendee condition inside the product UI, e.g. `참석자 6명 · 필수 4 / 선택 2`.
-4. Hero headline: prefer a positive decision-support framing such as `여섯 명의 조건을 읽고, 정해도 되는 1시간을 찾다` over a framing that sounds too much like compromise or sacrifice.
-5. Footer/version: keep the design-log version or date current; avoid stale labels such as `v0.6`.
+4. Footer/version: update stale labels such as `v0.6` to the current date/version before submission.
+5. Hero headline: optional refinement. Prefer a positive decision-support framing such as `여섯 명의 조건을 읽고, 정해도 되는 1시간을 찾다` if it improves tone; the current `가장 덜 무리한 1시간` remains strategically valid.

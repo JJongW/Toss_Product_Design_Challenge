@@ -570,3 +570,19 @@
 - **Evidence**: 재배포 후 라이브 — Pretendard 링크·#2F6BFF·keep-all 존재, #21F1A8(네온) 완전 제거. 구조/JS(7신·스크럽·커서) 유지.
 - **Weakness**: (1) 실물 렌더 육안 미검증 — 사용자 확인 필수(대비·카드 분리·폰 목업 톤). (2) --faint(#99A2AE) 초소형 라벨 대비 낮음, 본문엔 미사용이나 점검 필요. (3) rec-card는 다크 카드 유지 — 라이트 전반과 대비 포인트로 의도했으나 톤 재검토 여지. (4) Pretendard CDN 의존(오프라인/CDN 장애 시 시스템 폰트 폴백).
 - **Next Research**: (a) 사용자 실물 확인 후 카드/그림자/간격 미세조정. (b) 필요 시 히어로에 시그니처 모먼트 1개 강화. (c) 모바일 375px 레이아웃 점검.
+
+## Entry 059 — 배포본 재검증: Claude 개발용 필수 수정점 확정 (2026-07-11)
+- **Fact**: 사용자가 `https://fittime-walkthrough.vercel.app` 배포본을 다시 검증하고, 고칠 점을 Claude가 인식할 수 있게 남겨 달라고 요청. 최신 확인 기준으로 배포 URL은 공개 접근 가능하고, Q1/Q2/Q3 요약 섹션은 없으며, 시각 방향은 화이트×코발트(`#2F6BFF`)·Pretendard 기반 클린 프로덕트로 바뀌어 있다. 데스크톱 수평 overflow는 보이지 않았다.
+- **Decision**: 기존 운영 원칙 유지 — 포폴 URL에는 답변 요약 섹션을 추가하지 않는다. 제출 답변은 `toss_product_designer_challenge.md`에서 존댓말로 관리하고, 포폴은 실제 제품 흐름으로 문제정의·해결·설계 이유가 읽히게 만든다. 포폴 문체는 제품 UI에 맞게 짧은 평어체/명사형/직접 행동 언어를 허용한다.
+- **Decision (필수 수정점)**: (1) **Evidence/footer 구간에서 stage/annotation이 남는 문제**를 최우선 수정한다. 모바일 fixed 말풍선뿐 아니라 데스크톱에서도 `.stage`와 `.anno.on`이 워크스루 바깥까지 잔류할 수 있으므로, scrolly 밖에서는 폰 목업·stage label·progress·cursor·annotation을 숨긴다. (2) 추천 화면의 한 줄 근거(`필수 4명 전원 가능 · 아쉬운 분 1명 · 익명`)를 `필수 참석 4/4 가능`, `선택 참석 1/2 가능`, `선호 충돌 1명 · 익명`, `미응답 0명` 같은 evidence row로 분리한다. (3) 첫 주최자 화면에 `참석자 6명 · 필수 4 / 선택 2`를 넣어 과제 조건이 제품 안에서 바로 보이게 한다. (4) footer의 오래된 `v0.6` 라벨을 현재 날짜/버전으로 갱신한다. (5) H1은 선택적으로 `여섯 명의 조건을 읽고, 정해도 되는 1시간을 찾다`처럼 긍정적 판단 지원 프레임을 검토한다.
+- **Evidence**: `CLAUDE.md`와 `.claude/docs/fit-time-strategy-brief.md`에 위 수정 우선순위를 최신 배포 상태 기준으로 업데이트했다. 특히 "모바일 버그"로만 적혀 있던 annotation 문제를 "데스크톱 Evidence/footer에서도 발생 가능한 stage/annotation leak"으로 확장해 명시했다.
+- **Weakness**: 현 시점 수정점은 문서화만 완료됐고, `public/portfolio.html`의 실제 구현 반영은 별도 작업으로 남아 있다. 또한 design-log에 과거 `Entry 055` 번호가 중복되어 있으므로 다음 기록부터는 가장 큰 번호 기준으로 이어 쓴다.
+- **Next Research**: `public/portfolio.html`에 필수 수정점 1~4를 실제 반영한 뒤, 데스크톱 1280px과 모바일 390px에서 Evidence/footer 진입 시 잔류 UI가 사라지는지, 추천 근거와 첫 화면 참석 조건이 충분히 읽히는지 재검증한다.
+
+## Entry 060 — 필수 수정점 4개 실제 구현 (public/portfolio.html) (2026-07-11)
+- **Fact**: Entry 059에서 문서화만 됐던 배포본 필수 수정점을 실제 코드에 반영. 대상은 `public/portfolio.html` (배포 워크스루). 근접 원인 분석 결과, stage/annotation leak의 실제 트리거는 1024px 이하에서 `.anno`가 `position: fixed`로 바뀌고 `.anno.on` 클래스가 마지막 스텝(7)에 남아, scrolly를 벗어난 hero·Evidence·footer 위에도 말풍선이 계속 떠 있던 것.
+- **Decision(구현)**: (1) `#scrolly`에 IntersectionObserver(threshold 0)를 붙여 워크스루가 화면에 없을 때 `.scrolly.out` 토글. `.scrolly.out`이면 anno·stage-label·progress·cursor를 `opacity:0 + pointer-events:none`(cursor는 visibility:hidden)으로 죽여 데스크톱·모바일 양쪽 잔류를 차단. (2) 추천 카드의 한 줄 요약(`필수 4명 전원 가능 · 아쉬운 분 1명 · 익명`)을 evidence row 4개로 분리 — `필수 참석 4/4 가능`(ok) · `선택 참석 0/2 응답`(wait) · `선호 충돌 1명·익명`(soft) · `미응답 2명·선택`. 색 dot으로 4상태를 시각 구분. 프로토타입 내부 데이터(민아·준=선택·대기)와 모순 없게 수치 정합. (3) Screen 1(주최자 첫 화면)에 `참석자 6명 · 필수 4·선택 2` field를 제품 UI 안에 추가(기존엔 hero chip에만 존재). a2로 삽입하고 이하 stagger 재번호. (4) footer `v0.6` → `v1.1 · 2026.07`.
+- **Decision(H1)**: 히어로 H1 `가장 덜 무리한 1시간`은 유지. brief에서 optional로 강등됐고 문제정의와 정합하므로 이번엔 건드리지 않음.
+- **Evidence**: grep 확인 — `v0.6` 제거됨, `.scrolly.out`/`.rec-ev`/`참석자` 삽입 확인, anno 13개 균형 유지. 문제정의·해결·설계근거(Q1~Q3) 텍스트는 불변이므로 `toss_product_designer_challenge.md` 동기화 불필요(UI 완성도 강화만 해당).
+- **Weakness**: 실물 렌더 육안 재검증 미완 — 데스크톱 1280px·모바일 390px에서 (a) Evidence/footer 진입 시 잔류 UI 실제 소멸, (b) 다크 rec-card 위 evidence row 대비, (c) screen 1에 필드 1개 추가로 세로 공간 빠듯한지 확인 필요. `.scrolly`가 ~800vh라 `out`은 hero(위)·Evidence(아래)에서만 토글되는 게 맞지만 브라우저별 sticky 해제 타이밍은 실측 권장.
+- **Next Research**: 사용자 실물 확인 후 rec-card 톤/간격 미세조정. 필요 시 배포(Vercel) 후 라이브 URL에서 모바일 fixed 캡션 소멸 최종 확인.

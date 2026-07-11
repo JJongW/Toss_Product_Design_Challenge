@@ -191,6 +191,16 @@
   .rec-card .rday { font-size: 1.5rem; font-weight: 800; margin-top: 7px; letter-spacing: 0; }
   .rec-card .rmeta { font-size: 0.76rem; color: #AEB6C4; margin-top: 6px; }
   .rec-card .rmeta b { color: var(--accent); }
+  /* recommendation evidence rows — 판단 근거를 한 줄 요약 대신 분리해 보여준다 */
+  .rec-ev { margin-top: 12px; display: flex; flex-direction: column; }
+  .rec-ev .er { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-top: 1px solid rgba(255,255,255,.1); font-size: 0.78rem; }
+  .rec-ev .er:first-child { border-top: none; }
+  .rec-ev .el { color: #AEB6C4; font-weight: 600; }
+  .rec-ev .ev { font-weight: 700; font-family: var(--font-mono); color: var(--beige); display: inline-flex; align-items: center; gap: 6px; }
+  .rec-ev .ev::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--unknown); flex: none; }
+  .rec-ev .ev.ok::before { background: var(--ok); }
+  .rec-ev .ev.soft::before { background: var(--soft); }
+  .rec-ev .ev.wait::before { background: var(--unknown); }
   .wkstrip { display: grid; grid-template-columns: repeat(5,1fr); gap: 5px; margin-top: 13px; }
   .wkstrip .wd { text-align: center; }
   .wkstrip .wn { font-size: 0.6rem; font-family: var(--font-mono); color: var(--screen-muted); margin-bottom: 4px; }
@@ -224,6 +234,14 @@
     transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1);
   }
   .anno.on { opacity: 1; transform: none; }
+
+  /* outside-walkthrough guard: kill all overlay UI when the scrolly is not in view
+     (fixes stage/annotation leak into Evidence/footer on both desktop and mobile) */
+  .scrolly.out .anno,
+  .scrolly.out .stage-label,
+  .scrolly.out .progress,
+  .scrolly.out .cursor { opacity: 0 !important; pointer-events: none !important; }
+  .scrolly.out .cursor { visibility: hidden; }
   .anno .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
   .anno h4 { font-size: 0.98rem; font-weight: 700; margin-top: 8px; color: var(--ink); }
   .anno p { font-size: 0.83rem; color: var(--ink-soft); margin: 7px 0 0; line-height: 1.62; }
@@ -421,10 +439,11 @@
           <div class="screen on" data-screen="1">
             <div class="sbar"><span>9:41</span><span>핏타임</span></div>
             <div class="a a1"><div class="stitle">회의 만들기</div><div class="ssub">언제, 얼마나 만날지만 정하면 링크가 나와요.</div></div>
-            <div class="a a2"><div class="flabel">기간</div><div class="field"><span class="v">다음 주 · 7/13–7/17</span><span class="m">주간 ▾</span></div></div>
-            <div class="a a3"><div class="toggle">주말 포함<div class="sw"></div></div></div>
-            <div class="a a4"><div class="flabel">회의 길이</div><div class="chips"><span class="pill">30분</span><span class="pill sel">1시간</span><span class="pill">1.5시간</span><span class="pill">2시간</span></div></div>
-            <div class="a a5"><div class="flabel">회의 가능 시간대</div><div class="field"><span class="v">09:00 – 18:00</span><span class="m">근무시간</span></div></div>
+            <div class="a a2"><div class="flabel">참석자</div><div class="field"><span class="v">6명</span><span class="m">필수 4 · 선택 2</span></div></div>
+            <div class="a a3"><div class="flabel">기간</div><div class="field"><span class="v">다음 주 · 7/13–7/17</span><span class="m">주간 ▾</span></div></div>
+            <div class="a a4"><div class="toggle">주말 포함<div class="sw"></div></div></div>
+            <div class="a a5"><div class="flabel">회의 길이</div><div class="chips"><span class="pill">30분</span><span class="pill sel">1시간</span><span class="pill">1.5시간</span><span class="pill">2시간</span></div></div>
+            <div class="a a6"><div class="flabel">회의 가능 시간대</div><div class="field"><span class="v">09:00 – 18:00</span><span class="m">근무시간</span></div></div>
             <div class="a a6 btn-fill">공유 링크 만들기</div>
           </div>
 
@@ -484,7 +503,12 @@
             <div class="a a2 rec-card" style="margin-top:12px">
               <div class="rk">한 곳으로 모았어요</div>
               <div class="rday">수 7/15 · 14:00–15:00</div>
-              <div class="rmeta">필수 4명 <b>전원 가능</b> · 아쉬운 분 <b>1명</b> · 익명</div>
+              <div class="rec-ev">
+                <div class="er"><span class="el">필수 참석</span><span class="ev ok">4/4 가능</span></div>
+                <div class="er"><span class="el">선택 참석</span><span class="ev wait">0/2 응답</span></div>
+                <div class="er"><span class="el">선호 충돌</span><span class="ev soft">1명 · 익명</span></div>
+                <div class="er"><span class="el">미응답</span><span class="ev">2명 · 선택</span></div>
+              </div>
               <div class="wkstrip">
                 <div class="wd"><div class="wn">월</div><div class="wc soft"></div></div>
                 <div class="wd"><div class="wn">화</div><div class="wc"></div></div>
@@ -600,7 +624,7 @@
   <footer class="foot wrap">
     <div class="fr">
       <span>핏타임 — Toss Product Design 2026 · 사용 흐름 워크스루</span>
-      <span class="fmono">근거: docs/design-log.md · v0.6</span>
+      <span class="fmono">근거: docs/design-log.md · v1.1 · 2026.07</span>
     </div>
   </footer>
 </div>
@@ -687,6 +711,16 @@
       entries.forEach(function (e) { if (e.isIntersecting) { setStep(+e.target.dataset.step); render(computeP()); } });
     }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
     trigs.forEach(function (t) { io.observe(t); });
+  }
+
+  // outside-walkthrough guard: mark .scrolly.out whenever the walkthrough is not on screen,
+  // so the sticky stage / annotations / cursor never leak into hero or Evidence/footer
+  var scrolly = document.getElementById("scrolly");
+  if (scrolly && "IntersectionObserver" in window) {
+    var ioOut = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { scrolly.classList.toggle("out", !e.isIntersecting); });
+    }, { threshold: 0 });
+    ioOut.observe(scrolly);
   }
 
   var ticking = false;
