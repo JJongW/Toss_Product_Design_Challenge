@@ -232,3 +232,34 @@ Applied to FitTime:
 ## Recommended Strategic Sentence
 
 > FitTime is not trying to find a perfect shared blank. It helps the host understand which constraints matter most and choose the 1-hour slot that is explainably least unreasonable for the group.
+
+## Portfolio Walkthrough Policy
+
+The deployed portfolio / walkthrough URL should **not** add a separate Q1/Q2/Q3 summary section.
+
+Reason:
+
+- The submission form already asks for Q1/Q2/Q3 written answers.
+- The URL is evaluated as a user-flow artifact, so it should prove the intent through the product experience itself.
+- Adding another explanatory Q section can make the artifact feel like it is compensating with narration instead of showing the UX.
+
+Therefore, when editing `docs/portfolio.html` or the deployed walkthrough:
+
+- Do not add a `Q1/Q2/Q3`, "answers", or case-study essay section.
+- Make the host problem readable through the hero, screen sequence, side annotations, and product UI.
+- If the intent is not clear, strengthen the relevant screen rather than adding a prose explanation block.
+- Tone rule: the written submission answers in `toss_product_designer_challenge.md` should use Korean honorific / polite style. The portfolio walkthrough itself does **not** need to use honorific style. It may use concise product UI copy, labels, noun phrases, and direct action language when that makes the flow clearer.
+
+The walkthrough should make these three points visible without a separate answer section:
+
+1. **Problem** — the host does not just need empty time; they need evidence that a time is safe to choose.
+2. **Solution** — participants give lightweight unavailable / avoid signals, while the system separates required, optional, soft, hard, and missing states.
+3. **Rationale** — a single recommendation with visible reasons reduces host interpretation burden better than another heatmap or poll.
+
+Current highest-priority walkthrough fixes:
+
+1. Mobile bug: bottom annotation cards use fixed positioning and continue into the Evidence/footer section. Hide annotations when outside the scrolly walkthrough, or scope mobile captions to the walkthrough stage only.
+2. Recommendation screen: make the decision evidence explicit in the phone UI, ideally as separate rows such as `필수 참석 4/4 가능`, `선택 참석 1/2 가능`, `선호 충돌 1명 · 익명`, and optionally `미응답 0명`.
+3. First host screen: show the challenge's required/optional-attendee condition inside the product UI, e.g. `참석자 6명 · 필수 4 / 선택 2`.
+4. Hero headline: prefer a positive decision-support framing such as `여섯 명의 조건을 읽고, 정해도 되는 1시간을 찾다` over a framing that sounds too much like compromise or sacrifice.
+5. Footer/version: keep the design-log version or date current; avoid stale labels such as `v0.6`.
