@@ -1,28 +1,31 @@
 :root {
   /* OKLCH · 브랜드 hue 255를 저채도로 머금은 뉴트럴(순수 흑백회 아님, 곡선 원리) · 포인트=블루 CTA만 */
-  --h: 255;
-  --accent: oklch(0.6 0.195 258); /* 블루 — CTA·결정 한 곳만 */
-  --accent-dark: oklch(0.52 0.19 258);
-  --accent-weak: oklch(0.955 0.03 258);
+  /* 확정 시스템: 틴트 배경 + 흰 카드 + 딥네이비 CTA · 포인트=태그/상태/CTA만 */
+  --h: 265;
+  --accent: oklch(0.58 0.17 258); /* 태그(작게) */
+  --accent-dark: oklch(0.5 0.17 258);
+  --accent-weak: oklch(0.95 0.035 258);
   --accent-ink: #ffffff;
-  --bg: oklch(0.975 0.006 255); /* 화면 바탕: 블루 살짝 밴 화이트 */
-  --surface: oklch(0.998 0.003 255); /* 카드 */
-  --line: oklch(0.925 0.01 256); /* 헤어라인(최소 사용) */
-  --text: oklch(0.28 0.035 262); /* 본문: 딥 블루-잉크 */
-  --text-2: oklch(0.47 0.033 260);
-  --text-3: oklch(0.64 0.026 258);
-  --ok-fg: oklch(0.66 0.13 155); /* 상태: 절제 채도 */
+  --navy: oklch(0.3 0.055 265); /* 기본 CTA */
+  --navy-dark: oklch(0.25 0.05 265);
+  --bg: oklch(0.955 0.014 275); /* 화면: 소프트 라벤더-그레이(순수 화이트 아님) */
+  --surface: oklch(0.998 0.003 275); /* 흰 카드 */
+  --line: oklch(0.92 0.008 270); /* 헤어라인(최소 사용) */
+  --text: oklch(0.29 0.045 268); /* 딥 네이비 잉크 */
+  --text-2: oklch(0.48 0.035 265);
+  --text-3: oklch(0.64 0.025 265);
+  --ok-fg: oklch(0.66 0.13 155);
   --ok-bg: oklch(0.95 0.045 155);
-  --soft-fg: oklch(0.72 0.12 72);
+  --soft-fg: oklch(0.74 0.12 72);
   --soft-bg: oklch(0.95 0.05 72);
-  --unk-fg: oklch(0.66 0.024 258);
-  --unk-bg: oklch(0.945 0.008 258);
+  --unk-fg: oklch(0.68 0.02 265);
+  --unk-bg: oklch(0.945 0.008 265);
   --hard-fg: oklch(0.6 0.19 25);
   --hard-bg: oklch(0.95 0.045 25);
-  --r-md: 12px;
-  --r-lg: 16px;
-  --shadow: 0 1px 2px oklch(0.5 0.05 258 / 0.06),
-    0 12px 30px -14px oklch(0.42 0.08 258 / 0.2);
+  --r-md: 14px;
+  --r-lg: 22px;
+  --shadow: 0 1px 2px oklch(0.3 0.04 265 / 0.05),
+    0 18px 34px -22px oklch(0.3 0.06 265 / 0.28);
 }
 
 * {
@@ -217,11 +220,11 @@ select:focus-visible {
   cursor: not-allowed;
 }
 .btn-primary {
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--navy);
+  color: #fff;
 }
 .btn-primary:active {
-  background: var(--accent-dark);
+  background: var(--navy-dark);
 }
 .btn-ghost {
   background: var(--surface);
@@ -285,14 +288,18 @@ select:focus-visible {
   padding: 16px;
   border: 1px solid var(--line, #e2eae7);
 }
-/* 추천 = 판결(verdict): 좌측정렬 · 큰 시간 · 구분선 없는 근거 원장 · 컬러 원형 */
+/* 추천 = 판결(verdict): 틴트 위 흰 카드 · 코너 태그 · 센터 큰 시간 · 근거 원장(컬러 원형) */
 .hero {
-  text-align: left;
-  padding: 22px 20px 8px;
+  text-align: center;
+  padding: 42px 20px 8px;
   border: none;
   box-shadow: var(--shadow);
+  position: relative;
 }
 .hero .tag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -302,14 +309,13 @@ select:focus-visible {
   background: var(--accent-weak);
   padding: 6px 11px;
   border-radius: 999px;
-  margin-bottom: 16px;
 }
 .hero .when {
   font-size: 40px;
   font-weight: 800;
   letter-spacing: -0.035em;
   margin-bottom: 14px;
-  line-height: 1.06;
+  line-height: 1.1;
   font-variant-numeric: tabular-nums;
 }
 .hero .stat {
