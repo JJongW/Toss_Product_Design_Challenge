@@ -92,8 +92,19 @@
   .scrollcue .bar { width: 1px; height: 42px; background: linear-gradient(var(--accent), transparent); animation: cue 1.8s ease-in-out infinite; }
   @keyframes cue { 0%,100% { opacity:.3; transform: scaleY(.6);} 50% { opacity:1; transform: scaleY(1);} }
 
+  /* ===================== WHY ===================== */
+  .why-sec { padding: 104px 0 96px; border-top: 1px solid var(--hairline); }
+  .why-head { text-align: center; max-width: 40ch; margin: 0 auto; }
+  .why-head h2 { font-size: clamp(1.8rem, 4.4vw, 2.9rem); font-weight: 800; margin-top: 18px; line-height: 1.22; }
+  .why-lede { font-size: clamp(1rem, 1.5vw, 1.12rem); color: var(--ink-soft); line-height: 1.7; margin: 20px auto 0; max-width: 46ch; }
+  .why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 52px; }
+  .why-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 20px; padding: 26px 24px; box-shadow: var(--shadow); }
+  .why-card .wn { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: .06em; }
+  .why-card h3 { font-size: 1.18rem; font-weight: 800; margin-top: 12px; letter-spacing: -.02em; }
+  .why-card p { font-size: 0.96rem; color: var(--ink-soft); line-height: 1.66; margin-top: 10px; }
+
   /* ===================== TRY IT ===================== */
-  .try { padding: 108px 0 128px; text-align: center; border-top: 1px solid var(--hairline); }
+  .try { padding: 104px 0 128px; text-align: center; border-top: 1px solid var(--hairline); }
   .try .eyebrow { justify-content: center; margin: 0 auto; }
   .try h2 { font-size: clamp(1.8rem, 4.4vw, 2.9rem); font-weight: 800; margin-top: 18px; }
   .try p { margin: 18px auto 0; max-width: 34ch; color: var(--ink-soft); font-size: clamp(1.02rem, 1.6vw, 1.18rem); line-height: 1.6; }
@@ -410,193 +421,37 @@
     <span class="eyebrow" style="justify-content:center">Toss Product Design 2026</span>
     <h1>여섯 명의 회의,<br><span class="g">가장 덜 무리한 1시간</span>을 찾다</h1>
     <p>안 되는 이유는 사람마다 달라요.<br>그 사정을 일일이 캘린더에 펼치지 않아도,<br>안 되는 시간만 가볍게 모으면 <b style="color:var(--ink)">정해도 되는 1시간</b>이 남아요.</p>
-    <p class="hero-note">먼저 화면을 따라가며 <b style="color:var(--ink)">왜 이렇게 설계했는지</b> 보고,<br>맨 아래에서 <b style="color:var(--ink)">직접 만져보세요</b>.</p>
+    <p class="hero-note"><b style="color:var(--ink)">왜 이렇게 설계했는지</b> 보고,<br>아래에서 실제 앱을 <b style="color:var(--ink)">직접 만져보세요</b>.</p>
     <div class="hero-meta">
       <span class="chip">필수 4 · 선택 2</span>
       <span class="chip">다음 주 · 1시간</span>
       <span class="chip">안 되는 시간만 · 익명 선호</span>
     </div>
-    <div class="scrollcue">SCROLL<div class="bar"></div></div>
   </header>
 
-  <!-- ===================== SCROLLY ===================== -->
-  <div class="scrolly" id="scrolly">
-    <div class="stage">
-      <div class="stage-label"><span class="who" id="stWho">주최자</span> · <b><span id="stStep">01</span></b> <span id="stName">회의 만들기</span></div>
-      <div class="progress" id="dots"></div>
-
-      <!-- PHONE -->
-      <div class="phone">
-        <div class="screenframe">
-
-          <!-- virtual finger cursor -->
-          <div class="cursor" id="cursor" aria-hidden="true"></div>
-
-          <!-- Screen 1 -->
-          <div class="screen on" data-screen="1">
-            <div class="a a1"><div class="stitle">회의 만들기</div><div class="ssub">언제, 얼마나 만날지만 정하면 링크가 나와요.</div></div>
-            <div class="a a2"><div class="flabel">참석자</div><div class="field"><span class="v">6명</span><span class="m">필수 4 · 선택 2</span></div></div>
-            <div class="a a3"><div class="flabel">기간</div><div class="field"><span class="v">다음 주 · 7/13–7/17</span><span class="m">주간 ▾</span></div></div>
-            <div class="a a4"><div class="toggle">주말 포함<div class="sw"></div></div></div>
-            <div class="a a5"><div class="flabel">회의 길이</div><div class="chips"><span class="pill">30분</span><span class="pill sel">1시간</span><span class="pill">1.5시간</span><span class="pill">2시간</span></div></div>
-            <div class="a a6"><div class="flabel">회의 가능 시간대</div><div class="field"><span class="v">09:00 – 18:00</span><span class="m">근무시간</span></div></div>
-            <div class="a a6 btn-fill">공유 링크 만들기</div>
-          </div>
-
-          <!-- Screen 2 -->
-          <div class="screen" data-screen="2">
-            <div class="a a1"><div class="stitle">누구세요?</div><div class="ssub">디자인팀 주간회의 · 명단에서 본인을 선택하세요.</div></div>
-            <div class="a a2 roster" style="margin-top:14px">
-              <div class="rrow me"><div class="av">지</div>지민<span class="ck">✓</span></div>
-              <div class="rrow"><div class="av">현</div>현우<span class="rt">필수</span></div>
-              <div class="rrow"><div class="av">서</div>서연<span class="rt">필수</span></div>
-              <div class="rrow"><div class="av">태</div>태호<span class="rt">필수</span></div>
-              <div class="rrow"><div class="av">민</div>민아<span class="rt">선택</span></div>
-              <div class="rrow"><div class="av">준</div>준<span class="rt">선택</span></div>
-            </div>
-            <div class="a a4 info-banner">명단에 없는 이름은 들어올 수 없어요. 중복 신원도 차단돼요.</div>
-            <div class="a a5 btn-fill">지민으로 시작하기</div>
-          </div>
-
-          <!-- Screen 3 -->
-          <div class="screen" data-screen="3">
-            <div class="a a1">
-              <span class="wprivacy"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="1.5" y="4.3" width="7" height="4.7" rx="1.3" stroke="currentColor" stroke-width="1"/><path d="M3.2 4.3V3a1.8 1.8 0 0 1 3.6 0v1.3" stroke="currentColor" stroke-width="1"/></svg>칠한 시간은 아무에게도 안 보여요</span>
-              <div class="stitle" style="margin-top:9px">안 되는 시간만 칠하세요</div>
-              <div class="ssub">되는 시간 다 고를 필요 없어요. 안 되는 칸만.</div>
-            </div>
-            <div class="a a2 seg dotseg" style="margin-top:12px">
-              <button class="on hard"><span class="segdot hard"></span>안 돼요</button>
-              <button><span class="segdot soft"></span>되도록 피해요</button>
-            </div>
-            <div class="a a4 pgrid-wrap">
-              <div class="pgrid">
-                <div class="pgc"></div>
-                <div class="pgh"><b>월</b><span>7/13</span></div><div class="pgh"><b>화</b><span>7/14</span></div><div class="pgh"><b>수</b><span>7/15</span></div><div class="pgh"><b>목</b><span>7/16</span></div><div class="pgh"><b>금</b><span>7/17</span></div>
-                <div class="th">10</div><div class="pcell"></div><div class="pcell no" style="--pd:.15s"></div><div class="pcell"></div><div class="pcell"></div><div class="pcell soft" style="--pd:.28s"></div>
-                <div class="th">12</div><div class="pcell soft" style="--pd:.41s"></div><div class="pcell no" style="--pd:.54s"></div><div class="pcell"></div><div class="pcell"></div><div class="pcell"></div>
-                <div class="th">14</div><div class="pcell"></div><div class="pcell"></div><div class="pcell"></div><div class="pcell no" style="--pd:.67s"></div><div class="pcell"></div>
-                <div class="th">16</div><div class="pcell no" style="--pd:.80s"></div><div class="pcell"></div><div class="pcell soft" style="--pd:.93s"></div><div class="pcell"></div><div class="pcell"></div>
-              </div>
-            </div>
-            <div class="a a6 btn-fill">칠하기 완료</div>
-          </div>
-
-          <!-- Screen 4 -->
-          <div class="screen" data-screen="4">
-            <div class="a a1"><div class="stitle">판단에 필요한 응답</div></div>
-            <div class="a a2"><div class="prog-line"><b>4</b><span>/ 6명 등록</span></div><div class="ptrack"><i></i></div></div>
-            <div class="a a3" style="margin-top:8px">
-              <div class="stat-row"><span class="dot done"></span>지민<span class="tail">등록함</span></div>
-              <div class="stat-row"><span class="dot done"></span>현우<span class="tail">등록함</span></div>
-              <div class="stat-row"><span class="dot done"></span>서연<span class="tail">등록함</span></div>
-              <div class="stat-row"><span class="dot done"></span>태호<span class="tail">등록함</span></div>
-              <div class="stat-row"><span class="dot wait"></span>민아<span class="tail">대기 · 선택</span></div>
-              <div class="stat-row"><span class="dot wait"></span>준<span class="tail">대기 · 선택</span></div>
-            </div>
-            <div class="a a5 info-banner">전원을 기다리지 않아요. 지금 정보로도 추천을 볼 수 있어요.</div>
-            <div class="a a6 btn-fill">추천 시간 보기</div>
-          </div>
-
-          <!-- Screen 5 · 앱 판결카드와 동일 언어 -->
-          <div class="screen" data-screen="5">
-            <div class="a a1"><div class="stitle">추천 시간</div></div>
-            <div class="a a2 vcard" style="margin-top:12px">
-              <span class="vtag">추천</span>
-              <div class="vday">수요일 · 7/15</div>
-              <div class="vtime">오후 2:00<span class="vsep">–</span>3:00</div>
-              <div class="vwhy">필수로 참석해야 하는 <b>네 분이 모두</b> 되는 시간이라, 정하셔도 괜찮아요.</div>
-            </div>
-            <div class="a a3 vsec">정해도 되는 근거</div>
-            <div class="a a4 vledger">
-              <div class="vrow"><span class="vcir g"><svg viewBox="0 0 18 18" fill="none"><path d="M3.8 9.4l3 3L14.4 5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="vl">필수 참석</span><span class="vv">4<span class="vu">/ 4</span></span></div>
-              <div class="vrow"><span class="vcir a"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.2" stroke="#fff" stroke-width="1.8"/><path d="M9 5.2v4l2.6 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="vl">선택 참석</span><span class="vv">1<span class="vu">/ 2</span></span></div>
-              <div class="vrow"><span class="vcir a"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2.8l6.5 11.2H2.5L9 2.8z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 7.2v3M9 11.9v.1" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="vl">선호 충돌 <em>익명</em></span><span class="vv">1<span class="vu">명</span></span></div>
-              <div class="vrow"><span class="vcir s"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.2" stroke="#fff" stroke-width="1.8" stroke-dasharray="2.5 2.5"/></svg></span><span class="vl">미응답</span><span class="vv" style="color:var(--muted)">0<span class="vu">명</span></span></div>
-            </div>
-            <div class="a a6 btn-fill">이 시간으로 제안하기</div>
-          </div>
-
-          <!-- Screen 6 · 엣지: 필수 슬롯이 없을 때 -->
-          <div class="screen" data-screen="6">
-            <div class="a a1"><div class="stitle">완벽한 시간이 없을 땐</div><div class="ssub">필수 4명이 모두 되는 1시간이 없어요. 강제 대신 길을 열어요.</div></div>
-            <div class="a a2 ask" style="margin-top:12px">
-              <div class="tag" style="color:var(--no)">막힌 이유 · 하드</div>
-              <div class="q">수 14:00 — 태호님 외근</div>
-              <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
-                <span class="pill" style="background:var(--no-bg);border-color:transparent;color:var(--no)">태호 · 필수 · 절대 불가</span>
-              </div>
-            </div>
-            <div class="a a4 flabel" style="margin:14px 0 7px">막히면 이렇게 풉니다</div>
-            <div class="a a5 btn-line" style="margin-top:0">태호님께 조정을 정중히 요청하기</div>
-            <div class="a a6 btn-line">이번 회의는 태호를 ‘선택 참석’으로 두기</div>
-            <div class="a a6 info-banner">누구에게도 강제하지 않아요. 당사자가 스스로 고칠 기회를 줍니다.</div>
-          </div>
-
-          <!-- Screen 7 · 알림 · 확정 -->
-          <div class="screen" data-screen="7">
-            <div class="a a1"><div class="stitle">한 사람만 확인하면 돼요</div><div class="ssub">결과를 바꿀 수 있는 분에게만 물어봐요.</div></div>
-            <div class="a a2 ask" style="margin-top:12px">
-              <div class="tag">선택 참석 · 민아</div>
-              <div class="q">수요일 14시, 괜찮으세요?</div>
-              <div class="btns"><div class="y">괜찮아요</div><div class="n">어려워요</div></div>
-            </div>
-            <div class="a a4 confirmed">
-              <div class="chk">✓</div>
-              <div class="big">회의 확정 · 수 7/15 14:00</div>
-              <div class="sub">마감이 와도 자동 확정하지 않고, 주최자가 결정해요.</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ANNOTATIONS -->
-      <!-- step 1 -->
-      <div class="anno sl" data-anno="1" style="top:20%"><span class="k">왜 · 범위부터</span><h4>추상 요일이 아니라 실제 날짜</h4><p>‘다음 주’ 같은 실제 범위를 못 정하면 회의 하나도 못 잡아요. 그래서 첫 화면부터 진짜 날짜로 시작합니다.</p></div>
-      <div class="anno sr sec" data-anno="1" style="top:56%"><span class="k">왜 · 주말 토글</span><h4>대부분 팀엔 불필요</h4><p>기본은 평일. 필요한 팀만 켜도록 옵션으로 숨겨 화면을 비웁니다.</p></div>
-
-      <!-- step 2 -->
-      <div class="anno sr" data-anno="2" style="top:24%"><span class="k">왜 · 명단에서 선택</span><h4>입력이 아니라 선택</h4><p>6명은 이미 정해진 팀이에요. 코드·이름을 타이핑하는 대신 <b style="color:var(--ink)">본인만 고르면</b> 끝 — 마찰을 없앱니다.</p></div>
-      <div class="anno sl sec" data-anno="2" style="top:58%"><span class="k">왜 · 로스터-락</span><h4>집계 신뢰를 지킨다</h4><p>명단 밖 이름·중복 신원(민수/김민수)을 처음부터 차단해 결과를 믿을 수 있게.</p></div>
-
-      <!-- step 3 -->
-      <div class="anno sl" data-anno="3" style="top:20%"><span class="k">왜 · 빼기식 입력</span><h4>‘안 되는 칸’만 칠한다</h4><p>일정은 대개 비어 있어요. 되는 시간을 다 고르게 하면 노동이 커집니다. 안 되는 곳만 칠하면 몇 초.</p></div>
-      <div class="anno sr sec" data-anno="3" style="top:56%"><span class="k">왜 · 하드/소프트</span><h4>무게가 다른 두 제약</h4><p>‘외근(절대 불가)’과 ‘점심 직후 회피(되도록 피함)’를 입력부터 분리해 나중에 뭉개지지 않게.</p></div>
-
-      <!-- step 4 -->
-      <div class="anno sr" data-anno="4" style="top:26%"><span class="k">왜 · 논블로킹</span><h4>전원 등록을 안 기다린다</h4><p>등록을 진행 조건으로 걸면 무응답이 다시 병목이 돼 결국 Doodle이 됩니다. 늘 지금 정보로 진행해요.</p></div>
-
-      <!-- step 5 -->
-      <div class="anno sl" data-anno="5" style="top:18%"><span class="k">왜 · 단일 추천</span><h4>나열이 아니라 하나</h4><p>주최자의 진짜 문제는 ‘정해도 되는지 확신이 없음’. 그래서 시스템이 대신 계산해 <b style="color:var(--ink)">하나</b>를 제안하고 근거를 붙입니다.</p></div>
-      <div class="anno sr sec" data-anno="5" style="top:56%"><span class="k">왜 · 익명 4색</span><h4>아쉬움은 익명으로</h4><p>소프트 선호는 익명 집계, 외근 같은 하드 팩트만 실명. 눈치 없이 ‘아쉽다’고 말할 창구예요.</p></div>
-
-      <!-- step 6 · 엣지 -->
-      <div class="anno sl" data-anno="6" style="top:17%"><span class="k">왜 · 강제 대신 요청</span><h4>완벽한 슬롯이 없을 때</h4><p>필수 인원이 겹치면 임의로 밀어붙이지 않아요. ‘조정 요청’ 또는 ‘선택 참석으로 전환’ 두 길을 열어 <b style="color:var(--ink)">당사자가 스스로 고치게</b> 합니다.</p></div>
-      <div class="anno sr sec" data-anno="6" style="top:55%"><span class="k">왜 · 두 갈래</span><h4>사람 vs 규칙</h4><p>사람을 바꿀지(조정 요청), 조건을 바꿀지(선택 제외)를 주최자가 고른다 — 막다른 길을 만들지 않는다.</p></div>
-
-      <!-- step 7 -->
-      <div class="anno sr" data-anno="7" style="top:20%"><span class="k">왜 · 외과적 알림</span><h4>결과 바꿀 사람에게만</h4><p>답이 정해진 사람은 안 건드려요. 필요한 한 명에게만 원탭으로 물어 소란을 만들지 않습니다.</p></div>
-      <div class="anno sl sec" data-anno="7" style="top:58%"><span class="k">왜 · 주최자 확정</span><h4>자동 확정을 피한다</h4><p>회의 시간은 되돌리기 비싼 결정. 마감은 자동 확정이 아니라 주최자에게 결정을 요청하는 트리거로만 씁니다.</p></div>
+  <!-- ===================== WHY ===================== -->
+  <section class="why-sec wrap">
+    <div class="why-head">
+      <span class="eyebrow">왜 이렇게 설계했나</span>
+      <h2>빈 시간 찾기가 아니라,<br>정해도 되는 근거를 만든다</h2>
+      <p class="why-lede">주최자의 진짜 어려움은 서로 다른 무게의 조건을 해석해 “이 시간으로 정해도 괜찮다”고 판단하는 일이에요. 그 판단을 아래 원칙으로 도왔어요.</p>
     </div>
-
-    <!-- invisible scroll sentinels -->
-    <div class="triggers" id="triggers">
-      <div class="trig" data-step="1"></div>
-      <div class="trig" data-step="2"></div>
-      <div class="trig" data-step="3"></div>
-      <div class="trig" data-step="4"></div>
-      <div class="trig" data-step="5"></div>
-      <div class="trig" data-step="6"></div>
-      <div class="trig" data-step="7"></div>
+    <div class="why-grid">
+      <div class="why-card"><span class="wn">01</span><h3>실제 날짜 위에서</h3><p>‘다음 주’ 같은 진짜 범위를 못 정하면 회의 하나도 못 잡아요. 첫 화면부터 실제 날짜로 시작합니다.</p></div>
+      <div class="why-card"><span class="wn">02</span><h3>안 되는 시간만</h3><p>일정은 대개 비어 있어요. 되는 시간을 다 고르는 노동 대신, 안 되는 칸만 몇 초면 끝.</p></div>
+      <div class="why-card"><span class="wn">03</span><h3>무게가 다른 두 제약</h3><p>‘절대 불가’와 ‘되도록 피함’을 입력부터 분리해, 나중에 같은 정보로 뭉개지지 않게.</p></div>
+      <div class="why-card"><span class="wn">04</span><h3>아쉬움은 익명으로</h3><p>소프트 선호는 익명 집계. 관계 눈치 없이 솔직히 말할 수 있어야 더 나은 시간이 나와요.</p></div>
+      <div class="why-card"><span class="wn">05</span><h3>전원을 안 기다린다</h3><p>전원 등록을 진행 조건으로 걸면 무응답이 병목이 돼요. 늘 지금까지 모인 정보로 추천합니다.</p></div>
+      <div class="why-card"><span class="wn">06</span><h3>나열이 아니라 하나</h3><p>주최자의 진짜 문제는 ‘정해도 되는지 확신이 없음’. 그래서 단일 추천 + 근거 원장을 줍니다.</p></div>
+      <div class="why-card"><span class="wn">07</span><h3>강제 대신 길</h3><p>필수 인원이 겹치면 임의로 밀지 않아요. ‘조정 요청’ 또는 ‘선택 참석 전환’ 두 길을 엽니다.</p></div>
     </div>
-  </div>
+  </section>
 
   <!-- ===================== TRY IT (live app embed) ===================== -->
   <section class="try wrap">
     <span class="eyebrow">직접 써보기</span>
-    <h2>재생만 보지 말고,<br>직접 만져보세요</h2>
-    <p>실제로 작동하는 화면이에요. 주최자·참여자 두 쪽을 각각 만져보세요.<br>주최자 쪽에서 데모로 응답을 채우면 추천까지 바로 확인돼요.</p>
+    <h2>말로 설명하지 않고,<br>직접 만져보세요</h2>
+    <p>실제로 작동하는 화면이에요. 주최자·참여자 두 쪽을 각각 눌러보세요.<br>주최자 쪽에서 ‘데모’로 응답을 채우면 추천까지 바로 확인돼요.</p>
     <div class="live-row">
       <div class="live-col">
         <div class="live-cap"><b>주최자</b> · 회의를 만드는 쪽</div>
@@ -615,108 +470,7 @@
   </section>
 </div>
 
-<script>
-(function () {
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var TOTAL = 7;
-  var names = { 1:["주최자","회의 만들기"], 2:["참여자","본인 선택"], 3:["참여자","안 되는 시간 칠하기"], 4:["주최자","참여 현황"], 5:["주최자","단일 추천"], 6:["주최자","막힐 때 · 조정 요청"], 7:["주최자","알림 · 확정"] };
-  var screens = document.querySelectorAll(".screen");
-  var annos = document.querySelectorAll(".anno");
-  var trigs = document.querySelectorAll(".trig");
-  var frame = document.querySelector(".screenframe");
-  var cursor = document.getElementById("cursor");
-  var stStep = document.getElementById("stStep"), stName = document.getElementById("stName"), stWho = document.getElementById("stWho");
 
-  var dotsWrap = document.getElementById("dots"), dots = [];
-  for (var i = 1; i <= TOTAL; i++) { var d = document.createElement("i"); dotsWrap.appendChild(d); dots.push(d); }
-
-  var CURSOR_SEL = { 1: ".pill.sel", 2: ".rrow.me", 5: ".btn-fill", 6: ".btn-line", 7: ".ask .btns .y" };
-  var current = 0, tapped = {};
-
-  function screenOf(n) { return screens[n - 1]; }
-
-  function setStep(n) {
-    if (n === current) return;
-    current = n; tapped = {};
-    screens.forEach(function (s) { s.classList.toggle("on", +s.dataset.screen === n); });
-    annos.forEach(function (a) { a.classList.toggle("on", +a.dataset.anno === n); });
-    dots.forEach(function (d, i) { d.classList.toggle("on", i === n - 1); });
-    stStep.textContent = ("0" + n).slice(-2);
-    if (names[n]) { stWho.textContent = names[n][0]; stName.textContent = names[n][1]; }
-    // reset scrubbed state so it re-plays on re-entry
-    var s3 = screenOf(3); if (s3) s3.querySelectorAll(".pcell").forEach(function (c) { c.classList.remove("paint"); });
-    var s4 = screenOf(4); var bar = s4 && s4.querySelector(".ptrack i"); if (bar) bar.style.width = "0%";
-    if (cursor) { cursor.classList.remove("tap"); cursor.classList.toggle("drag", n === 3); }
-    if (reduce) { // 모션 없이 최종 상태
-      if (n === 3 && s3) s3.querySelectorAll(".pcell.no,.pcell.soft").forEach(function (c) { c.classList.add("paint"); });
-      if (n === 4 && bar) bar.style.width = "66%";
-    }
-  }
-
-  function moveCursor(el) {
-    if (!el || !frame || !cursor) return;
-    var f = frame.getBoundingClientRect(), r = el.getBoundingClientRect();
-    cursor.style.left = (r.left - f.left + r.width / 2) + "px";
-    cursor.style.top = (r.top - f.top + r.height / 2) + "px";
-  }
-  function tapAt(n, p, thr) {
-    if (p >= thr && !tapped[n]) { tapped[n] = true; if (cursor) { cursor.classList.add("tap"); setTimeout(function () { cursor && cursor.classList.remove("tap"); }, 520); } }
-  }
-
-  function render(p) {
-    var n = current, screen = screenOf(n);
-    if (!screen || reduce) return;
-    if (cursor) cursor.classList.toggle("show", p > 0.05 && p < 0.96);
-    if (n === 3) {
-      var cells = screen.querySelectorAll(".pcell.no, .pcell.soft"), cnt = cells.length;
-      var k = Math.floor(p * cnt + 0.001);
-      cells.forEach(function (c, i) { c.classList.toggle("paint", i < k); });
-      var idx = Math.min(cnt - 1, Math.max(0, Math.floor(p * cnt)));
-      if (cells[idx]) moveCursor(cells[idx]);
-    } else if (n === 4) {
-      var bar = screen.querySelector(".ptrack i"); if (bar) bar.style.width = Math.min(1, p * 1.25) * 66 + "%";
-      var btn = screen.querySelector(".btn-fill"); if (btn) moveCursor(btn);
-      tapAt(n, p, 0.6);
-    } else {
-      var el = CURSOR_SEL[n] && screen.querySelector(CURSOR_SEL[n]);
-      if (el) moveCursor(el);
-      tapAt(n, p, 0.45);
-    }
-  }
-
-  function computeP() {
-    var t = trigs[current - 1]; if (!t) return 0;
-    var r = t.getBoundingClientRect(), vh = window.innerHeight || 800;
-    return Math.min(1, Math.max(0, (vh * 0.5 - r.top) / r.height));
-  }
-
-  setStep(1);
-
-  if ("IntersectionObserver" in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) { setStep(+e.target.dataset.step); render(computeP()); } });
-    }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
-    trigs.forEach(function (t) { io.observe(t); });
-  }
-
-  // outside-walkthrough guard: mark .scrolly.out whenever the walkthrough is not on screen,
-  // so the sticky stage / annotations / cursor never leak into hero or Evidence/footer
-  var scrolly = document.getElementById("scrolly");
-  if (scrolly && "IntersectionObserver" in window) {
-    var ioOut = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { scrolly.classList.toggle("out", !e.isIntersecting); });
-    }, { threshold: 0 });
-    ioOut.observe(scrolly);
-  }
-
-  var ticking = false;
-  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(function () { render(computeP()); ticking = false; }); } }
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll);
-  onScroll();
-
-})();
-</script>
 
 </body>
 </html>
