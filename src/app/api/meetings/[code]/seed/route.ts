@@ -46,14 +46,14 @@ function paint(meeting: Meeting, persona: (typeof PERSONAS)[number]) {
 // POST /api/meetings/:code/seed — 미등록 참여자 최대 2명을 페르소나로 등록.
 export async function POST(
   _req: Request,
-  ctx: { params: Promise<{ code: string }> }
+  ctx: { params: Promise<{ code: string }> },
 ) {
   const { code } = await ctx.params;
   const meeting = await getMeeting(code);
   if (!meeting) {
     return NextResponse.json(
       { error: "그런 초대 코드를 찾지 못했어요." },
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -61,7 +61,7 @@ export async function POST(
   let pi = 0;
   for (const p of meeting.participants) {
     if (p.registered) continue;
-    if (n >= 2) break; // 한 번에 2명씩
+    // 데모: 미등록 팀원 전원을 한 번에 채워, 솔로 평가자도 즉시 완전한 추천에 도달.
     const persona = PERSONAS[pi % PERSONAS.length];
     pi += 1;
     const { hard, soft } = paint(meeting, persona);

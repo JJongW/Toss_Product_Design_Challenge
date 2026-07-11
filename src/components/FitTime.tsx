@@ -855,14 +855,13 @@ export default function FitTime() {
             ))}
           </div>
           <div className="hint" style={{ textAlign: "left", marginTop: 12 }}>
-            등록 여부만 보여요 · 칠한 시간은 비공개예요. 다 안 모여도 아래{" "}
-            <b>‘지금 추천 보기’</b>를 누르면, 지금까지 등록된 정보로 추천을 볼
-            수 있어요.
+            등록 여부만 보여요 · 칠한 시간은 비공개예요. 혼자 둘러보는 중이라면
+            아래 <b>‘데모’</b> 버튼으로 팀원 응답을 채운 뒤 추천을 보세요.
           </div>
         </div>
         {reg < total && (
-          <button className="btn-link" disabled={busy} onClick={handleSeed}>
-            ＋ 팀원 참여 시뮬레이션
+          <button className="btn-demo" disabled={busy} onClick={handleSeed}>
+            <span className="dtag">데모</span> 나머지 팀원 응답 한 번에 채우기
           </button>
         )}
         <button

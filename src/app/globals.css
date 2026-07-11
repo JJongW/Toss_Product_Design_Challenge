@@ -10,8 +10,8 @@
   --text: #F3F4F2;
   --text-2: #A7ABA6;
   --text-3: #71756F;
-  --ok-fg: #34C88A;
-  --ok-bg: rgba(52, 200, 138, 0.14);
+  --ok-fg: #5E9DF5;
+  --ok-bg: rgba(94, 157, 245, 0.14);
   --soft-fg: #E3A24A;
   --soft-bg: rgba(227, 162, 74, 0.14);
   --unk-fg: #8A8F88;
@@ -225,6 +225,34 @@ select:focus-visible {
   padding: 12px;
   width: 100%;
   text-align: center;
+}
+/* 데모 전용 지름길 버튼(실제 서비스엔 없음) — 뉴트럴 본체 + 네온 태그로 구분 */
+.btn-demo {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px dashed color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+.btn-demo:disabled {
+  opacity: 0.55;
+}
+.btn-demo .dtag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
 }
 .btn-row {
   display: flex;
