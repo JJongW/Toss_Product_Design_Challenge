@@ -86,15 +86,6 @@ b {
   color: var(--text);
 }
 
-.head {
-  text-align: center;
-  margin: 24px 0 8px;
-}
-.head .sub {
-  color: var(--text-2);
-  font-size: 14px;
-  margin-top: 6px;
-}
 .wordmark {
   display: inline-flex;
   align-items: center;

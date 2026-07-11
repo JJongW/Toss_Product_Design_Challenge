@@ -603,3 +603,13 @@
 - **Evidence**: `npm run build` exit 0. portfolio.html JS 파싱 OK, anno 13=13, 잔여 코발트/ non-ascii 0(오래된 주석 1건도 갱신). 로컬 미리보기(open)로 사용자 1차 확인 → 상단 흰 라인 지적 → 수정. `CLAUDE.md` 원칙 5·6과 본 로그를 새 방향으로 동기화(코발트 폐기 명시).
 - **Weakness**: (1) 실물 전체 화면 육안 재검증은 부분만 완료(상단 크롭 1장). 7신 전부·rec-card 대비·모바일 fixed 캡션 톤 미확인. (2) 기본 CTA(`.btn-fill`)가 화면당 1개 네온 버튼이라 "네온 <10%"의 면적 해석에서 경계선 — 사용자가 더 줄이길 원하면 아웃라인/고스트로 강등 가능. (3) 아직 미배포(사용자가 직전 prod 배포를 흰 라인 때문에 중단).
 - **Next Research**: 사용자 전체 육안 확인 후 (a) 네온 면적 미세조정(특히 btn-fill), (b) 승인 시 fittime-walkthrough에 static prod 배포, (c) 실앱(globals/FitTime) 배포 경로가 별개인지 확인.
+
+## Entry 063 — 실제 앱 iframe 임베드('실제 해보기') + 제품명 제거 + 히어로/치장 정리 (2026-07-11)
+- **Fact**: 브리핑 재확인 — "사용자가 실제로 제품을 쓰는 흐름이 보여야 함, 결과 화면만 제안 금지", "전체 플로우·브랜딩·비주얼 컨셉은 평가 안 함, 핵심 플로우 집중", "기존 화면 따라 그리거나 시각개선만 하면 취지 벗어남". 이 기준에 비춰 이번 세션의 색·히어로 과투자를 사용자가 지적. 또한 실제 작동 앱이 이미 `https://schedulechallenge.vercel.app`에 배포·KV(Upstash) 연결(`health:{kv:true}`)돼 있고, 응답 헤더에 X-Frame-Options/CSP frame-ancestors가 없어 iframe 임베드가 허용됨을 확인.
+- **Decision(핵심)**: 평가자가 재생만 보지 않고 **직접 조작**하도록, 워크스루 하단에 실제 앱을 **iframe으로 임베드**(디바이스 프레임 안). 별도 앱 배포·Upstash 신설 불필요 — 이미 라이브. 앱 컨테이너가 390px×760(min-height) 기준 한 화면 설계라 프레임을 414×824(내부 iframe 390×800)로 맞춰 내부 스크롤 제거.
+- **Decision(톤 동기화)**: `schedulechallenge`가 GitHub main을 추적해 자동배포함을 라이브 CSS(`--accent:#2f6bff`=직전 커밋 상태)로 확인. 미푸시였던 다크 커밋(8fdba61)을 push → 앱이 차콜×네온으로 자동 재배포(`--accent:#21f1a8` 라이브 확인)되어 임베드가 워크스루와 톤 일치.
+- **Decision(제품명 제거)**: 사용자 지시로 '핏타임' 전면 제거 — portfolio `<title>`/`<meta>`/iframe title, 앱 `layout.tsx` metadata title, `page.tsx`·`FitTime.tsx` 홈 워드마크를 기능 라벨('회의 시간 정하기/조율')로 교체. push 후 라이브 앱에서 제거 확인. (소스 주석 2곳은 미표시라 유지.)
+- **Decision(치장 정리)**: 히어로를 예시(점심 직후/외근) 박은 문구에서 **범용 문제 프레임**으로 재작성(예시는 개인 사정의 다양성 예시일 뿐 서비스는 범용 해결). "실제 서비스"·제품명 과장 삭제, 제목 줄바꿈. eyebrow의 '· 사용 흐름' 제거. 각 annotation 하단의 일본 미학 태그(Datsuzoku/Kanso/Yugen/Shizen/Seijaku 등, `.zen`) 전부 제거 — 핵심 플로우 무관 겉멋.
+- **Evidence**: app build exit 0. portfolio JS 파싱 OK, anno 13=13, non-ascii/핏타임 0(포폴). 라이브 앱 title '회의 시간 조율'·워드마크 '회의 시간 정하기'로 폴링 확인.
+- **Weakness**: (1) 워크스루 '재생' 7신에 새 화면 2개(참여자 제출완료·안심, 주최자 링크공유) 추가 여부는 미결 — 실제 앱 임베드가 전체 화면 hands-on을 제공하므로 재생 워크스루는 핵심 7신 유지 방향으로 기운다(사용자 확인 대기). (2) 임베드는 외부 라이브 앱 의존 — 그 배포가 죽으면 하단이 빈다(‘새 탭에서 보기’ 링크로 완화). (3) 모바일에서 iframe(390px 앱)이 좁은 뷰포트에 스케일되는 톤 미검증. (4) `fittime-walkthrough`(정적 제출본) 재배포는 미완 — 사용자 최종 확인 후.
+- **Next Research**: 사용자 육안 확인 → (a) 새 화면 2개 추가/보류 확정, (b) `fittime-walkthrough`에 갱신 워크스루 static 재배포, (c) 모바일 임베드 스케일 점검.
