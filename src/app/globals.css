@@ -1,26 +1,28 @@
 :root {
-  /* 네온(#21F1A8)은 브랜드/단일추천/선택/CTA에만 극소량(<10%). 나머지는 차콜·그레이. */
-  --accent: #21F1A8;
-  --accent-dark: #16D492;
-  --accent-weak: rgba(33, 241, 168, 0.12);
-  --accent-ink: #06231A;
-  --bg: #171717;
-  --surface: #1E1F1E;
-  --line: #2E302E;
-  --text: #F3F4F2;
-  --text-2: #A7ABA6;
-  --text-3: #71756F;
-  --ok-fg: #5E9DF5;
-  --ok-bg: rgba(94, 157, 245, 0.14);
-  --soft-fg: #E3A24A;
-  --soft-bg: rgba(227, 162, 74, 0.14);
-  --unk-fg: #8A8F88;
-  --unk-bg: rgba(138, 143, 136, 0.12);
-  --hard-fg: #F26F6F;
-  --hard-bg: rgba(242, 111, 111, 0.13);
+  /* OKLCH · 브랜드 hue 255를 저채도로 머금은 뉴트럴(순수 흑백회 아님, 곡선 원리) · 포인트=블루 CTA만 */
+  --h: 255;
+  --accent: oklch(0.6 0.195 258); /* 블루 — CTA·결정 한 곳만 */
+  --accent-dark: oklch(0.52 0.19 258);
+  --accent-weak: oklch(0.955 0.03 258);
+  --accent-ink: #ffffff;
+  --bg: oklch(0.975 0.006 255); /* 화면 바탕: 블루 살짝 밴 화이트 */
+  --surface: oklch(0.998 0.003 255); /* 카드 */
+  --line: oklch(0.925 0.01 256); /* 헤어라인(최소 사용) */
+  --text: oklch(0.28 0.035 262); /* 본문: 딥 블루-잉크 */
+  --text-2: oklch(0.47 0.033 260);
+  --text-3: oklch(0.64 0.026 258);
+  --ok-fg: oklch(0.66 0.13 155); /* 상태: 절제 채도 */
+  --ok-bg: oklch(0.95 0.045 155);
+  --soft-fg: oklch(0.72 0.12 72);
+  --soft-bg: oklch(0.95 0.05 72);
+  --unk-fg: oklch(0.66 0.024 258);
+  --unk-bg: oklch(0.945 0.008 258);
+  --hard-fg: oklch(0.6 0.19 25);
+  --hard-bg: oklch(0.95 0.045 25);
   --r-md: 12px;
   --r-lg: 16px;
-  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+  --shadow: 0 1px 2px oklch(0.5 0.05 258 / 0.06),
+    0 12px 30px -14px oklch(0.42 0.08 258 / 0.2);
 }
 
 * {
@@ -283,27 +285,32 @@ select:focus-visible {
   padding: 16px;
   border: 1px solid var(--line, #e2eae7);
 }
+/* 추천 = 판결(verdict): 좌측정렬 · 큰 시간 · 구분선 없는 근거 원장 · 컬러 원형 */
 .hero {
-  text-align: center;
-  padding: 28px 18px 20px;
-  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--line));
+  text-align: left;
+  padding: 22px 20px 8px;
+  border: none;
+  box-shadow: var(--shadow);
 }
 .hero .tag {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--accent);
   background: var(--accent-weak);
-  padding: 4px 12px;
+  padding: 6px 11px;
   border-radius: 999px;
   margin-bottom: 16px;
 }
 .hero .when {
-  font-size: 30px;
+  font-size: 40px;
   font-weight: 800;
-  letter-spacing: 0;
-  margin-bottom: 18px;
-  line-height: 1.25;
+  letter-spacing: -0.035em;
+  margin-bottom: 14px;
+  line-height: 1.06;
+  font-variant-numeric: tabular-nums;
 }
 .hero .stat {
   color: var(--text-2);
@@ -313,7 +320,7 @@ select:focus-visible {
 .anon-cap {
   font-size: 12px;
   color: var(--text-3);
-  margin-top: 12px;
+  margin-top: 4px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -326,53 +333,49 @@ select:focus-visible {
   background: var(--soft-fg);
 }
 .evidence-stack {
-  display: grid;
-  gap: 8px;
-  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 18px;
   text-align: left;
 }
 .evidence-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  min-height: 46px;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: var(--unk-bg);
-  color: var(--text-2);
+  gap: 13px;
+  min-height: 60px;
+}
+.evidence-item::before {
+  content: "";
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--unk-fg);
 }
 .evidence-item span {
   flex: none;
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--text-3);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
 }
 .evidence-value {
-  min-width: 0;
+  margin-left: auto;
   text-align: right;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--text);
-  font-size: 13px;
-  line-height: 1.35;
+  font-size: 17px;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
-.evidence-item.primary {
-  background: var(--accent-weak);
+.evidence-item.primary::before {
+  background: var(--ok-fg);
 }
-.evidence-item.primary span {
-  color: var(--accent-dark);
+.evidence-item.soft::before {
+  background: var(--soft-fg);
 }
-.evidence-item.soft {
-  background: var(--soft-bg);
-}
-.evidence-item.soft span {
-  color: var(--soft-fg);
-}
-.evidence-item.good {
-  background: var(--ok-bg);
-}
-.evidence-item.good span {
-  color: var(--ok-fg);
+.evidence-item.good::before {
+  background: var(--ok-fg);
 }
 .reg-note {
   font-size: 12px;
@@ -441,7 +444,7 @@ select:focus-visible {
 .switch .track {
   position: absolute;
   inset: 0;
-  background: #3A3D39;
+  background: oklch(0.9 0.01 256);
   border-radius: 999px;
   transition: background 0.15s;
 }
@@ -454,7 +457,7 @@ select:focus-visible {
   background: #fff;
   border-radius: 50%;
   transition: transform 0.15s;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 3px oklch(0.5 0.05 258 / 0.18);
 }
 .switch input:checked + .track {
   background: var(--accent);
@@ -749,7 +752,7 @@ select:focus-visible {
 
 .token {
   background:
-    linear-gradient(180deg, rgba(33, 241, 168, 0.1), transparent),
+    linear-gradient(180deg, oklch(0.6 0.19 258 / 0.08), transparent),
     var(--accent-weak);
   border: 1px dashed color-mix(in srgb, var(--accent) 72%, var(--surface));
   border-radius: var(--r-lg);
