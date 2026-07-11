@@ -517,9 +517,9 @@ export default function FitTime() {
       <div style={{ margin: "auto 0" }}>
         <div
           className="wordmark"
-          style={{ justifyContent: "center", display: "flex", fontSize: 32 }}
+          style={{ justifyContent: "center", display: "flex", fontSize: 28 }}
         >
-          핏타임
+          회의 시간 정하기
         </div>
         <div className="t-body" style={{ textAlign: "center", marginTop: 10 }}>
           6명의 조건을 모아, 정해도 되는 근거까지 보여줘요
@@ -755,7 +755,9 @@ export default function FitTime() {
               border: health.serverless
                 ? "1px solid var(--hard-fg)"
                 : "1px solid var(--soft-fg)",
-              background: health.serverless ? "var(--hard-bg)" : "var(--soft-bg)",
+              background: health.serverless
+                ? "var(--hard-bg)"
+                : "var(--soft-bg)",
               color: health.serverless ? "var(--hard-fg)" : "var(--soft-fg)",
             }}
           >
@@ -837,7 +839,11 @@ export default function FitTime() {
                 <span>
                   {p.name}
                   <span
-                    style={{ color: "var(--text-3)", fontSize: 12, marginLeft: 6 }}
+                    style={{
+                      color: "var(--text-3)",
+                      fontSize: 12,
+                      marginLeft: 6,
+                    }}
                   >
                     {p.required ? "필수" : "선택"}
                   </span>

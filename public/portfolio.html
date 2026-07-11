@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="핏타임 — 여섯 명의 회의에서 가장 덜 무리한 1시간을 찾는 경험 (Toss PD 2026)">
-<title>핏타임 — 여섯 명의 회의, 가장 덜 무리한 1시간</title>
+<meta name="description" content="여섯 명의 회의에서 가장 덜 무리한 1시간을 찾는 경험 (Toss PD 2026)">
+<title>여섯 명의 회의, 가장 덜 무리한 1시간</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendard-variable.min.css">
 <style>
@@ -75,8 +75,12 @@
   }
   .hero h1 .g { color: var(--accent); }
   .hero p {
-    font-size: clamp(1.05rem, 1.7vw, 1.24rem); color: var(--ink-soft);
-    margin: 22px auto 0; max-width: 46ch;
+    font-size: clamp(1.15rem, 2vw, 1.5rem); color: var(--ink); font-weight: 500;
+    margin: 24px auto 0; max-width: 30ch; line-height: 1.5;
+  }
+  .hero .hero-note {
+    font-size: clamp(0.9rem, 1.3vw, 1rem); color: var(--muted); font-weight: 500;
+    margin: 16px auto 0; max-width: 40ch; line-height: 1.55;
   }
   .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 30px; }
   .chip {
@@ -86,6 +90,18 @@
   .scrollcue { margin-top: 44px; display: inline-flex; flex-direction: column; align-items: center; gap: 10px; color: var(--faint); font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .14em; }
   .scrollcue .bar { width: 1px; height: 42px; background: linear-gradient(var(--accent), transparent); animation: cue 1.8s ease-in-out infinite; }
   @keyframes cue { 0%,100% { opacity:.3; transform: scaleY(.6);} 50% { opacity:1; transform: scaleY(1);} }
+
+  /* ===================== TRY IT ===================== */
+  .try { padding: 108px 0 128px; text-align: center; border-top: 1px solid var(--hairline); }
+  .try .eyebrow { justify-content: center; margin: 0 auto; }
+  .try h2 { font-size: clamp(1.8rem, 4.4vw, 2.9rem); font-weight: 800; margin-top: 18px; }
+  .try p { margin: 18px auto 0; max-width: 34ch; color: var(--ink-soft); font-size: clamp(1.02rem, 1.6vw, 1.18rem); line-height: 1.6; }
+  .live-phone { display: flex; justify-content: center; margin-top: 44px; }
+  /* iframe 내부 앱은 390px×760(min) 기준으로 한 화면에 맞게 설계됨 → 프레임을 그 크기에 맞춰 내부 스크롤 없이 */
+  .live-frame { position: relative; width: 414px; max-width: 94vw; height: 824px; background: #0A0A0A; border-radius: 46px; padding: 12px; box-shadow: var(--shadow), 0 0 0 1px var(--hairline-strong); }
+  .live-frame iframe { width: 100%; height: 100%; border: 0; border-radius: 34px; background: var(--screen); display: block; }
+  .try-btn { display: inline-flex; align-items: center; gap: 9px; margin-top: 28px; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 1.02rem; padding: 15px 28px; border-radius: 14px; text-decoration: none; box-shadow: 0 0 0 rgba(33,241,168,0); transition: transform .16s ease, box-shadow .28s ease; }
+  .try-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 34px -8px rgba(33,241,168,.5); }
 
   /* ===================== SCROLLY WALKTHROUGH ===================== */
   .scrolly { position: relative; background: var(--surface-2); }
@@ -245,7 +261,6 @@
   .anno .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
   .anno h4 { font-size: 0.98rem; font-weight: 700; margin-top: 8px; color: var(--ink); }
   .anno p { font-size: 0.83rem; color: var(--ink-soft); margin: 7px 0 0; line-height: 1.62; }
-  .anno .zen { display: inline-block; margin-top: 9px; font-family: var(--font-mono); font-size: 10px; color: var(--faint); border-top: 1px solid var(--hairline); padding-top: 8px; }
   .anno.sl { right: calc(50% + 212px); }
   .anno.sr { left: calc(50% + 212px); }
   /* dotted connector line + endpoint dot landing on the phone (레퍼런스 스타일) */
@@ -335,7 +350,7 @@
   }
 
   /* ============ 리얼리티: 화면 반사 ============ */
-  .screenframe::after { content: ""; position: absolute; inset: 0; border-radius: 32px; pointer-events: none; z-index: 3; box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -34px 40px -32px rgba(0,0,0,.07); }
+  .screenframe::after { content: ""; position: absolute; inset: 0; border-radius: 32px; pointer-events: none; z-index: 3; box-shadow: inset 0 -34px 40px -32px rgba(0,0,0,.28); }
 
   /* ============ 가상 커서(손) ============ */
   .cursor { position: absolute; left: -40px; top: -40px; width: 19px; height: 19px; z-index: 6; pointer-events: none; opacity: 0; transform: translate(-5px, -3px); transition: opacity .35s ease, left .32s cubic-bezier(.3,.7,.3,1), top .32s cubic-bezier(.3,.7,.3,1); will-change: left, top; }
@@ -360,13 +375,14 @@
 
   <!-- ===================== HERO ===================== -->
   <header class="hero wrap">
-    <span class="eyebrow" style="justify-content:center">Toss Product Design 2026 · 사용 흐름</span>
-    <h1>여섯 명의 회의, <span class="g">가장 덜 무리한 1시간</span>을 찾다</h1>
-    <p>‘6명이 다음 주까지 1시간 회의를 잡는’ 상황을, 실제 서비스 <b style="color:var(--ink)">핏타임</b> 화면으로 처음 진입부터 확정까지 따라갑니다. 각 화면 옆 말풍선은 <b style="color:var(--ink)">왜 이렇게 설계했는지</b>를 설명합니다.</p>
+    <span class="eyebrow" style="justify-content:center">Toss Product Design 2026</span>
+    <h1>여섯 명의 회의,<br><span class="g">가장 덜 무리한 1시간</span>을 찾다</h1>
+    <p>안 되는 이유는 사람마다 달라요.<br>그 사정을 일일이 캘린더에 펼치지 않아도,<br>안 되는 시간만 가볍게 모으면 <b style="color:var(--ink)">정해도 되는 1시간</b>이 남아요.</p>
+    <p class="hero-note">처음 진입부터 확정까지, 옆 말풍선이 설계 이유를 짚어요.</p>
     <div class="hero-meta">
       <span class="chip">필수 4 · 선택 2</span>
       <span class="chip">다음 주 · 1시간</span>
-      <span class="chip">점심 직후 회피 · 외근 · 필수/선택 반영</span>
+      <span class="chip">안 되는 시간만 · 익명 선호</span>
     </div>
     <div class="scrollcue">SCROLL<div class="bar"></div></div>
   </header>
@@ -507,30 +523,30 @@
 
       <!-- ANNOTATIONS -->
       <!-- step 1 -->
-      <div class="anno sl" data-anno="1" style="top:20%"><span class="k">왜 · 범위부터</span><h4>추상 요일이 아니라 실제 날짜</h4><p>‘다음 주’ 같은 실제 범위를 못 정하면 회의 하나도 못 잡아요. 그래서 첫 화면부터 진짜 날짜로 시작합니다.</p><span class="zen">Datsuzoku — 히트맵 공식을 깬다</span></div>
-      <div class="anno sr sec" data-anno="1" style="top:56%"><span class="k">왜 · 주말 토글</span><h4>대부분 팀엔 불필요</h4><p>기본은 평일. 필요한 팀만 켜도록 옵션으로 숨겨 화면을 비웁니다.</p><span class="zen">Kanso — 필요한 것만 남긴다</span></div>
+      <div class="anno sl" data-anno="1" style="top:20%"><span class="k">왜 · 범위부터</span><h4>추상 요일이 아니라 실제 날짜</h4><p>‘다음 주’ 같은 실제 범위를 못 정하면 회의 하나도 못 잡아요. 그래서 첫 화면부터 진짜 날짜로 시작합니다.</p></div>
+      <div class="anno sr sec" data-anno="1" style="top:56%"><span class="k">왜 · 주말 토글</span><h4>대부분 팀엔 불필요</h4><p>기본은 평일. 필요한 팀만 켜도록 옵션으로 숨겨 화면을 비웁니다.</p></div>
 
       <!-- step 2 -->
-      <div class="anno sr" data-anno="2" style="top:24%"><span class="k">왜 · 명단에서 선택</span><h4>입력이 아니라 선택</h4><p>6명은 이미 정해진 팀이에요. 코드·이름을 타이핑하는 대신 <b style="color:var(--ink)">본인만 고르면</b> 끝 — 마찰을 없앱니다.</p><span class="zen">Kanso — 빼기</span></div>
+      <div class="anno sr" data-anno="2" style="top:24%"><span class="k">왜 · 명단에서 선택</span><h4>입력이 아니라 선택</h4><p>6명은 이미 정해진 팀이에요. 코드·이름을 타이핑하는 대신 <b style="color:var(--ink)">본인만 고르면</b> 끝 — 마찰을 없앱니다.</p></div>
       <div class="anno sl sec" data-anno="2" style="top:58%"><span class="k">왜 · 로스터-락</span><h4>집계 신뢰를 지킨다</h4><p>명단 밖 이름·중복 신원(민수/김민수)을 처음부터 차단해 결과를 믿을 수 있게.</p></div>
 
       <!-- step 3 -->
-      <div class="anno sl" data-anno="3" style="top:20%"><span class="k">왜 · 빼기식 입력</span><h4>‘안 되는 칸’만 칠한다</h4><p>일정은 대개 비어 있어요. 되는 시간을 다 고르게 하면 노동이 커집니다. 안 되는 곳만 칠하면 몇 초.</p><span class="zen">Grudin 함정 회피 · 캘린더 비의존</span></div>
+      <div class="anno sl" data-anno="3" style="top:20%"><span class="k">왜 · 빼기식 입력</span><h4>‘안 되는 칸’만 칠한다</h4><p>일정은 대개 비어 있어요. 되는 시간을 다 고르게 하면 노동이 커집니다. 안 되는 곳만 칠하면 몇 초.</p></div>
       <div class="anno sr sec" data-anno="3" style="top:56%"><span class="k">왜 · 하드/소프트</span><h4>무게가 다른 두 제약</h4><p>‘외근(절대 불가)’과 ‘점심 직후 회피(되도록 피함)’를 입력부터 분리해 나중에 뭉개지지 않게.</p></div>
 
       <!-- step 4 -->
-      <div class="anno sr" data-anno="4" style="top:26%"><span class="k">왜 · 논블로킹</span><h4>전원 등록을 안 기다린다</h4><p>등록을 진행 조건으로 걸면 무응답이 다시 병목이 돼 결국 Doodle이 됩니다. 늘 지금 정보로 진행해요.</p><span class="zen">등록 = 정밀도 향상일 뿐</span></div>
+      <div class="anno sr" data-anno="4" style="top:26%"><span class="k">왜 · 논블로킹</span><h4>전원 등록을 안 기다린다</h4><p>등록을 진행 조건으로 걸면 무응답이 다시 병목이 돼 결국 Doodle이 됩니다. 늘 지금 정보로 진행해요.</p></div>
 
       <!-- step 5 -->
-      <div class="anno sl" data-anno="5" style="top:18%"><span class="k">왜 · 단일 추천</span><h4>나열이 아니라 하나</h4><p>주최자의 진짜 문제는 ‘정해도 되는지 확신이 없음’. 그래서 시스템이 대신 계산해 <b style="color:var(--ink)">하나</b>를 제안하고 근거를 붙입니다.</p><span class="zen">Yugen — 결론만, 근거는 접어둔다</span></div>
-      <div class="anno sr sec" data-anno="5" style="top:56%"><span class="k">왜 · 익명 4색</span><h4>아쉬움은 익명으로</h4><p>소프트 선호는 익명 집계, 외근 같은 하드 팩트만 실명. 눈치 없이 ‘아쉽다’고 말할 창구예요.</p><span class="zen">Shizen — 알고리즘은 숨긴다</span></div>
+      <div class="anno sl" data-anno="5" style="top:18%"><span class="k">왜 · 단일 추천</span><h4>나열이 아니라 하나</h4><p>주최자의 진짜 문제는 ‘정해도 되는지 확신이 없음’. 그래서 시스템이 대신 계산해 <b style="color:var(--ink)">하나</b>를 제안하고 근거를 붙입니다.</p></div>
+      <div class="anno sr sec" data-anno="5" style="top:56%"><span class="k">왜 · 익명 4색</span><h4>아쉬움은 익명으로</h4><p>소프트 선호는 익명 집계, 외근 같은 하드 팩트만 실명. 눈치 없이 ‘아쉽다’고 말할 창구예요.</p></div>
 
       <!-- step 6 · 엣지 -->
-      <div class="anno sl" data-anno="6" style="top:17%"><span class="k">왜 · 강제 대신 요청</span><h4>완벽한 슬롯이 없을 때</h4><p>필수 인원이 겹치면 임의로 밀어붙이지 않아요. ‘조정 요청’ 또는 ‘선택 참석으로 전환’ 두 길을 열어 <b style="color:var(--ink)">당사자가 스스로 고치게</b> 합니다.</p><span class="zen">강제 스케줄링이 아니라 투명한 조정</span></div>
+      <div class="anno sl" data-anno="6" style="top:17%"><span class="k">왜 · 강제 대신 요청</span><h4>완벽한 슬롯이 없을 때</h4><p>필수 인원이 겹치면 임의로 밀어붙이지 않아요. ‘조정 요청’ 또는 ‘선택 참석으로 전환’ 두 길을 열어 <b style="color:var(--ink)">당사자가 스스로 고치게</b> 합니다.</p></div>
       <div class="anno sr sec" data-anno="6" style="top:55%"><span class="k">왜 · 두 갈래</span><h4>사람 vs 규칙</h4><p>사람을 바꿀지(조정 요청), 조건을 바꿀지(선택 제외)를 주최자가 고른다 — 막다른 길을 만들지 않는다.</p></div>
 
       <!-- step 7 -->
-      <div class="anno sr" data-anno="7" style="top:20%"><span class="k">왜 · 외과적 알림</span><h4>결과 바꿀 사람에게만</h4><p>답이 정해진 사람은 안 건드려요. 필요한 한 명에게만 원탭으로 물어 소란을 만들지 않습니다.</p><span class="zen">Seijaku — 바쁜 중의 고요함</span></div>
+      <div class="anno sr" data-anno="7" style="top:20%"><span class="k">왜 · 외과적 알림</span><h4>결과 바꿀 사람에게만</h4><p>답이 정해진 사람은 안 건드려요. 필요한 한 명에게만 원탭으로 물어 소란을 만들지 않습니다.</p></div>
       <div class="anno sl sec" data-anno="7" style="top:58%"><span class="k">왜 · 주최자 확정</span><h4>자동 확정을 피한다</h4><p>회의 시간은 되돌리기 비싼 결정. 마감은 자동 확정이 아니라 주최자에게 결정을 요청하는 트리거로만 씁니다.</p></div>
     </div>
 
@@ -545,6 +561,19 @@
       <div class="trig" data-step="7"></div>
     </div>
   </div>
+
+  <!-- ===================== TRY IT (live app embed) ===================== -->
+  <section class="try wrap">
+    <span class="eyebrow">직접 써보기</span>
+    <h2>재생만 보지 말고,<br>직접 만져보세요</h2>
+    <p>아래는 실제로 작동하는 화면이에요. 회의를 만들고, 데모로 나머지 응답을 채워 추천까지 바로 확인해보세요.</p>
+    <div class="live-phone">
+      <div class="live-frame">
+        <iframe src="https://schedulechallenge.vercel.app/" title="회의 시간 정하기 — 실제 작동 화면" loading="lazy"></iframe>
+      </div>
+    </div>
+    <a class="try-btn" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">새 탭에서 크게 보기 →</a>
+  </section>
 </div>
 
 <script>
