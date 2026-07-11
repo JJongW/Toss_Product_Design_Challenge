@@ -98,14 +98,14 @@ b {
   font-size: 24px;
   font-weight: 800;
   letter-spacing: 0;
-  color: var(--accent);
+  color: var(--text);
 }
 .wordmark::before {
   content: "";
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--text);
   box-shadow: 0 0 0 4px var(--accent-weak);
 }
 
@@ -622,7 +622,7 @@ select:focus-visible {
   font-weight: 500;
 }
 .field-input:focus {
-  color: var(--accent);
+  color: var(--text);
 }
 .succ {
   width: 72px;
@@ -746,14 +746,14 @@ select:focus-visible {
   margin-top: 4px;
 }
 .choice.accent {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--navy);
+  border-color: var(--navy);
 }
 .choice.accent .ct {
   color: var(--accent-ink);
 }
 .choice.accent .cs {
-  color: rgba(6, 35, 26, 0.72);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .token {
