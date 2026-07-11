@@ -1313,7 +1313,7 @@ export default function FitTime() {
     centerScreen = true;
     const t = overrideTarget;
     body = (
-      <div style={{ margin: "auto 0" }}>
+      <div style={{ paddingTop: 12 }}>
         <div className="t-title">{t}님이 이번엔 조정이 어렵대요</div>
         <div className="t-body" style={{ marginTop: 8 }}>
           비난 없이, 두 가지 중에 고르면 돼요.
@@ -1348,7 +1348,7 @@ export default function FitTime() {
     centerScreen = true;
     const e = chosen;
     body = (
-      <div style={{ margin: "auto 0" }}>
+      <div style={{ paddingTop: 12 }}>
         <div className="t-title" style={{ textAlign: "center" }}>
           이번 회의는 {e?.label}예요
         </div>
