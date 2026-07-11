@@ -8,35 +8,36 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendard-variable.min.css">
 <style>
-  /* ===== Identity: Charcoal #171717 base × neon #21F1A8 accent (used <10%), Pretendard ===== */
+  /* ===== Identity: OKLCH 틴트 뉴트럴 · 흰 카드 · 딥네이비 CTA · Pretendard ===== */
   :root {
-    /* 차콜 지배 · 네온(#21F1A8)은 단일추천/선택/브랜드 마크에만 극소량(<10%) */
-    --paper: #161716;          /* charcoal page base */
-    --surface: #1E1F1E;        /* lifted card */
-    --surface-2: #1A1B1A;      /* inset sections */
-    --screen: #1B1C1B;         /* phone screen (dark app UI) */
-    --screen-ink: #F2F3F1;
-    --screen-muted: #8A8F88;
-    --screen-line: #2C2E2C;
-    --ink: #F2F3F1;
-    --ink-soft: #B6BAB4;
-    --muted: #888D86;
-    --faint: #6A6E68;
-    --hairline: #282A28;
-    --hairline-strong: #34373A;
-    --accent: #21F1A8;
-    --accent-soft: rgba(33,241,168,.12);
-    --accent-ink: #06231A;
-    --beige: #1E1F1E;
-    --ok: #5E9DF5;
-    --ok-bg: rgba(94,157,245,.14);
-    --soft: #E3A24A;
-    --soft-bg: rgba(227,162,74,.14);
-    --unknown: #8A8F88;
-    --unknown-bg: rgba(138,143,136,.12);
-    --no: #F26F6F;
-    --no-bg: rgba(242,111,111,.13);
-    --shadow: 0 1px 2px rgba(0,0,0,.5), 0 14px 34px -14px rgba(0,0,0,.7);
+    /* 확정 시스템: OKLCH 틴트 뉴트럴 · 흰 카드 · 딥네이비 CTA · 포인트 최소 */
+    --paper: oklch(0.955 0.014 275);     /* 페이지 바탕: 소프트 라벤더-그레이 */
+    --surface: oklch(0.998 0.003 275);   /* 흰 카드 */
+    --surface-2: oklch(0.975 0.01 275);  /* 인셋 */
+    --screen: oklch(0.955 0.014 275);    /* 폰 화면 바탕 */
+    --screen-ink: oklch(0.29 0.045 268);
+    --screen-muted: oklch(0.64 0.025 265);
+    --screen-line: oklch(0.92 0.008 270);
+    --ink: oklch(0.29 0.045 268);
+    --ink-soft: oklch(0.48 0.035 265);
+    --muted: oklch(0.64 0.025 265);
+    --faint: oklch(0.75 0.02 265);
+    --hairline: oklch(0.92 0.008 270);
+    --hairline-strong: oklch(0.88 0.01 270);
+    --navy: oklch(0.3 0.055 265);        /* CTA */
+    --accent: oklch(0.58 0.17 258);      /* 태그(작게) */
+    --accent-soft: oklch(0.95 0.035 258);
+    --accent-ink: #ffffff;
+    --beige: #ffffff;
+    --ok: oklch(0.66 0.13 155);
+    --ok-bg: oklch(0.95 0.045 155);
+    --soft: oklch(0.74 0.12 70);
+    --soft-bg: oklch(0.95 0.05 70);
+    --unknown: oklch(0.68 0.02 265);
+    --unknown-bg: oklch(0.945 0.008 265);
+    --no: oklch(0.6 0.19 25);
+    --no-bg: oklch(0.95 0.045 25);
+    --shadow: 0 1px 2px oklch(0.3 0.04 265 / .05), 0 18px 34px -22px oklch(0.3 0.06 265 / .28);
     --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
     --font-mono: "Pretendard Variable", ui-monospace, "SF Mono", "Menlo", monospace;
     --maxw: 1180px;
@@ -100,8 +101,8 @@
   /* iframe 내부 앱은 390px×760(min) 기준으로 한 화면에 맞게 설계됨 → 프레임을 그 크기에 맞춰 내부 스크롤 없이 */
   .live-frame { position: relative; width: 414px; max-width: 94vw; height: 824px; background: #0A0A0A; border-radius: 46px; padding: 12px; box-shadow: var(--shadow), 0 0 0 1px var(--hairline-strong); }
   .live-frame iframe { width: 100%; height: 100%; border: 0; border-radius: 34px; background: var(--screen); display: block; }
-  .try-btn { display: inline-flex; align-items: center; gap: 9px; margin-top: 28px; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 1.02rem; padding: 15px 28px; border-radius: 14px; text-decoration: none; box-shadow: 0 0 0 rgba(33,241,168,0); transition: transform .16s ease, box-shadow .28s ease; }
-  .try-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 34px -8px rgba(33,241,168,.5); }
+  .try-btn { display: inline-flex; align-items: center; gap: 9px; margin-top: 28px; background: var(--navy); color: #fff; font-weight: 800; font-size: 1.02rem; padding: 15px 28px; border-radius: 14px; text-decoration: none; transition: transform .16s ease, box-shadow .28s ease; }
+  .try-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px oklch(0.3 0.06 265 / .5); }
 
   /* ===================== SCROLLY WALKTHROUGH ===================== */
   .scrolly { position: relative; background: var(--surface-2); }
@@ -154,21 +155,21 @@
 
   /* generic screen UI atoms (light/beige) */
   .flabel { font-size: 0.72rem; font-weight: 600; letter-spacing: -0.005em; color: var(--screen-muted); margin: 15px 0 7px; }
-  .field { background: #242624; border: 1px solid var(--screen-line); border-radius: 12px; padding: 12px 13px; font-size: 0.86rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+  .field { background: #FFFFFF; border: 1px solid var(--screen-line); border-radius: 12px; padding: 12px 13px; font-size: 0.86rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
   .field .v { color: var(--screen-ink); } .field .m { color: var(--screen-muted); font-weight: 500; }
   .chips { display: flex; gap: 6px; flex-wrap: wrap; }
-  .pill { font-size: 0.78rem; font-weight: 700; padding: 8px 12px; border-radius: 10px; background: #242624; border: 1px solid var(--screen-line); color: var(--screen-muted); }
+  .pill { font-size: 0.78rem; font-weight: 700; padding: 8px 12px; border-radius: 10px; background: #FFFFFF; border: 1px solid var(--screen-line); color: var(--screen-muted); }
   .pill.sel { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .toggle { display: flex; align-items: center; justify-content: space-between; background: #242624; border: 1px solid var(--screen-line); border-radius: 12px; padding: 11px 13px; font-size: 0.84rem; font-weight: 600; }
-  .sw { width: 40px; height: 24px; border-radius: 999px; background: #34373A; position: relative; flex: none; transition: background .3s; }
-  .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #E8E9E6; box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: left .3s; }
+  .toggle { display: flex; align-items: center; justify-content: space-between; background: #FFFFFF; border: 1px solid var(--screen-line); border-radius: 12px; padding: 11px 13px; font-size: 0.84rem; font-weight: 600; }
+  .sw { width: 40px; height: 24px; border-radius: 999px; background: #E2E5EA; position: relative; flex: none; transition: background .3s; }
+  .sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #FFFFFF; box-shadow: 0 1px 2px rgba(0,0,0,.3); transition: left .3s; }
   .sw.on { background: var(--accent); } .sw.on::after { left: 19px; }
-  .btn-fill { margin-top: auto; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-size: 0.9rem; text-align: center; padding: 14px; border-radius: 14px; }
-  .btn-line { margin-top: 10px; border: 1px solid var(--screen-line); color: var(--screen-ink); font-weight: 700; font-size: 0.84rem; text-align: center; padding: 11px; border-radius: 12px; background: #242624; }
+  .btn-fill { margin-top: auto; background: var(--navy); color: var(--accent-ink); font-weight: 800; font-size: 0.9rem; text-align: center; padding: 14px; border-radius: 14px; }
+  .btn-line { margin-top: 10px; border: 1px solid var(--screen-line); color: var(--screen-ink); font-weight: 700; font-size: 0.84rem; text-align: center; padding: 11px; border-radius: 12px; background: #FFFFFF; }
 
   /* roster */
   .roster { display: flex; flex-direction: column; gap: 7px; margin-top: 4px; }
-  .rrow { display: flex; align-items: center; gap: 10px; background: #242624; border: 1px solid var(--screen-line); border-radius: 11px; padding: 10px 12px; font-size: 0.86rem; font-weight: 600; }
+  .rrow { display: flex; align-items: center; gap: 10px; background: #FFFFFF; border: 1px solid var(--screen-line); border-radius: 11px; padding: 10px 12px; font-size: 0.86rem; font-weight: 600; }
   .rrow .rt { font-size: 0.62rem; font-family: var(--font-mono); color: var(--screen-muted); margin-left: auto; letter-spacing: .04em; }
   .rrow.me { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent); }
   .rrow .av { width: 26px; height: 26px; border-radius: 50%; background: var(--unknown-bg); color: var(--screen-muted); display: grid; place-items: center; font-size: 0.72rem; font-weight: 800; flex: none; }
@@ -176,9 +177,9 @@
   .rrow .ck { color: var(--ok); font-weight: 900; }
 
   /* grid paint */
-  .seg { display: flex; background: #161816; border-radius: 10px; padding: 3px; gap: 3px; }
+  .seg { display: flex; background: #EEF0F3; border-radius: 10px; padding: 3px; gap: 3px; }
   .seg button { flex: 1; border: none; background: transparent; font-size: 0.74rem; font-weight: 700; padding: 7px; border-radius: 8px; color: var(--screen-muted); font-family: inherit; }
-  .seg button.on { background: #242624; color: var(--screen-ink); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  .seg button.on { background: #FFFFFF; color: var(--screen-ink); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
   .seg button.on.hard { color: var(--no); }
   .daytabs { display: flex; gap: 5px; margin: 11px 0 8px; }
   .daytabs span { flex: 1; text-align: center; font-size: 0.7rem; font-weight: 700; padding: 6px 0; border-radius: 8px; color: var(--screen-muted); }
@@ -193,7 +194,7 @@
   .prog-line { display: flex; align-items: baseline; gap: 8px; }
   .prog-line b { font-size: 1.8rem; font-weight: 800; color: var(--screen-ink); font-family: var(--font-mono); }
   .prog-line span { font-size: 0.82rem; color: var(--screen-muted); }
-  .ptrack { height: 7px; border-radius: 999px; background: #2C2E2C; overflow: hidden; margin: 9px 0 3px; }
+  .ptrack { height: 7px; border-radius: 999px; background: #E7E9EE; overflow: hidden; margin: 9px 0 3px; }
   .ptrack i { display: block; height: 100%; width: 66%; background: var(--accent); border-radius: 999px; }
   .stat-row { display: flex; align-items: center; gap: 9px; font-size: 0.83rem; font-weight: 600; padding: 8px 2px; border-bottom: 1px solid var(--screen-line); }
   .stat-row .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
@@ -202,16 +203,16 @@
   .info-banner { background: var(--accent-soft); border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent); border-radius: 12px; padding: 11px 12px; font-size: 0.78rem; color: var(--accent); font-weight: 600; margin-top: 12px; }
 
   /* recommendation */
-  .rec-card { background: #232522; color: var(--ink); border-radius: 16px; padding: 16px; box-shadow: inset 0 0 0 1px rgba(33,241,168,.22); }
+  .rec-card { background: #FFFFFF; color: var(--ink); border-radius: 16px; padding: 16px; box-shadow: 0 1px 2px oklch(0.3 0.04 265 / .05), 0 10px 24px -16px oklch(0.3 0.06 265 / .3); }
   .rec-card .rk { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
   .rec-card .rday { font-size: 1.5rem; font-weight: 800; margin-top: 7px; letter-spacing: 0; }
-  .rec-card .rmeta { font-size: 0.76rem; color: #AEB6C4; margin-top: 6px; }
+  .rec-card .rmeta { font-size: 0.76rem; color: var(--screen-muted); margin-top: 6px; }
   .rec-card .rmeta b { color: var(--accent); }
   /* recommendation evidence rows — 판단 근거를 한 줄 요약 대신 분리해 보여준다 */
   .rec-ev { margin-top: 12px; display: flex; flex-direction: column; }
-  .rec-ev .er { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-top: 1px solid rgba(255,255,255,.1); font-size: 0.78rem; }
+  .rec-ev .er { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-top: 1px solid var(--screen-line); font-size: 0.78rem; }
   .rec-ev .er:first-child { border-top: none; }
-  .rec-ev .el { color: #AEB6C4; font-weight: 600; }
+  .rec-ev .el { color: var(--screen-muted); font-weight: 600; }
   .rec-ev .ev { font-weight: 700; font-family: var(--font-mono); color: var(--ink); display: inline-flex; align-items: center; gap: 6px; }
   .rec-ev .ev::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--unknown); flex: none; }
   .rec-ev .ev.ok::before { background: var(--ok); }
@@ -229,13 +230,13 @@
   .legend4 i { width: 9px; height: 9px; border-radius: 3px; }
 
   /* ask / confirm */
-  .ask { background: #242624; border: 1px solid var(--screen-line); border-radius: 15px; padding: 15px; }
+  .ask { background: #FFFFFF; border: 1px solid var(--screen-line); border-radius: 15px; padding: 15px; }
   .ask .q { font-size: 0.92rem; font-weight: 700; color: var(--screen-ink); }
   .ask .tag { font-size: 0.62rem; font-family: var(--font-mono); color: var(--soft); margin-bottom: 8px; letter-spacing: .04em; }
   .ask .btns { display: flex; gap: 8px; margin-top: 13px; }
   .ask .btns div { flex: 1; text-align: center; font-size: 0.82rem; font-weight: 700; padding: 10px; border-radius: 11px; }
   .ask .btns .y { background: var(--accent); color: var(--accent-ink); }
-  .ask .btns .n { background: #2A2C2A; color: var(--screen-muted); }
+  .ask .btns .n { background: #EEF0F3; color: var(--screen-muted); }
   .confirmed { margin-top: 13px; background: var(--ok-bg); border: 1px solid color-mix(in srgb, var(--ok) 35%, transparent); border-radius: 15px; padding: 16px; text-align: center; }
   .confirmed .big { font-size: 1.05rem; font-weight: 800; color: var(--ok); }
   .confirmed .chk { width: 40px; height: 40px; border-radius: 50%; background: var(--ok); color: var(--accent-ink); display: grid; place-items: center; font-size: 1.2rem; font-weight: 900; margin: 0 auto 9px; }
@@ -299,12 +300,12 @@
   @keyframes pickpop { 0% { transform: scale(.85); } 60% { transform: scale(1.06); } 100% { transform: scale(1); } }
 
   /* scene 1 — 회의 길이 '1시간'이 눌리는 것처럼 */
-  .screen[data-screen="1"] .pill.sel { background: #242624; color: var(--screen-muted); border-color: var(--screen-line); transition: background .3s ease, color .3s ease, border-color .3s ease; }
+  .screen[data-screen="1"] .pill.sel { background: #FFFFFF; color: var(--screen-muted); border-color: var(--screen-line); transition: background .3s ease, color .3s ease, border-color .3s ease; }
   .screen[data-screen="1"].on .pill.sel { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); transition-delay: .55s; animation: popsel .4s .55s both; }
   /* scene 1 — 주말 토글은 꺼진 채로 (기본), 스위치 손잡이만 살짝 준비 */
 
   /* scene 2 — 명단에서 '지민'이 선택되는 것처럼 */
-  .screen[data-screen="2"] .rrow.me { box-shadow: 0 0 0 1px var(--screen-line); background: #242624; transition: box-shadow .4s ease, background .4s ease; }
+  .screen[data-screen="2"] .rrow.me { box-shadow: 0 0 0 1px var(--screen-line); background: #FFFFFF; transition: box-shadow .4s ease, background .4s ease; }
   .screen[data-screen="2"].on .rrow.me { box-shadow: 0 0 0 1px var(--accent); background: var(--accent-soft); transition-delay: .5s; }
   .screen[data-screen="2"] .rrow.me .ck { opacity: 0; }
   .screen[data-screen="2"].on .rrow.me .ck { animation: pop .4s .75s both; }
