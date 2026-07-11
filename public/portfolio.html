@@ -215,6 +215,25 @@
   .rec-ev { margin-top: 12px; display: flex; flex-direction: column; }
   .rec-ev .er { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-top: 1px solid var(--screen-line); font-size: 0.78rem; }
   .rec-ev .er:first-child { border-top: none; }
+
+  /* 추천 목업 = 앱 판결카드+원장과 동일 언어 */
+  .vcard { background: var(--surface); border-radius: 20px; padding: 34px 16px 15px; box-shadow: var(--shadow); position: relative; text-align: center; }
+  .vtag { position: absolute; top: 13px; left: 13px; font-size: .62rem; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: 5px 10px; border-radius: 999px; }
+  .vday { font-size: .78rem; font-weight: 600; color: var(--screen-muted); }
+  .vtime { font-size: 1.72rem; font-weight: 800; letter-spacing: -.03em; margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .vsep { color: var(--faint); margin: 0 2px; }
+  .vwhy { font-size: .76rem; color: var(--screen-muted); line-height: 1.55; margin-top: 11px; }
+  .vwhy b { color: var(--screen-ink); font-weight: 700; }
+  .vsec { font-size: .68rem; font-weight: 700; color: var(--screen-muted); margin: 15px 2px 5px; }
+  .vledger { background: var(--surface); border-radius: 16px; padding: 3px 14px; box-shadow: var(--shadow); }
+  .vrow { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 10px; padding: 9px 0; }
+  .vcir { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; }
+  .vcir svg { width: 16px; height: 16px; display: block; }
+  .vcir.g { background: var(--ok); } .vcir.a { background: var(--soft); } .vcir.s { background: var(--unknown); }
+  .vl { font-size: .82rem; font-weight: 600; color: var(--screen-ink); }
+  .vl em { font-style: normal; font-size: .66rem; color: var(--screen-muted); font-weight: 500; margin-left: 3px; }
+  .vv { font-size: .94rem; font-weight: 800; font-family: var(--font-mono); color: var(--screen-ink); }
+  .vu { font-size: .66rem; font-weight: 600; color: var(--screen-muted); margin-left: 1px; }
   .rec-ev .el { color: var(--screen-muted); font-weight: 600; }
   .rec-ev .ev { font-weight: 700; font-family: var(--font-mono); color: var(--ink); display: inline-flex; align-items: center; gap: 6px; }
   .rec-ev .ev::before { content: ""; width: 7px; height: 7px; border-radius: 2px; background: var(--unknown); flex: none; }
@@ -461,33 +480,22 @@
             <div class="a a6 btn-fill">추천 시간 보기</div>
           </div>
 
-          <!-- Screen 5 -->
+          <!-- Screen 5 · 앱 판결카드와 동일 언어 -->
           <div class="screen" data-screen="5">
             <div class="a a1"><div class="stitle">추천 시간</div></div>
-            <div class="a a2 rec-card" style="margin-top:12px">
-              <div class="rk">한 곳으로 모았어요</div>
-              <div class="rday">수 7/15 · 14:00–15:00</div>
-              <div class="rec-ev">
-                <div class="er"><span class="el">필수 참석</span><span class="ev ok">4/4 가능</span></div>
-                <div class="er"><span class="el">선택 참석</span><span class="ev wait">0/2 응답</span></div>
-                <div class="er"><span class="el">선호 충돌</span><span class="ev soft">1명 · 익명</span></div>
-                <div class="er"><span class="el">미응답</span><span class="ev">2명 · 선택</span></div>
-              </div>
-              <div class="wkstrip">
-                <div class="wd"><div class="wn">월</div><div class="wc soft"></div></div>
-                <div class="wd"><div class="wn">화</div><div class="wc"></div></div>
-                <div class="wd pick"><div class="wn">수</div><div class="wc"></div></div>
-                <div class="wd"><div class="wn">목</div><div class="wc soft"></div></div>
-                <div class="wd"><div class="wn">금</div><div class="wc"></div></div>
-              </div>
+            <div class="a a2 vcard" style="margin-top:12px">
+              <span class="vtag">추천</span>
+              <div class="vday">수요일 · 7/15</div>
+              <div class="vtime">오후 2:00<span class="vsep">–</span>3:00</div>
+              <div class="vwhy">필수로 참석해야 하는 <b>네 분이 모두</b> 되는 시간이라, 정하셔도 괜찮아요.</div>
             </div>
-            <div class="a a3 legend4">
-              <span><i style="background:var(--ok-bg)"></i>가능</span>
-              <span><i style="background:var(--soft-bg)"></i>아쉬움</span>
-              <span><i style="background:var(--unknown-bg)"></i>미응답</span>
-              <span><i style="background:var(--no-bg)"></i>불가</span>
+            <div class="a a3 vsec">정해도 되는 근거</div>
+            <div class="a a4 vledger">
+              <div class="vrow"><span class="vcir g"><svg viewBox="0 0 18 18" fill="none"><path d="M3.8 9.4l3 3L14.4 5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="vl">필수 참석</span><span class="vv">4<span class="vu">/ 4</span></span></div>
+              <div class="vrow"><span class="vcir a"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.2" stroke="#fff" stroke-width="1.8"/><path d="M9 5.2v4l2.6 1.5" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="vl">선택 참석</span><span class="vv">1<span class="vu">/ 2</span></span></div>
+              <div class="vrow"><span class="vcir a"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2.8l6.5 11.2H2.5L9 2.8z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 7.2v3M9 11.9v.1" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span><span class="vl">선호 충돌 <em>익명</em></span><span class="vv">1<span class="vu">명</span></span></div>
+              <div class="vrow"><span class="vcir s"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.2" stroke="#fff" stroke-width="1.8" stroke-dasharray="2.5 2.5"/></svg></span><span class="vl">미응답</span><span class="vv" style="color:var(--muted)">0<span class="vu">명</span></span></div>
             </div>
-            <div class="a a5 btn-line">다른 후보 3개 · 판단 근거 펼치기 ▾</div>
             <div class="a a6 btn-fill">이 시간으로 제안하기</div>
           </div>
 
