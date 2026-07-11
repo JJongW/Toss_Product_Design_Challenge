@@ -514,36 +514,43 @@ export default function FitTime() {
   if (screen === "home") {
     centerScreen = true;
     body = (
-      <div style={{ margin: "auto 0" }}>
+      <div style={{ paddingTop: 44 }}>
         <div
           className="wordmark"
           style={{ justifyContent: "center", display: "flex", fontSize: 28 }}
         >
           회의 시간 정하기
         </div>
-        <div className="t-body" style={{ textAlign: "center", marginTop: 10 }}>
-          6명의 조건을 모아, 정해도 되는 근거까지 보여줘요
+        <div
+          className="t-body"
+          style={{ textAlign: "center", marginTop: 12, lineHeight: 1.55 }}
+        >
+          6명의 조건을 모아
+          <br />
+          정해도 되는 근거까지 보여줘요
         </div>
-        <button
-          className="choice accent"
-          onClick={() => {
-            setPath("org");
-            go("create");
-          }}
-        >
-          <div className="ct">회의 만들기</div>
-          <div className="cs">필수 참석자와 범위를 정해요 · 주최자</div>
-        </button>
-        <button
-          className="choice"
-          onClick={() => {
-            setPath("part");
-            go("join");
-          }}
-        >
-          <div className="ct">링크로 참여</div>
-          <div className="cs">명단에서 나를 고르고 안 되는 시간만 칠해요</div>
-        </button>
+        <div style={{ marginTop: 36 }}>
+          <button
+            className="choice accent"
+            onClick={() => {
+              setPath("org");
+              go("create");
+            }}
+          >
+            <div className="ct">회의 만들기</div>
+            <div className="cs">필수 참석자와 범위를 정해요 · 주최자</div>
+          </button>
+          <button
+            className="choice"
+            onClick={() => {
+              setPath("part");
+              go("join");
+            }}
+          >
+            <div className="ct">링크로 참여</div>
+            <div className="cs">명단에서 나를 고르고 안 되는 시간만 칠해요</div>
+          </button>
+        </div>
       </div>
     );
   } else if (screen === "create") {
