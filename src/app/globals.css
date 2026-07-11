@@ -41,6 +41,8 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
   display: flex;
   flex-direction: column;
@@ -288,10 +290,10 @@ select:focus-visible {
   padding: 16px;
   border: 1px solid var(--line, #e2eae7);
 }
-/* 추천 = 판결(verdict): 틴트 위 흰 카드 · 코너 태그 · 센터 큰 시간 · 근거 원장(컬러 원형) */
+/* 추천 = 판결(verdict) 카드 + 근거 원장 카드 */
 .hero {
   text-align: center;
-  padding: 42px 20px 8px;
+  padding: 40px 22px 26px;
   border: none;
   box-shadow: var(--shadow);
   position: relative;
@@ -310,23 +312,101 @@ select:focus-visible {
   padding: 6px 11px;
   border-radius: 999px;
 }
+.rec-day {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-3);
+}
 .hero .when {
-  font-size: 40px;
+  font-size: 34px;
   font-weight: 800;
-  letter-spacing: -0.035em;
-  margin-bottom: 14px;
+  letter-spacing: -0.03em;
   line-height: 1.1;
+  margin-top: 4px;
   font-variant-numeric: tabular-nums;
 }
-.hero .stat {
+.rec-why {
+  font-size: 14px;
+  font-weight: 500;
   color: var(--text-2);
+  line-height: 1.6;
+  margin-top: 14px;
+  text-wrap: pretty;
+}
+.rec-why b {
+  color: var(--text);
+  font-weight: 700;
+}
+.sec-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-3);
+  margin: 26px 4px 8px;
+}
+.ledger {
+  padding: 6px 18px 8px;
+}
+.ev-row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  align-items: center;
+  gap: 13px;
+  min-height: 58px;
+}
+.ev-row .cir {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+.ev-row .cir svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.ev-row .cir.g {
+  background: var(--ok-fg);
+}
+.ev-row .cir.a {
+  background: var(--soft-fg);
+}
+.ev-row .cir.s {
+  background: var(--unk-fg);
+}
+.ev-lab {
   font-size: 15px;
-  margin: 3px 0;
+  font-weight: 600;
+  color: var(--text);
+}
+.ev-lab .ev-sub {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.ev-val {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.ev-val .u {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  margin-left: 2px;
+}
+.ev-val.q {
+  color: var(--text-3);
 }
 .anon-cap {
   font-size: 12px;
   color: var(--text-3);
-  margin-top: 4px;
+  margin-top: 12px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -337,51 +417,6 @@ select:focus-visible {
   height: 6px;
   border-radius: 50%;
   background: var(--soft-fg);
-}
-.evidence-stack {
-  display: flex;
-  flex-direction: column;
-  margin-top: 18px;
-  text-align: left;
-}
-.evidence-item {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  min-height: 60px;
-}
-.evidence-item::before {
-  content: "";
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  flex: none;
-  background: var(--unk-fg);
-}
-.evidence-item span {
-  flex: none;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-}
-.evidence-value {
-  margin-left: auto;
-  text-align: right;
-  font-weight: 800;
-  color: var(--text);
-  font-size: 17px;
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-  font-variant-numeric: tabular-nums;
-}
-.evidence-item.primary::before {
-  background: var(--ok-fg);
-}
-.evidence-item.soft::before {
-  background: var(--soft-fg);
-}
-.evidence-item.good::before {
-  background: var(--ok-fg);
 }
 .reg-note {
   font-size: 12px;
@@ -624,6 +659,12 @@ select:focus-visible {
 .field-input:focus {
   color: var(--text);
 }
+.field-input:focus-visible {
+  outline: none;
+}
+.field:focus-within {
+  border-bottom-color: var(--text);
+}
 .succ {
   width: 72px;
   height: 72px;
@@ -843,6 +884,17 @@ select:focus-visible {
   border-radius: var(--r-md);
   padding: 13px 14px;
   background: var(--surface);
+}
+/* 커스텀 셀렉트 — 네이티브 chevron 대신 통일된 아이콘 */
+select.textin {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 18 18' fill='none'%3E%3Cpath d='M4.5 7l4.5 4.5L13.5 7' stroke='%238b93a3' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 18px 18px;
+  cursor: pointer;
 }
 .textin:focus {
   outline: none;

@@ -965,26 +965,61 @@ export default function FitTime() {
       const e = chosen;
       const hardReq = e.hardRequiredNames;
       const unk = e.unknownRequiredNames;
-      const reqLine = hardReq.length ? (
-        <>
-          필수{" "}
-          <b>
-            {e.requiredOkCount}/{e.requiredTotal}
-          </b>{" "}
-          · {hardReq.join(",")} 조정 필요
-        </>
-      ) : e.reqUnknown === 0 ? (
-        <>
-          필수 <b>{e.requiredTotal}명 모두</b> 가능
-        </>
-      ) : (
-        <>
-          필수{" "}
-          <b>
-            {e.requiredOkCount}/{e.requiredTotal}
-          </b>{" "}
-          가능
-        </>
+      const _di = e.label.indexOf(") ");
+      const recDay = _di !== -1 ? e.label.slice(0, _di + 1) : e.label;
+      const recTime = _di !== -1 ? e.label.slice(_di + 2) : "";
+      const optAll = e.optionalOk === e.optionalTotal;
+      const unanswered =
+        rec.meeting.participantCount - rec.meeting.registeredCount;
+      const icCheck = (
+        <svg viewBox="0 0 18 18" fill="none">
+          <path
+            d="M3.8 9.4l3 3L14.4 5"
+            stroke="#fff"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      );
+      const icClock = (
+        <svg viewBox="0 0 18 18" fill="none">
+          <circle cx="9" cy="9" r="6.2" stroke="#fff" strokeWidth="1.8" />
+          <path
+            d="M9 5.2v4l2.6 1.5"
+            stroke="#fff"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+      const icAlert = (
+        <svg viewBox="0 0 18 18" fill="none">
+          <path
+            d="M9 2.8l6.5 11.2H2.5L9 2.8z"
+            stroke="#fff"
+            strokeWidth="1.7"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M9 7.2v3M9 11.9v.1"
+            stroke="#fff"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+          />
+        </svg>
+      );
+      const icDash = (
+        <svg viewBox="0 0 18 18" fill="none">
+          <circle
+            cx="9"
+            cy="9"
+            r="6.2"
+            stroke="#fff"
+            strokeWidth="1.8"
+            strokeDasharray="2.5 2.5"
+          />
+        </svg>
       );
       body = (
         <>
@@ -996,58 +1031,104 @@ export default function FitTime() {
             <div className="tag">
               {hardReq.length ? "선택한 시간" : "추천 시간"}
             </div>
-            <div className="when">{labelWithBreak(e.label)}</div>
-            <div className="evidence-stack" aria-label="추천 근거">
-              <div className="evidence-item primary">
-                <span>필수 참석</span>
-                <div className="evidence-value">{reqLine}</div>
-              </div>
-              <div className="evidence-item">
-                <span>선택 참석</span>
-                <div className="evidence-value">
-                  {e.optionalTotal}명 중 {e.optionalOk}명 가능
-                </div>
-              </div>
-              {e.softCount > 0 ? (
-                <div className="evidence-item soft">
-                  <span>선호 충돌</span>
-                  <div className="evidence-value">
-                    아쉬운 분 {e.softCount}명 · 익명 집계
-                  </div>
-                </div>
-              ) : hardReq.length ? null : (
-                <div className="evidence-item good">
-                  <span>선호 충돌</span>
-                  <div className="evidence-value">아쉬운 사람이 없어요</div>
-                </div>
+            <div className="rec-day">{recDay}</div>
+            <div className="when">{recTime}</div>
+            <div className="rec-why">
+              {hardReq.length ? (
+                <>
+                  {hardReq.join(", ")}님 조정이 필요하지만, 다른 후보보다{" "}
+                  <b>가장 덜 무리한</b> 시간이에요.
+                </>
+              ) : (
+                <>
+                  필수로 참석해야 하는 <b>{e.requiredTotal}분이 모두</b> 되는
+                  시간이라, 정하셔도 괜찮아요.
+                </>
               )}
             </div>
-            {e.softCount > 0 && (
-              <div className="anon-cap">누구인지·이유는 비공개예요</div>
-            )}
           </div>
+
+          <div className="sec-label">정해도 되는 근거</div>
+          <div className="card ledger" aria-label="추천 근거">
+            <div className="ev-row">
+              <span className="cir g">{icCheck}</span>
+              <span className="ev-lab">
+                필수 참석
+                <span className="ev-sub">
+                  {hardReq.length
+                    ? `${hardReq.join(", ")} 조정 필요`
+                    : `${e.requiredTotal}분 모두 가능`}
+                </span>
+              </span>
+              <span className="ev-val">
+                {e.requiredOkCount}
+                <span className="u">/ {e.requiredTotal}</span>
+              </span>
+            </div>
+            <div className="ev-row">
+              <span className={"cir " + (optAll ? "g" : "a")}>
+                {optAll ? icCheck : icClock}
+              </span>
+              <span className="ev-lab">
+                선택 참석
+                <span className="ev-sub">
+                  {optAll
+                    ? "모두 가능"
+                    : `${e.optionalTotal - e.optionalOk}분은 이 시간 어려움`}
+                </span>
+              </span>
+              <span className="ev-val">
+                {e.optionalOk}
+                <span className="u">/ {e.optionalTotal}</span>
+              </span>
+            </div>
+            <div className="ev-row">
+              <span className={"cir " + (e.softCount > 0 ? "a" : "g")}>
+                {e.softCount > 0 ? icAlert : icCheck}
+              </span>
+              <span className="ev-lab">
+                선호 충돌
+                <span className="ev-sub">
+                  {e.softCount > 0
+                    ? "되도록 피하고 싶은 분 · 익명"
+                    : "아쉬운 사람이 없어요"}
+                </span>
+              </span>
+              <span className="ev-val">
+                {e.softCount}
+                <span className="u">명</span>
+              </span>
+            </div>
+            <div className="ev-row">
+              <span className="cir s">{icDash}</span>
+              <span className="ev-lab">
+                미응답
+                <span className="ev-sub">
+                  {unanswered > 0 ? "더 기다릴 수 있어요" : "기다릴 사람 없음"}
+                </span>
+              </span>
+              <span className="ev-val q">
+                {unanswered}
+                <span className="u">명</span>
+              </span>
+            </div>
+          </div>
+          {e.softCount > 0 && (
+            <div className="anon-cap">누구인지·이유는 비공개예요</div>
+          )}
           {unk.length > 0 && (
-            <div className="hint" style={{ color: "var(--soft-fg)" }}>
+            <div
+              className="hint"
+              style={{ color: "var(--soft-fg)", marginTop: 12 }}
+            >
               {unk.join(", ")} 응답 안 함 · 콕 물어볼까요?
             </div>
           )}
-          {hardReq.length ? (
+          {hardReq.length > 0 && (
             <div className="card-flat" style={{ marginTop: 12 }}>
               <div className="t-body">
-                {hardReq.join(",")}님이 이 시간에 안 돼요. 정하면 조정을 부탁할
+                {hardReq.join(", ")}님이 이 시간에 안 돼요. 정하면 조정을 부탁할
                 수 있어요.
-              </div>
-            </div>
-          ) : (
-            <div className="card-flat" style={{ marginTop: 12 }}>
-              <div className="t-caption" style={{ marginBottom: 6 }}>
-                정하는 근거
-              </div>
-              <div className="t-body">필수 전원이 가능한 시간 중에서</div>
-              <div className="t-body" style={{ marginTop: 4 }}>
-                {e.softCount > 0
-                  ? "아쉬운 사람이 가장 적은 후보예요"
-                  : "안 되는 사람이 없어요"}
               </div>
             </div>
           )}
