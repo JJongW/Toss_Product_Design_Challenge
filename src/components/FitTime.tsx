@@ -617,7 +617,7 @@ export default function FitTime() {
               </option>
             ))}
           </select>
-          <span style={{ color: "#888" }}>~</span>
+          <span style={{ color: "var(--text-3)" }}>~</span>
           <select
             className="textin"
             style={{ flex: 1, textAlign: "center" }}
@@ -753,10 +753,10 @@ export default function FitTime() {
               textAlign: "left",
               lineHeight: 1.5,
               border: health.serverless
-                ? "1px solid #f0b4b4"
-                : "1px solid #f0dca8",
-              background: health.serverless ? "#fdf2f2" : "#fdf9ec",
-              color: health.serverless ? "#a11" : "#7a5b00",
+                ? "1px solid var(--hard-fg)"
+                : "1px solid var(--soft-fg)",
+              background: health.serverless ? "var(--hard-bg)" : "var(--soft-bg)",
+              color: health.serverless ? "var(--hard-fg)" : "var(--soft-fg)",
             }}
           >
             {health.serverless ? (
@@ -837,7 +837,7 @@ export default function FitTime() {
                 <span>
                   {p.name}
                   <span
-                    style={{ color: "#9aa0aa", fontSize: 12, marginLeft: 6 }}
+                    style={{ color: "var(--text-3)", fontSize: 12, marginLeft: 6 }}
                   >
                     {p.required ? "필수" : "선택"}
                   </span>
@@ -1355,8 +1355,8 @@ export default function FitTime() {
                       border: on
                         ? "1.5px solid var(--accent)"
                         : "1px solid var(--line)",
-                      background: on ? "var(--accent-weak)" : "#fff",
-                      color: on ? "var(--accent-dark)" : "#333",
+                      background: on ? "var(--accent-weak)" : "var(--surface)",
+                      color: on ? "var(--accent-dark)" : "var(--text-2)",
                       fontWeight: on ? 700 : 500,
                       cursor: "pointer",
                     }}

@@ -1,24 +1,26 @@
 :root {
-  --accent: #2F6BFF;
-  --accent-dark: #1F55E0;
-  --accent-weak: #EAF1FF;
-  --bg: #F5F7FA;
-  --surface: #fff;
-  --line: #E7ECF2;
-  --text: #14161A;
-  --text-2: #414A57;
-  --text-3: #8A93A3;
-  --ok-fg: #12A866;
-  --ok-bg: #E5F6EE;
-  --soft-fg: #E68A0C;
-  --soft-bg: #FDEFD8;
-  --unk-fg: #8A93A3;
-  --unk-bg: #EDF0F4;
-  --hard-fg: #E5484D;
-  --hard-bg: #FDE9E9;
+  /* 네온(#21F1A8)은 브랜드/단일추천/선택/CTA에만 극소량(<10%). 나머지는 차콜·그레이. */
+  --accent: #21F1A8;
+  --accent-dark: #16D492;
+  --accent-weak: rgba(33, 241, 168, 0.12);
+  --accent-ink: #06231A;
+  --bg: #171717;
+  --surface: #1E1F1E;
+  --line: #2E302E;
+  --text: #F3F4F2;
+  --text-2: #A7ABA6;
+  --text-3: #71756F;
+  --ok-fg: #34C88A;
+  --ok-bg: rgba(52, 200, 138, 0.14);
+  --soft-fg: #E3A24A;
+  --soft-bg: rgba(227, 162, 74, 0.14);
+  --unk-fg: #8A8F88;
+  --unk-bg: rgba(138, 143, 136, 0.12);
+  --hard-fg: #F26F6F;
+  --hard-bg: rgba(242, 111, 111, 0.13);
   --r-md: 12px;
   --r-lg: 16px;
-  --shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 8px 24px rgba(16, 24, 40, 0.05);
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px -12px rgba(0, 0, 0, 0.6);
 }
 
 * {
@@ -142,7 +144,7 @@ b {
   background: var(--accent-weak);
 }
 .role-org {
-  color: #fff;
+  color: var(--bg);
   background: var(--text);
 }
 .back {
@@ -214,7 +216,7 @@ select:focus-visible {
 }
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
 }
 .btn-primary:active {
   background: var(--accent-dark);
@@ -411,7 +413,7 @@ select:focus-visible {
 .switch .track {
   position: absolute;
   inset: 0;
-  background: #d1d6db;
+  background: #3A3D39;
   border-radius: 999px;
   transition: background 0.15s;
 }
@@ -471,7 +473,7 @@ select:focus-visible {
 }
 .seg button.on {
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-ink);
 }
 
 .iconbtn {
@@ -581,7 +583,7 @@ select:focus-visible {
   top: 20px;
   width: 16px;
   height: 28px;
-  border: solid #fff;
+  border: solid var(--accent-ink);
   border-width: 0 4px 4px 0;
   transform: rotate(45deg);
 }
@@ -591,7 +593,7 @@ select:focus-visible {
   right: 20px;
   bottom: 104px;
   background: var(--text);
-  color: #fff;
+  color: var(--bg);
   padding: 13px 16px;
   border-radius: 12px;
   font-size: 14px;
@@ -692,15 +694,15 @@ select:focus-visible {
   border-color: var(--accent);
 }
 .choice.accent .ct {
-  color: #fff;
+  color: var(--accent-ink);
 }
 .choice.accent .cs {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(6, 35, 26, 0.72);
 }
 
 .token {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.52), transparent),
+    linear-gradient(180deg, rgba(33, 241, 168, 0.1), transparent),
     var(--accent-weak);
   border: 1px dashed color-mix(in srgb, var(--accent) 72%, var(--surface));
   border-radius: var(--r-lg);
