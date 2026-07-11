@@ -308,13 +308,12 @@
 
   /* scene 3 — 안 되는 칸이 하나씩 칠해지는 것처럼 (핵심 사용 모먼트) */
   .screen[data-screen="3"] .pcell.no,
-  .screen[data-screen="3"] .pcell.soft { background: var(--ok-bg); box-shadow: none; transition: background .32s ease, box-shadow .32s ease; }
-  .screen[data-screen="3"].on .pcell.no { background: var(--no-bg); box-shadow: inset 0 0 0 1px rgba(229,86,78,.35); transition-delay: var(--pd, 0s); }
-  .screen[data-screen="3"].on .pcell.soft { background: var(--soft-bg); box-shadow: inset 0 0 0 1px rgba(224,163,28,.35); transition-delay: var(--pd, 0s); }
+  .screen[data-screen="3"] .pcell.soft { background: var(--ok-bg); box-shadow: none; transition: background .2s ease, box-shadow .2s ease; }
+  .screen[data-screen="3"] .pcell.no.paint { background: var(--no-bg); box-shadow: inset 0 0 0 1px rgba(229,86,78,.35); }
+  .screen[data-screen="3"] .pcell.soft.paint { background: var(--soft-bg); box-shadow: inset 0 0 0 1px rgba(224,163,28,.35); }
 
   /* scene 4 — 참여 현황 진행바가 채워지는 것처럼 */
-  .screen[data-screen="4"] .ptrack i { width: 0; transition: width 1s cubic-bezier(.2,.8,.2,1) .35s; }
-  .screen[data-screen="4"].on .ptrack i { width: 66%; }
+  .screen[data-screen="4"] .ptrack i { width: 0; transition: width .12s linear; }
   .screen[data-screen="4"] .stat-row .dot.done { transform: scale(0); }
   .screen[data-screen="4"].on .stat-row:nth-child(1) .dot.done { animation: pop .32s .45s both; }
   .screen[data-screen="4"].on .stat-row:nth-child(2) .dot.done { animation: pop .32s .58s both; }
@@ -344,6 +343,27 @@
     .screen[data-screen="3"] .pcell.soft { background: var(--soft-bg); }
     .screen[data-screen="5"] .wkstrip .wd.pick .wc { background: var(--accent); }
   }
+
+  /* ============ 리얼리티: 상태바 · 화면 반사 ============ */
+  .statusbar { position: absolute; top: 15px; left: 21px; right: 21px; height: 13px; display: flex; align-items: center; justify-content: space-between; z-index: 5; color: var(--screen-ink); font-family: var(--font-mono); pointer-events: none; }
+  .sb-time { font-size: 11px; font-weight: 700; letter-spacing: .01em; }
+  .sb-ico { display: flex; align-items: center; gap: 5px; }
+  .sb-ico svg { display: block; fill: var(--screen-ink); }
+  .sb-batt { position: relative; width: 22px; height: 11px; border: 1px solid var(--screen-ink); border-radius: 3px; opacity: .9; }
+  .sb-batt::after { content: ""; position: absolute; right: -2.6px; top: 3px; width: 2px; height: 5px; background: var(--screen-ink); border-radius: 0 1px 1px 0; }
+  .sb-batt i { position: absolute; left: 1.5px; top: 1.5px; bottom: 1.5px; width: 68%; background: var(--screen-ink); border-radius: 1.5px; }
+  .sbar > span:first-child { display: none; }   /* 상태바가 시간 담당 → 화면별 sbar는 역할만 */
+  .sbar { top: 15px; }
+  .screenframe::after { content: ""; position: absolute; inset: 0; border-radius: 32px; pointer-events: none; z-index: 3; box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -34px 40px -32px rgba(0,0,0,.07); }
+
+  /* ============ 가상 커서(손) ============ */
+  .cursor { position: absolute; left: -40px; top: -40px; width: 19px; height: 19px; z-index: 6; pointer-events: none; opacity: 0; transform: translate(-5px, -3px); transition: opacity .35s ease, left .32s cubic-bezier(.3,.7,.3,1), top .32s cubic-bezier(.3,.7,.3,1); will-change: left, top; }
+  .cursor.show { opacity: 1; }
+  .cursor.drag { transition: opacity .35s ease, left .1s linear, top .1s linear; }
+  .cursor::before { content: ""; position: absolute; inset: 0; border-radius: 50%; background: rgba(20,20,18,.26); border: 1.5px solid rgba(255,255,255,.9); box-shadow: 0 2px 7px rgba(0,0,0,.28); }
+  .cursor.tap::after { content: ""; position: absolute; left: 50%; top: 50%; width: 13px; height: 13px; border-radius: 50%; border: 2px solid var(--accent); transform: translate(-50%,-50%) scale(.4); animation: ripple .52s ease-out; }
+  @keyframes ripple { 0% { opacity: .8; transform: translate(-50%,-50%) scale(.4); } 100% { opacity: 0; transform: translate(-50%,-50%) scale(2.7); } }
+  @media (prefers-reduced-motion: reduce) { .cursor { display: none; } }
 </style>
 </head>
 <body>
@@ -353,7 +373,7 @@
   <!-- ===================== HERO ===================== -->
   <header class="hero wrap">
     <span class="eyebrow" style="justify-content:center">Toss Product Design 2026 · 사용 흐름</span>
-    <h1>여섯 명이 회의를 잡는 <span class="g">전체 흐름</span>을 스크롤로.</h1>
+    <h1>여섯 명의 회의, <span class="g">가장 덜 무리한 1시간</span>을 찾다</h1>
     <p>‘6명이 다음 주까지 1시간 회의를 잡는’ 상황을, 실제 서비스 <b style="color:var(--ink)">핏타임</b> 화면으로 처음 진입부터 확정까지 따라갑니다. 각 화면 옆 말풍선은 <b style="color:var(--ink)">왜 이렇게 설계했는지</b>를 설명합니다.</p>
     <div class="hero-meta">
       <span class="chip">필수 4 · 선택 2</span>
@@ -372,6 +392,18 @@
       <!-- PHONE -->
       <div class="phone">
         <div class="screenframe">
+
+          <!-- device status bar (realism) -->
+          <div class="statusbar" aria-hidden="true">
+            <span class="sb-time">9:41</span>
+            <span class="sb-ico">
+              <svg class="sb-sig" width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.7" y="5" width="3" height="6" rx="1"/><rect x="9.4" y="2.5" width="3" height="8.5" rx="1"/><rect x="14" y="0" width="3" height="11" rx="1"/></svg>
+              <svg class="sb-wifi" width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.1c2.5 0 4.8 1 6.4 2.6l-1.3 1.3A7.3 7.3 0 0 0 7.5 4a7.3 7.3 0 0 0-5.1 2L1.1 4.7A9.1 9.1 0 0 1 7.5 2.1Zm0 3.5c1.5 0 2.8.6 3.8 1.6l-1.3 1.3a3.3 3.3 0 0 0-4.9 0L3.7 7.2a5.3 5.3 0 0 1 3.8-1.6Zm0 3.4c.7 0 1.2.3 1.6.7L7.5 11 5.9 9.1c.4-.4 1-.7 1.6-.7Z"/></svg>
+              <span class="sb-batt"><i></i></span>
+            </span>
+          </div>
+          <!-- virtual finger cursor -->
+          <div class="cursor" id="cursor" aria-hidden="true"></div>
 
           <!-- Screen 1 -->
           <div class="screen on" data-screen="1">
@@ -568,35 +600,90 @@
   var names = { 1:["주최자","회의 만들기"], 2:["참여자","본인 선택"], 3:["참여자","안 되는 시간 칠하기"], 4:["주최자","참여 현황"], 5:["주최자","단일 추천"], 6:["주최자","막힐 때 · 조정 요청"], 7:["주최자","알림 · 확정"] };
   var screens = document.querySelectorAll(".screen");
   var annos = document.querySelectorAll(".anno");
+  var trigs = document.querySelectorAll(".trig");
+  var frame = document.querySelector(".screenframe");
+  var cursor = document.getElementById("cursor");
   var stStep = document.getElementById("stStep"), stName = document.getElementById("stName"), stWho = document.getElementById("stWho");
 
-  // build progress dots
   var dotsWrap = document.getElementById("dots"), dots = [];
   for (var i = 1; i <= TOTAL; i++) { var d = document.createElement("i"); dotsWrap.appendChild(d); dots.push(d); }
 
-  var current = 0;
+  var CURSOR_SEL = { 1: ".pill.sel", 2: ".rrow.me", 5: ".btn-fill", 6: ".btn-line", 7: ".ask .btns .y" };
+  var current = 0, tapped = {};
+
+  function screenOf(n) { return screens[n - 1]; }
+
   function setStep(n) {
     if (n === current) return;
-    current = n;
+    current = n; tapped = {};
     screens.forEach(function (s) { s.classList.toggle("on", +s.dataset.screen === n); });
     annos.forEach(function (a) { a.classList.toggle("on", +a.dataset.anno === n); });
     dots.forEach(function (d, i) { d.classList.toggle("on", i === n - 1); });
     stStep.textContent = ("0" + n).slice(-2);
     if (names[n]) { stWho.textContent = names[n][0]; stName.textContent = names[n][1]; }
+    // reset scrubbed state so it re-plays on re-entry
+    var s3 = screenOf(3); if (s3) s3.querySelectorAll(".pcell").forEach(function (c) { c.classList.remove("paint"); });
+    var s4 = screenOf(4); var bar = s4 && s4.querySelector(".ptrack i"); if (bar) bar.style.width = "0%";
+    if (cursor) { cursor.classList.remove("tap"); cursor.classList.toggle("drag", n === 3); }
+    if (reduce) { // 모션 없이 최종 상태
+      if (n === 3 && s3) s3.querySelectorAll(".pcell.no,.pcell.soft").forEach(function (c) { c.classList.add("paint"); });
+      if (n === 4 && bar) bar.style.width = "66%";
+    }
   }
+
+  function moveCursor(el) {
+    if (!el || !frame || !cursor) return;
+    var f = frame.getBoundingClientRect(), r = el.getBoundingClientRect();
+    cursor.style.left = (r.left - f.left + r.width / 2) + "px";
+    cursor.style.top = (r.top - f.top + r.height / 2) + "px";
+  }
+  function tapAt(n, p, thr) {
+    if (p >= thr && !tapped[n]) { tapped[n] = true; if (cursor) { cursor.classList.add("tap"); setTimeout(function () { cursor && cursor.classList.remove("tap"); }, 520); } }
+  }
+
+  function render(p) {
+    var n = current, screen = screenOf(n);
+    if (!screen || reduce) return;
+    if (cursor) cursor.classList.toggle("show", p > 0.05 && p < 0.96);
+    if (n === 3) {
+      var cells = screen.querySelectorAll(".pcell.no, .pcell.soft"), cnt = cells.length;
+      var k = Math.floor(p * cnt + 0.001);
+      cells.forEach(function (c, i) { c.classList.toggle("paint", i < k); });
+      var idx = Math.min(cnt - 1, Math.max(0, Math.floor(p * cnt)));
+      if (cells[idx]) moveCursor(cells[idx]);
+    } else if (n === 4) {
+      var bar = screen.querySelector(".ptrack i"); if (bar) bar.style.width = Math.min(1, p * 1.25) * 66 + "%";
+      var btn = screen.querySelector(".btn-fill"); if (btn) moveCursor(btn);
+      tapAt(n, p, 0.6);
+    } else {
+      var el = CURSOR_SEL[n] && screen.querySelector(CURSOR_SEL[n]);
+      if (el) moveCursor(el);
+      tapAt(n, p, 0.45);
+    }
+  }
+
+  function computeP() {
+    var t = trigs[current - 1]; if (!t) return 0;
+    var r = t.getBoundingClientRect(), vh = window.innerHeight || 800;
+    return Math.min(1, Math.max(0, (vh * 0.5 - r.top) / r.height));
+  }
+
   setStep(1);
 
-  var trigs = document.querySelectorAll(".trig");
-  if (!("IntersectionObserver" in window)) {
-    // fallback: show step 1 (already set)
-  } else {
+  if ("IntersectionObserver" in window) {
     var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) { if (e.isIntersecting) setStep(+e.target.dataset.step); });
+      entries.forEach(function (e) { if (e.isIntersecting) { setStep(+e.target.dataset.step); render(computeP()); } });
     }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
     trigs.forEach(function (t) { io.observe(t); });
   }
 
-  // reveal closing
+  var ticking = false;
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(function () { render(computeP()); ticking = false; }); } }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  onScroll();
+
+  // reveal closing sections
   var items = document.querySelectorAll(".reveal");
   if (!("IntersectionObserver" in window) || reduce) {
     items.forEach(function (el) { el.classList.add("in"); });
