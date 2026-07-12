@@ -26,6 +26,7 @@ import {
 type Screen =
   | "home"
   | "create"
+  | "orgPrefs"
   | "invite"
   | "computing"
   | "recommend"
@@ -75,7 +76,13 @@ const DURATION_OPTS: Array<{ min: number; label: string }> = [
   { min: 120, label: "2시간" },
 ];
 
-const ORG_STEPS: Screen[] = ["create", "invite", "recommend", "done"];
+const ORG_STEPS: Screen[] = [
+  "create",
+  "orgPrefs",
+  "invite",
+  "recommend",
+  "done",
+];
 const PART_STEPS: Screen[] = ["join", "onboard", "joined"];
 
 const SCOPES: Array<{ key: Scope; label: string; sub: string }> = [
@@ -369,7 +376,17 @@ export default function MeetingScheduler() {
       setCode(res.code);
       setSummary(res.meeting);
       setJoinCode(res.code); // 참여자 데모용 프리필
-      go("invite");
+      const hostName = participants[0]?.name;
+      if (hostName) {
+        const joined = await joinMeeting(res.code, hostName);
+        setParticipantId(joined.participantId);
+        setSummary(joined.meeting);
+        setPaint({});
+        setWeekIdx(0);
+        go("orgPrefs");
+      } else {
+        go("invite");
+      }
     } catch (e) {
       toast((e as Error).message);
     } finally {
@@ -449,8 +466,13 @@ export default function MeetingScheduler() {
     }
     setBusy(true);
     try {
-      await savePreferences(code, participantId, busyHard, busySoft);
-      go("joined");
+      const res = await savePreferences(code, participantId, busyHard, busySoft);
+      setSummary(res.meeting);
+      if (screen === "orgPrefs") {
+        go("invite");
+      } else {
+        go("joined");
+      }
     } catch (e) {
       toast((e as Error).message);
     } finally {
@@ -738,6 +760,10 @@ export default function MeetingScheduler() {
         </div>
         <div className="section-label">
           참석자와 중요도를 정해요 ({validCount}명)
+        </div>
+        <div className="t-caption" style={{ margin: "-2px 0 8px" }}>
+          첫 번째 참석자를 주최자 본인으로 보고, 공유 전에 본인 시간도 먼저
+          반영해요.
         </div>
         <div className="card">
           {draft.map((p, i) => (
@@ -1581,7 +1607,8 @@ export default function MeetingScheduler() {
         참여하기
       </button>
     );
-  } else if (screen === "onboard") {
+  } else if (screen === "onboard" || screen === "orgPrefs") {
+    const isHostPrefs = screen === "orgPrefs";
     const allDates = summary?.dates ?? range.dates;
     const hs = summary?.hourStart ?? HOUR_START;
     const he = summary?.hourEnd ?? HOUR_END;
@@ -1605,10 +1632,17 @@ export default function MeetingScheduler() {
         <div style={{ textAlign: "center", margin: "6px 0 14px" }}>
           <span className="privacy">칠한 시간은 아무에게도 안 보여요</span>
         </div>
-        <div className="t-title">안 되는 시간을 칠해주세요</div>
+        <div className="t-title">
+          {isHostPrefs ? "내가 안 되는 시간을 먼저 칠해주세요" : "안 되는 시간을 칠해주세요"}
+        </div>
         <div className="t-body" style={{ marginTop: 6 }}>
-          {summary ? range.label : ""} 안에서, 겹치는 일정이 있는 칸을 탭하거나
-          쓸어서 칠하세요. 날짜를 탭하면 하루 전체가 돼요.
+          {isHostPrefs
+            ? "공유 전에 주최자 본인의 조건도 먼저 반영해요. "
+            : summary
+              ? `${range.label} 안에서, `
+              : ""}
+          겹치는 일정이 있는 칸을 탭하거나 쓸어서 칠하세요. 날짜를 탭하면 하루
+          전체가 돼요.
         </div>
         <div className="seg-wide" style={{ marginTop: 14 }}>
           <button
@@ -1727,7 +1761,7 @@ export default function MeetingScheduler() {
         disabled={busy}
         onClick={handleSavePrefs}
       >
-        다 됐어요
+        {isHostPrefs ? "내 시간 저장하고 공유하기" : "다 됐어요"}
       </button>
     );
   } else if (screen === "joined") {
