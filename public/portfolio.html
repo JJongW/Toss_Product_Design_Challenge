@@ -36,13 +36,13 @@
   p { color: var(--text); line-height: 1.7; }
   .wrap { width: 1080px; margin: 0 auto; }
 
-  .hero { padding: 54px 0 72px; }
-  .hero-grid { display: grid; grid-template-columns: 0.88fr 1.12fr; gap: 20px; align-items: start; }
+  .hero { padding: 70px 0 86px; }
+  .hero-grid { display: grid; grid-template-columns: 0.86fr 1.14fr; gap: 32px; align-items: center; }
   .kicker { color: var(--blue); font-size: 13px; font-weight: 800; letter-spacing: -.01em; }
-  h1 { margin-top: 14px; font-size: 52px; line-height: 1.08; letter-spacing: -.045em; font-weight: 900; }
+  h1 { margin-top: 0; font-size: 64px; line-height: 1.02; letter-spacing: -.055em; font-weight: 920; }
   h1 span { color: var(--green); }
-  .lead { margin-top: 22px; font-size: 17px; line-height: 1.75; color: var(--text); }
-  .meta { margin-top: 28px; display: grid; gap: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--paper); }
+  .lead { margin-top: 24px; font-size: 18px; line-height: 1.72; color: var(--text); max-width: 620px; }
+  .meta { margin-top: 30px; display: grid; gap: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--paper); max-width: 620px; }
   .meta-row { display: grid; grid-template-columns: 96px 1fr; min-height: 52px; border-top: 1px solid var(--line); }
   .meta-row:first-child { border-top: 0; }
   .meta-row dt { padding: 16px; color: var(--muted); font-size: 13px; font-weight: 800; background: #fbfcfd; }
@@ -76,13 +76,13 @@
   .section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
   .section-title h2 { font-size: 26px; letter-spacing: -.035em; }
   .section-title p { max-width: 560px; color: var(--muted); font-size: 14px; }
-  .problem-list { margin-top: 26px; display: grid; gap: 12px; }
-  .problem-item { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+  .problem-list { margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 620px; }
+  .problem-item { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
   .problem-item small { display: block; color: var(--weak); font-size: 12px; font-weight: 850; }
-  .problem-item h3 { margin-top: 10px; font-size: 19px; line-height: 1.25; letter-spacing: -.025em; }
-  .problem-item p { margin-top: 8px; font-size: 14px; color: var(--text); }
+  .problem-item h3 { margin-top: 10px; font-size: 17px; line-height: 1.25; letter-spacing: -.025em; }
+  .problem-item p { margin-top: 8px; font-size: 13px; color: var(--text); line-height: 1.55; }
   .main-pair { display: block; padding-bottom: 78px; }
-  .pair-panel { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+  .pair-panel { background: var(--paper); border: 1px solid var(--line); border-radius: 24px; padding: 24px; box-shadow: var(--shadow); }
   .pair-panel .section-title { display: block; margin-bottom: 16px; }
   .pair-panel .section-title p { margin-top: 8px; }
 
@@ -118,8 +118,8 @@
   .ev i.gray { background: #9aa3ad; }
 
   .demo { padding: 0; }
-  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .demo-card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 18px; }
+  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .demo-card { background: #fbfcfd; border: 1px solid var(--line); border-radius: 20px; padding: 16px; }
   .demo-card h3 { font-size: 17px; margin-bottom: 14px; }
   .demo-frame { width: 260px; margin: 0 auto; border-radius: 38px; padding: 8px; background: #101318; box-shadow: var(--shadow); }
   .demo-frame iframe { display: block; width: 100%; height: 520px; border: 0; border-radius: 30px; background: #fff; }
@@ -132,7 +132,7 @@
     .flow-row { grid-template-columns: 1fr; }
     .flow-step, .flow-ui { border: 0; border-top: 1px solid var(--line); }
     .flow-step { border-top: 0; }
-    .cards, .demo-grid { grid-template-columns: 1fr; }
+    .cards, .demo-grid, .problem-list { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -141,8 +141,8 @@
     <section class="hero wrap">
       <div class="hero-grid">
         <div class="problem-column">
-          <h1>빈 시간을 모아도<br><span>정해도 되는 이유</span>는 남지 않습니다</h1>
-          <p class="lead">여러 사람의 빈 시간을 한 장의 표로 모으면 정보는 늘어나지만, 주최자의 판단은 쉬워지지 않습니다. 필수 참석, 선택 참석, 선호 충돌, 미응답처럼 무게가 다른 조건을 다시 해석해야 하기 때문입니다.</p>
+          <h1>6명의 회의 시간,<br><span>정해도 되는 이유</span>까지<br>찾아줍니다</h1>
+          <p class="lead">빈 시간을 모으는 것만으로는 충분하지 않습니다. FitTime은 필수 참석, 선택 참석, 선호 충돌, 미응답을 나눠 비교해 주최자가 추천 근거를 보고 결정할 수 있게 돕습니다.</p>
           <dl class="meta">
             <div class="meta-row"><dt>상황</dt><dd>같은 회사 동료 6명 · 다음 주 안 · 1시간 회의</dd></div>
             <div class="meta-row"><dt>문제</dt><dd>빈 시간 수집 이후에도 “이 시간으로 정해도 되는지” 판단해야 하는 부담</dd></div>
