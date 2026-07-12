@@ -600,6 +600,20 @@
 - **Weakness**: Q2는 691자로 여유가 9자뿐이다. 제출 폼이 줄바꿈이나 특수문자를 다르게 계산할 가능성은 낮지만, 붙여넣기 후 글자 수 초과가 뜨면 Q2의 `참여자는 세부 사정을 길게 설명하지 않아도 되고,` 구절을 먼저 줄인다.
 - **Next Research**: 실제 제출 폼 입력창에서 Q1/Q2/Q3를 각각 붙여넣고 글자 수 초과 여부를 최종 확인한다.
 
+## Entry 067 — 포트폴리오 과감한 제품 보드화: 추천 근거 해부 장면 강화 (2026-07-12)
+- **Fact**: 사용자가 현재 포트폴리오가 AI스럽고, 참고 이미지처럼 제품 흐름과 UI 디테일을 과감하게 보여주는 모션/편집 구조가 필요하다고 지적. 기존 구조는 이미 보드/콜아웃으로 일부 개선되어 있었지만, 폰 크기와 콜아웃이 아직 얌전하고 SaaS 랜딩 인상이 남아 있었다.
+- **Decision**: `public/portfolio.html`을 직접 수정. (1) 팔레트를 소프트 라벤더-그레이에서 따뜻한 크림 배경 + 딥 네이비 보드 + 포인트 오렌지 계열로 재정렬. (2) 히어로를 중앙 정렬에서 왼쪽 대형 타이포로 변경해 첫 화면의 편집감을 강화. (3) 추천 근거 보드의 폰 목업을 크게 키우고 살짝 회전시켜, 추천 화면이 포스터의 주인공처럼 보이게 했다. (4) `필수 참석`, `선호 충돌`, `미응답` 콜아웃을 더 크게 만들고 점선 connector를 길게 뽑아 화면 밖으로 뜯어낸 느낌을 강화. (5) Step Flow는 균일한 카드 4개에서 벗어나, 카드별 위치/회전 차이와 점선 연결을 줘 흐름 보드처럼 보이게 했다. (6) 카피는 `읽어요` 같은 설명형을 줄이고 `읽는다`, `먼저 꺼내요`처럼 짧고 단단하게 정리했다.
+- **Evidence**: `npm run build` 통과. `public/portfolio.html` script 파싱 OK. Chrome headless로 데스크톱 1440x2200 렌더 확인 — 히어로 대형 타이포, 보드의 큰 폰, 추천 근거 콜아웃이 보이며 "시스템이 비교하고 주최자는 근거를 읽는다" 메시지가 첫 흐름에서 드러남. 모바일 390x1700 렌더 1차에서 히어로/폰 가로 overflow 발견 → mobile media query로 h1 크기, board padding, phone width/rotation, callout 크기 보정 → 2차 렌더에서 가로 잘림 해소.
+- **Weakness**: 데스크톱에서는 과감함이 살아났지만, 모바일에서는 가독성을 위해 회전/뜯어낸 느낌을 줄였다. 실제 배포 후 브라우저/기기별 폰트 렌더 차이에 따라 히어로 줄바꿈이 달라질 수 있으므로 라이브 URL에서 최종 확인 필요.
+- **Next Research**: 정적 제출 URL(`fittime-walkthrough`)에 재배포 후 데스크톱/모바일 실기기에서 최종 확인. 필요하면 히어로 하단 여백과 보드 높이를 조금 더 조정한다.
+
+## Entry 068 — Step Flow 고도화: 설명 카드 → 실제 UI 조각이 들어간 대각선 플로우 (2026-07-12)
+- **Fact**: 사용자가 "100점 만점에 1000점" 수준의 UX와 이를 담아내는 비AI적인 색, 정형, 위계, 폰트, 아이콘 두께, 마진, 정렬까지 요구. Entry 067 이후에도 Step Flow가 아직 텍스트 카드에 가까워 제품 사용 흐름의 조작감이 부족했다.
+- **Decision**: `public/portfolio.html`의 Step Flow를 추가 고도화. 각 Step 카드 안에 실제 UI 조각을 넣었다. Step 1은 회의명/참석자/필수·선택/로스터 dot, Step 2는 안 되는 시간과 선호가 표시된 미니 시간 그리드, Step 3은 필수·선택·선호·미응답 계산 bar, Step 4는 추천 시간과 `확정/조정 요청` 액션을 보여준다. 카드 높이, radius, 내부 간격, label weight를 통일하고, 이전 dot 규칙 중복을 정리했다. 이로써 `Diagonal Flow + Exploded Recommendation` 구조가 더 분명해졌다.
+- **Evidence**: `npm run build` 통과. `public/portfolio.html` script 파싱 OK. Chrome headless 데스크톱 1440x3600 렌더 확인 — Hero, Exploded Recommendation, UI 조각이 포함된 4-step flow, live iframe 순서가 보이며 메시지 위계가 유지됨. 모바일 390px 캡처도 가로 잘림 없이 Hero와 Recommendation 보드가 읽힘.
+- **Weakness**: 모바일 캡처는 상단~추천 보드 중심으로 확인했고, Step Flow 하단까지의 실기기 스크롤 감각은 아직 라이브에서 확인 필요. 데스크톱에서는 Step 카드 4개가 선명하지만, 제출 URL 배포 후 웹폰트 로딩 타이밍에 따라 미세 줄바꿈이 달라질 수 있다.
+- **Next Research**: 재배포 후 실제 URL에서 데스크톱/모바일 모두 확인. 필요 시 Step 카드 내부의 미니 UI 크기와 live iframe 섹션 상단 여백을 미세 조정한다.
+
 ## Entry 060 — 필수 수정점 4개 실제 구현 (public/portfolio.html) (2026-07-11)
 - **Fact**: Entry 059에서 문서화만 됐던 배포본 필수 수정점을 실제 코드에 반영. 대상은 `public/portfolio.html` (배포 워크스루). 근접 원인 분석 결과, stage/annotation leak의 실제 트리거는 1024px 이하에서 `.anno`가 `position: fixed`로 바뀌고 `.anno.on` 클래스가 마지막 스텝(7)에 남아, scrolly를 벗어난 hero·Evidence·footer 위에도 말풍선이 계속 떠 있던 것.
 - **Decision(구현)**: (1) `#scrolly`에 IntersectionObserver(threshold 0)를 붙여 워크스루가 화면에 없을 때 `.scrolly.out` 토글. `.scrolly.out`이면 anno·stage-label·progress·cursor를 `opacity:0 + pointer-events:none`(cursor는 visibility:hidden)으로 죽여 데스크톱·모바일 양쪽 잔류를 차단. (2) 추천 카드의 한 줄 요약(`필수 4명 전원 가능 · 아쉬운 분 1명 · 익명`)을 evidence row 4개로 분리 — `필수 참석 4/4 가능`(ok) · `선택 참석 0/2 응답`(wait) · `선호 충돌 1명·익명`(soft) · `미응답 2명·선택`. 색 dot으로 4상태를 시각 구분. 프로토타입 내부 데이터(민아·준=선택·대기)와 모순 없게 수치 정합. (3) Screen 1(주최자 첫 화면)에 `참석자 6명 · 필수 4·선택 2` field를 제품 UI 안에 추가(기존엔 hero chip에만 존재). a2로 삽입하고 이하 stagger 재번호. (4) footer `v0.6` → `v1.1 · 2026.07`.

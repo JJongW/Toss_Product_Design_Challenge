@@ -8,29 +8,28 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
-  /* ===== Identity: OKLCH 틴트 뉴트럴 · 흰 카드 · 딥네이비 CTA · Pretendard ===== */
   :root {
-    /* 확정 시스템: OKLCH 틴트 뉴트럴 · 흰 카드 · 딥네이비 CTA · 포인트 최소 */
-    --paper: oklch(0.955 0.014 275);     /* 페이지 바탕: 소프트 라벤더-그레이 */
-    --surface: oklch(0.998 0.003 275);   /* 흰 카드 */
-    --surface-2: oklch(0.975 0.01 275);  /* 인셋 */
-    --screen: oklch(0.955 0.014 275);    /* 폰 화면 바탕 */
+    --paper: oklch(0.945 0.018 88);
+    --surface: oklch(0.995 0.006 88);
+    --surface-2: oklch(0.965 0.014 88);
+    --screen: oklch(0.956 0.014 88);
     --screen-ink: oklch(0.29 0.045 268);
     --screen-muted: oklch(0.64 0.025 265);
     --screen-line: oklch(0.92 0.008 270);
-    --ink: oklch(0.29 0.045 268);
-    --ink-soft: oklch(0.48 0.035 265);
-    --muted: oklch(0.64 0.025 265);
+    --ink: oklch(0.19 0.036 258);
+    --ink-soft: oklch(0.39 0.035 258);
+    --muted: oklch(0.56 0.026 258);
     --faint: oklch(0.75 0.02 265);
-    --hairline: oklch(0.92 0.008 270);
-    --hairline-strong: oklch(0.88 0.01 270);
-    --board: oklch(0.26 0.035 268);      /* 어두운 장면 배경 */
+    --hairline: oklch(0.86 0.018 88);
+    --hairline-strong: oklch(0.78 0.02 88);
+    --board: oklch(0.17 0.036 258);
     --board-ink: oklch(0.97 0.006 265);
     --board-mut: oklch(0.74 0.02 265);
-    --board-line: oklch(0.5 0.03 265);
-    --navy: oklch(0.3 0.055 265);        /* CTA */
-    --accent: oklch(0.58 0.17 258);      /* 태그(작게) */
-    --accent-soft: oklch(0.95 0.035 258);
+    --board-line: oklch(0.64 0.07 30);
+    --navy: oklch(0.22 0.045 258);
+    --accent: oklch(0.66 0.18 30);
+    --accent-2: oklch(0.64 0.14 205);
+    --accent-soft: oklch(0.94 0.046 30);
     --accent-ink: #ffffff;
     --beige: #ffffff;
     --ok: oklch(0.66 0.13 155);
@@ -60,6 +59,19 @@
     overflow-wrap: break-word;
     overflow-x: clip;   /* clip (NOT hidden) — hidden creates a scroll container that breaks position:sticky */
   }
+  .page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, oklch(0.2 0.03 258 / .04) 1px, transparent 1px),
+      linear-gradient(0deg, oklch(0.2 0.03 258 / .03) 1px, transparent 1px);
+    background-size: 58px 58px;
+    mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 84%, transparent);
+    z-index: 0;
+  }
+  .page > * { position: relative; z-index: 1; }
   .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
   .mono { font-variant-numeric: tabular-nums; }
   p { text-wrap: pretty; }
@@ -72,84 +84,131 @@
   }
   .viewhint b { color: var(--ink-soft); font-weight: 700; }
   .eyebrow {
-    font-size: 13px; letter-spacing: -0.005em; color: var(--accent); font-weight: 700;
+    font-size: 13px; letter-spacing: -0.005em; color: var(--accent); font-weight: 800;
     display: inline-flex; align-items: center; gap: 7px;
-    background: var(--accent-soft); padding: 7px 14px; border-radius: 999px;
+    background: var(--accent-soft); padding: 7px 14px; border-radius: 10px;
   }
   .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
   /* ===================== HERO ===================== */
-  .hero { padding: 92px 0 56px; text-align: center; }
+  .hero { padding: 92px 0 56px; text-align: left; }
   .hero h1 {
-    font-size: clamp(2.4rem, 6vw, 4.2rem); font-weight: 800; margin: 22px auto 0; max-width: 16ch;
+    font-size: clamp(3.2rem, 9vw, 7.6rem); font-weight: 900; margin: 22px 0 0; max-width: 11ch;
+    line-height: .92;
   }
   .hero h1 .g { color: var(--accent); }
   .hero p {
     font-size: clamp(1.15rem, 2vw, 1.5rem); color: var(--ink); font-weight: 500;
-    margin: 24px auto 0; max-width: 52ch; line-height: 1.55;
+    margin: 28px 0 0; max-width: 52ch; line-height: 1.55;
   }
   .hero .hero-note {
     font-size: clamp(0.9rem, 1.3vw, 1rem); color: var(--muted); font-weight: 500;
     margin: 16px auto 0; max-width: 48ch; line-height: 1.55;
   }
-  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 30px; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start; margin-top: 30px; }
   .chip {
     font-size: 12.5px; padding: 7px 13px;
-    border: 1px solid var(--hairline); border-radius: 999px; color: var(--ink); background: var(--surface-2); font-weight: 600;
+    border: 1px solid var(--hairline); border-radius: 10px; color: var(--ink); background: var(--surface); font-weight: 700;
   }
   .chip em { font-style: normal; font-weight: 600; color: var(--muted); margin-right: 7px; }
 
   /* ===================== BOARD · 추천 근거 해부 장면 ===================== */
-  .board { background: var(--board); color: var(--board-ink); padding: 92px 24px 100px; position: relative; overflow: hidden; border-top: 1px solid var(--hairline); }
+  .board { background: var(--board); color: var(--board-ink); padding: 92px 24px 112px; position: relative; overflow: hidden; border-top: 1px solid var(--hairline); }
+  .board::before {
+    content: "";
+    position: absolute;
+    inset: -20% -8%;
+    background:
+      radial-gradient(circle at 12% 18%, oklch(0.66 0.18 30 / .24), transparent 22%),
+      radial-gradient(circle at 76% 42%, oklch(0.64 0.14 205 / .13), transparent 28%),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size: auto, auto, 72px 72px, 72px 72px;
+  }
+  .board::after {
+    content: "";
+    position: absolute;
+    width: 760px;
+    height: 760px;
+    right: -270px;
+    top: 40px;
+    border-radius: 46%;
+    border: 1px solid rgba(255,255,255,.08);
+    transform: rotate(-18deg);
+  }
   .board-in { max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
   .step-badge { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--accent); }
   .step-badge b { color: var(--board-ink); }
   .board h2 { font-size: clamp(1.9rem, 4.2vw, 3rem); font-weight: 800; margin-top: 16px; line-height: 1.2; color: var(--board-ink); max-width: 20ch; }
   .board h2 .g { color: var(--accent); }
   .board-sub { font-size: clamp(1rem, 1.4vw, 1.1rem); color: var(--board-mut); margin-top: 16px; max-width: 46ch; line-height: 1.65; }
-  .board-stage { position: relative; margin-top: 60px; display: grid; grid-template-columns: 300px 1fr; gap: clamp(40px, 7vw, 96px); align-items: center; }
+  .board-stage { position: relative; margin-top: 64px; display: grid; grid-template-columns: minmax(320px, 460px) 1fr; gap: clamp(36px, 6vw, 82px); align-items: center; }
+  .board-stage::before {
+    content: "COMPARE";
+    position: absolute;
+    left: 286px;
+    top: -26px;
+    font-size: clamp(4.8rem, 12vw, 10.4rem);
+    font-weight: 900;
+    line-height: .8;
+    color: rgba(255,255,255,.04);
+    letter-spacing: -.08em;
+    pointer-events: none;
+  }
 
   /* 큰 폰 목업 (추천 화면) */
   /* 리얼 아이폰 목업 */
-  .bphone { position: relative; width: 296px; justify-self: center; background: linear-gradient(150deg, #2a2c33, #131419 40%); border-radius: 54px; padding: 12px; box-shadow: 0 50px 100px -34px rgba(0,0,0,.72), 0 0 0 1.5px rgba(255,255,255,.08), inset 0 0 0 2px rgba(0,0,0,.5); }
+  .bphone { position: relative; width: min(430px, 88vw); justify-self: center; background: linear-gradient(150deg, #2a2c33, #131419 40%); border-radius: 58px; padding: 13px; box-shadow: 0 58px 130px -38px rgba(0,0,0,.82), 0 0 0 1.5px rgba(255,255,255,.08), inset 0 0 0 2px rgba(0,0,0,.5); transform: rotate(-2.5deg); }
+  .bphone::after {
+    content: "";
+    position: absolute;
+    inset: 36px auto auto -66px;
+    width: 118px;
+    height: 118px;
+    border: 2px dashed var(--board-line);
+    border-radius: 28px;
+    transform: rotate(13deg);
+    opacity: .65;
+  }
   .bphone::before { content: ""; position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 104px; height: 30px; background: #05060a; border-radius: 999px; z-index: 3; }
   .bphone .side { position: absolute; z-index: 0; background: #0a0b10; }
   .bphone .side.pwr { right: -2px; top: 150px; width: 3px; height: 60px; border-radius: 0 2px 2px 0; }
   .bphone .side.vup { left: -2px; top: 132px; width: 3px; height: 44px; border-radius: 2px 0 0 2px; }
   .bphone .side.vdn { left: -2px; top: 186px; width: 3px; height: 44px; border-radius: 2px 0 0 2px; }
-  .bp-screen { position: relative; background: var(--paper); border-radius: 42px; padding: 0 20px 22px; min-height: 552px; overflow: hidden; }
+  .bp-screen { position: relative; background: var(--paper); border-radius: 44px; padding: 0 28px 28px; min-height: 650px; overflow: hidden; }
   .bp-status { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 4px; }
   .bp-status .t { font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: .01em; }
   .bp-status .ic { display: inline-flex; align-items: center; gap: 6px; }
   .bp-status .ic svg { display: block; }
   .bp-status .ic svg path, .bp-status .ic svg rect { fill: var(--ink); }
-  .bp-tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--accent); background: var(--accent-soft); padding: 5px 11px; border-radius: 999px; }
+  .bp-tag { display: inline-block; font-size: 12px; font-weight: 800; color: var(--accent); background: var(--accent-soft); padding: 7px 11px; border-radius: 9px; }
   .bp-day { font-size: 13px; font-weight: 600; color: var(--muted); margin-top: 20px; }
-  .bp-time { font-size: 2rem; font-weight: 800; letter-spacing: -.035em; color: var(--ink); margin-top: 3px; font-variant-numeric: tabular-nums; }
-  .bp-verdict { display: inline-flex; align-items: center; gap: 6px; margin-top: 13px; font-size: 12.5px; font-weight: 700; color: var(--ok); background: var(--ok-bg); padding: 6px 11px; border-radius: 999px; }
+  .bp-time { font-size: clamp(2.7rem, 5vw, 4.25rem); font-weight: 900; letter-spacing: -.06em; color: var(--ink); margin-top: 0; font-variant-numeric: tabular-nums; line-height: .98; }
+  .bp-verdict { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13px; font-weight: 800; color: var(--ok); background: var(--ok-bg); padding: 7px 11px; border-radius: 10px; }
   .bp-verdict svg { width: 13px; height: 13px; }
-  .bp-rows { margin-top: 20px; border-top: 1px solid var(--hairline); }
-  .bp-r { display: grid; grid-template-columns: 26px 1fr auto; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--hairline); }
+  .bp-rows { margin-top: 26px; border-top: 1px solid var(--hairline); }
+  .bp-r { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--hairline); }
   .bp-r:last-child { border-bottom: none; }
-  .bp-c { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; }
+  .bp-c { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; }
   .bp-c svg { width: 13px; height: 13px; }
   .bp-c.g { background: var(--ok); } .bp-c.a { background: var(--soft); } .bp-c.s { background: var(--unknown); }
-  .bp-k { font-size: 13px; font-weight: 600; color: var(--ink); }
-  .bp-v { font-size: 14px; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .bp-k { font-size: 15px; font-weight: 700; color: var(--ink); }
+  .bp-v { font-size: 17px; font-weight: 900; color: var(--ink); font-variant-numeric: tabular-nums; }
   .bp-v.muted { color: var(--muted); }
 
   /* 화면 밖으로 떼어낸 근거 콜아웃 */
-  .callouts { position: relative; display: flex; flex-direction: column; gap: 18px; }
-  .callout { position: relative; background: var(--surface); color: var(--ink); border-radius: 18px; padding: 18px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 24px 50px -26px rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.06); }
-  .callout::before { content: ""; position: absolute; left: -34px; top: 50%; width: 34px; border-top: 2px dashed var(--board-line); }
-  .callout::after { content: ""; position: absolute; left: -38px; top: calc(50% - 3px); width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-  .callout.r1 { transform: rotate(-1.4deg); margin-left: 14px; }
-  .callout.r2 { transform: rotate(1deg); margin-left: 46px; }
-  .callout.r3 { transform: rotate(-.6deg); margin-left: 8px; }
-  .co-cir { width: 44px; height: 44px; border-radius: 13px; flex: none; display: grid; place-items: center; color: #fff; }
+  .callouts { position: relative; display: flex; flex-direction: column; gap: 22px; z-index: 3; }
+  .callout { position: relative; background: var(--surface); color: var(--ink); border-radius: 18px; padding: 20px 22px; display: flex; align-items: center; gap: 16px; box-shadow: 0 30px 70px -30px rgba(0,0,0,.62); border: 1px solid rgba(255,255,255,.06); }
+  .callout::before { content: ""; position: absolute; left: -74px; top: 50%; width: 74px; border-top: 2px dashed var(--board-line); }
+  .callout::after { content: ""; position: absolute; left: -80px; top: calc(50% - 4px); width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 5px oklch(0.66 0.18 30 / .18); }
+  .callout.r1 { transform: rotate(-3deg); margin-left: -8px; width: min(480px, 100%); }
+  .callout.r2 { transform: rotate(2.2deg); margin-left: 72px; width: min(440px, calc(100% - 42px)); }
+  .callout.r3 { transform: rotate(-1.2deg); margin-left: 28px; width: min(430px, calc(100% - 20px)); }
+  .callout.r1 .co-t { font-size: clamp(1.35rem, 3vw, 2.2rem); }
+  .co-cir { width: 50px; height: 50px; border-radius: 14px; flex: none; display: grid; place-items: center; color: #fff; }
   .co-cir svg { width: 22px; height: 22px; }
   .co-cir.g { background: var(--ok); } .co-cir.a { background: var(--soft); } .co-cir.s { background: var(--unknown); }
-  .co-t { font-size: 1.05rem; font-weight: 800; letter-spacing: -.02em; }
+  .co-t { font-size: 1.08rem; font-weight: 900; letter-spacing: -.035em; line-height: 1.05; }
   .co-t em { font-size: .8rem; font-weight: 700; color: var(--muted); font-style: normal; margin-left: 6px; }
   .co-s { font-size: .82rem; color: var(--muted); font-weight: 500; margin-top: 2px; }
   @media (max-width: 900px) {
@@ -157,24 +216,91 @@
     .callout { transform: none !important; margin-left: 0 !important; }
     .callout::before, .callout::after { display: none; }
   }
+  @media (max-width: 600px) {
+    .viewhint { font-size: 11.5px; padding: 9px 12px; }
+    .wrap { padding: 0 18px; }
+    .hero { padding: 70px 18px 44px; }
+    .hero h1 {
+      font-size: clamp(2.65rem, 15vw, 3.6rem);
+      max-width: 9ch;
+      line-height: .96;
+      letter-spacing: -.055em;
+    }
+    .hero p { font-size: 1rem; line-height: 1.58; }
+    .chip { font-size: 11.5px; padding: 7px 10px; }
+    .board { padding: 74px 18px 86px; }
+    .board h2 { font-size: clamp(2rem, 9vw, 2.7rem); max-width: 10.5ch; }
+    .board-sub { font-size: .98rem; max-width: 31ch; }
+    .board-stage::before { display: none; }
+    .bphone {
+      width: min(330px, 100%);
+      transform: none;
+      border-radius: 50px;
+      justify-self: start;
+    }
+    .bphone::after { display: none; }
+    .bp-screen { min-height: 560px; padding: 0 18px 22px; border-radius: 38px; }
+    .bp-time { font-size: clamp(2.4rem, 16vw, 3.2rem); }
+    .bp-k { font-size: 14px; }
+    .bp-v { font-size: 15px; }
+    .callouts { gap: 12px; }
+    .callout { padding: 16px 16px; border-radius: 15px; }
+    .callout.r1 .co-t { font-size: 1.18rem; }
+    .co-cir { width: 40px; height: 40px; border-radius: 12px; }
+  }
 
   /* ===================== STEPS · 사용 흐름 4단계 ===================== */
-  .steps { padding: 92px 24px 40px; max-width: var(--maxw); margin: 0 auto; }
-  .steps-head { text-align: center; }
-  .steps-head h2 { font-size: clamp(1.7rem, 3.6vw, 2.4rem); font-weight: 800; margin-top: 16px; }
+  .steps { padding: 104px 24px 54px; max-width: var(--maxw); margin: 0 auto; }
+  .steps-head { text-align: left; max-width: 760px; }
+  .steps-head h2 { font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 900; margin-top: 16px; line-height: 1.04; max-width: 13ch; }
   .steps-head p { font-size: clamp(.98rem, 1.4vw, 1.08rem); color: var(--ink-soft); margin-top: 14px; }
-  .steps-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 48px; position: relative; }
-  .step { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 20px; padding: 22px 20px; box-shadow: var(--shadow); }
-  .step:not(:last-child)::after { content: ""; position: absolute; right: -11px; top: 46px; width: 14px; border-top: 2px dashed var(--hairline-strong); z-index: 2; }
+  .steps-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 52px; position: relative; }
+  .steps-row::before { content: ""; position: absolute; left: 8%; right: 8%; top: 39px; border-top: 2px dashed var(--accent); opacity: .45; }
+  .step { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); min-height: 360px; overflow: hidden; }
+  .step::before { content: ""; position: absolute; right: -42px; bottom: -44px; width: 118px; height: 118px; border-radius: 28px; border: 1px dashed var(--hairline-strong); transform: rotate(18deg); opacity: .65; }
+  .step:nth-child(1) { transform: rotate(-1.2deg); }
+  .step:nth-child(2) { transform: translateY(24px) rotate(1deg); }
+  .step:nth-child(3) { transform: translateY(-8px) rotate(-.8deg); }
+  .step:nth-child(4) { transform: translateY(18px) rotate(1.4deg); }
+  .step:not(:last-child)::after { content: ""; position: absolute; right: -17px; top: 39px; width: 18px; border-top: 2px dashed var(--accent); z-index: 2; }
   .st-n { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--accent); }
-  .st-n b { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 7px; background: var(--navy); color: #fff; font-size: 12px; }
-  .step h3 { font-size: 1.02rem; font-weight: 800; margin-top: 14px; }
+  .st-n b { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: var(--navy); color: #fff; font-size: 13px; }
+  .step h3 { font-size: 1.12rem; font-weight: 900; margin-top: 16px; letter-spacing: -.03em; }
   .step .who { font-size: .74rem; font-weight: 700; color: var(--muted); margin-top: 3px; }
-  .st-list { margin-top: 13px; display: flex; flex-direction: column; gap: 7px; }
-  .st-li { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--ink-soft); font-weight: 500; }
-  .st-li i { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
-  .st-li.ok i { background: var(--ok); } .st-li.soft i { background: var(--soft); } .st-li.unk i { background: var(--unknown); }
-  @media (max-width: 900px) { .steps-row { grid-template-columns: repeat(2, 1fr); } .step:not(:last-child)::after { display: none; } }
+  .st-list { margin-top: 12px; display: flex; flex-direction: column; gap: 7px; }
+  .st-li { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--ink-soft); font-weight: 600; }
+  .st-li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
+  .st-li.ok::before { background: var(--ok); } .st-li.soft::before { background: var(--soft); } .st-li.unk::before { background: var(--unknown); }
+  .mini-ui { position: relative; margin-top: 18px; background: var(--surface-2); border: 1px solid var(--hairline); border-radius: 18px; padding: 14px; min-height: 132px; overflow: hidden; }
+  .mini-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .mini-title { font-size: 12px; font-weight: 900; color: var(--ink); letter-spacing: -.02em; }
+  .mini-tag { font-size: 10.5px; font-weight: 800; color: var(--accent); background: var(--accent-soft); padding: 4px 7px; border-radius: 7px; }
+  .mini-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 30px; border-top: 1px solid var(--hairline); font-size: 12px; font-weight: 750; color: var(--ink-soft); }
+  .mini-row:first-of-type { border-top: 0; }
+  .mini-row b { color: var(--ink); font-weight: 900; }
+  .roster-dots { display: flex; gap: 5px; }
+  .roster-dots i { width: 15px; height: 15px; border-radius: 50%; background: var(--ok); box-shadow: inset 0 0 0 2px rgba(255,255,255,.55); }
+  .roster-dots i:nth-child(n+5) { background: var(--soft); }
+  .time-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .time-grid i { height: 18px; border-radius: 5px; background: var(--surface); border: 1px solid var(--hairline); }
+  .time-grid i.busy { background: var(--navy); border-color: var(--navy); }
+  .time-grid i.soft { background: var(--soft-bg); border-color: var(--soft); }
+  .calc-bars { display: flex; flex-direction: column; gap: 8px; }
+  .calc-bar { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; color: var(--ink-soft); }
+  .calc-track { height: 9px; border-radius: 999px; background: var(--surface); overflow: hidden; border: 1px solid var(--hairline); }
+  .calc-fill { display: block; height: 100%; border-radius: inherit; background: var(--ok); }
+  .calc-fill.soft { background: var(--soft); }
+  .calc-fill.unk { background: var(--unknown); }
+  .decision-mini { display: grid; grid-template-columns: 1fr; gap: 7px; }
+  .decision-mini .pick { background: var(--navy); color: #fff; border-radius: 12px; padding: 12px; font-size: 18px; font-weight: 900; letter-spacing: -.04em; }
+  .decision-mini .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .decision-mini button { appearance: none; border: 1px solid var(--hairline); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; font-size: 11px; font-weight: 850; padding: 9px 6px; }
+  .decision-mini button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  @media (max-width: 900px) {
+    .steps-row { grid-template-columns: repeat(2, 1fr); }
+    .steps-row::before, .step:not(:last-child)::after { display: none; }
+    .step:nth-child(n) { transform: none; }
+  }
   @media (max-width: 520px) { .steps-row { grid-template-columns: 1fr; } }
 
   /* reveal 모션 */
@@ -212,13 +338,13 @@
 <body>
 
 <div class="page">
-  <div class="viewhint">이 소개 페이지는 <b>넓은 데스크톱 화면</b>에 맞춰 만들었어요 · 브라우저를 전체 화면으로 봐주시면 감사하겠습니다</div>
+  <div class="viewhint">제품 흐름 보드 · 하단에서 실제 앱을 바로 써볼 수 있어요</div>
 
   <!-- ===================== HERO ===================== -->
   <header class="hero wrap">
-    <span class="eyebrow" style="justify-content:center">Toss Product Design 2026</span>
+    <span class="eyebrow">Toss Product Design 2026</span>
     <h1>여섯 명의 회의,<br><span class="g">가장 덜 무리한 1시간</span>을 찾다</h1>
-    <p>사람이 여섯이면 모두에게 완벽한 시간은 거의 없어요.<br>그때 주최자에게 어려운 건 <b style="color:var(--ink)">무엇을 근거로 정하느냐</b>예요.</p>
+    <p>사람이 여섯이면 완벽한 시간은 거의 없어요.<br>주최자에게 남는 질문은 <b style="color:var(--ink)">무엇을 근거로 정하느냐</b>예요.</p>
     <div class="hero-meta">
       <span class="chip"><em>참석자</em>6명 · 필수 4 / 선택 2</span>
       <span class="chip"><em>기간</em>다음 주 안 · 1시간 회의</span>
@@ -231,8 +357,8 @@
     <div class="board-in">
       <div class="reveal">
         <span class="step-badge">STEP 4 · <b>주최자의 판단</b></span>
-        <h2>시스템이 조건을 비교하고,<br><span class="g">주최자는 근거만</span> 읽어요</h2>
-        <p class="board-sub">시간표를 모바일로 줄인 게 아니에요. 필수·선택·선호·미응답을 시스템이 대신 계산해, 정해도 되는 이유까지 정리해줘요.</p>
+        <h2>시스템이 조건을 비교하고,<br><span class="g">주최자는 근거만</span> 읽는다</h2>
+        <p class="board-sub">시간표를 작게 만든 게 아니에요. 필수·선택·선호·미응답을 계산해, 정해도 되는 이유를 먼저 꺼내요.</p>
       </div>
       <div class="board-stage">
         <div class="bphone reveal d1">
@@ -280,14 +406,20 @@
   <section class="steps">
     <div class="steps-head reveal">
       <span class="eyebrow">사용 흐름</span>
-      <h2>주최자와 참여자가 실제로 하는 일</h2>
-      <p>네 단계 모두 실제 제품 화면으로 돌아가요.</p>
+        <h2>흐름은 네 번의 판단으로 끝난다</h2>
+      <p>설명보다 조작이 먼저 보이도록, 핵심 행동만 남겼어요.</p>
     </div>
     <div class="steps-row">
       <div class="step reveal d1">
         <span class="st-n"><b>1</b> 주최자</span>
         <h3>회의 조건 설정</h3>
         <div class="who">참석자와 기간을 정해 링크 공유</div>
+        <div class="mini-ui">
+          <div class="mini-top"><span class="mini-title">디자인팀 회의</span><span class="mini-tag">주최자</span></div>
+          <div class="mini-row"><span>참석자</span><b>6명</b></div>
+          <div class="mini-row"><span>필수 / 선택</span><b>4 / 2</b></div>
+          <div class="roster-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
         <div class="st-list">
           <div class="st-li">참석자 6명 · 필수 4 / 선택 2</div>
           <div class="st-li">다음 주 안 · 1시간 회의</div>
@@ -297,6 +429,14 @@
         <span class="st-n"><b>2</b> 참여자</span>
         <h3>안 되는 시간만 입력</h3>
         <div class="who">가볍게, 선호는 익명으로</div>
+        <div class="mini-ui">
+          <div class="mini-top"><span class="mini-title">다음 주</span><span class="mini-tag">참여자</span></div>
+          <div class="time-grid" aria-hidden="true">
+            <i></i><i class="busy"></i><i></i><i></i><i class="soft"></i>
+            <i></i><i></i><i class="busy"></i><i></i><i></i>
+            <i class="soft"></i><i></i><i></i><i class="busy"></i><i></i>
+          </div>
+        </div>
         <div class="st-list">
           <div class="st-li">명단에서 본인 선택</div>
           <div class="st-li soft">되도록 피할 시간은 익명 선호</div>
@@ -306,6 +446,15 @@
         <span class="st-n"><b>3</b> 시스템</span>
         <h3>조건을 비교</h3>
         <div class="who">무게가 다른 조건을 계산</div>
+        <div class="mini-ui">
+          <div class="mini-top"><span class="mini-title">비교 중</span><span class="mini-tag">시스템</span></div>
+          <div class="calc-bars">
+            <div class="calc-bar"><span>필수</span><span class="calc-track"><i class="calc-fill" style="width:100%"></i></span><b>4/4</b></div>
+            <div class="calc-bar"><span>선택</span><span class="calc-track"><i class="calc-fill soft" style="width:50%"></i></span><b>1/2</b></div>
+            <div class="calc-bar"><span>선호</span><span class="calc-track"><i class="calc-fill soft" style="width:28%"></i></span><b>1</b></div>
+            <div class="calc-bar"><span>미응답</span><span class="calc-track"><i class="calc-fill unk" style="width:0%"></i></span><b>0</b></div>
+          </div>
+        </div>
         <div class="st-list">
           <div class="st-li ok">필수 참석 가능 여부</div>
           <div class="st-li">선택 참석 가능 인원</div>
@@ -316,6 +465,13 @@
         <span class="st-n"><b>4</b> 주최자</span>
         <h3>추천 근거 확인</h3>
         <div class="who">추천 1개 + 근거를 읽고 결정</div>
+        <div class="mini-ui">
+          <div class="mini-top"><span class="mini-title">추천 시간</span><span class="mini-tag">결정</span></div>
+          <div class="decision-mini">
+            <div class="pick">목 2:00</div>
+            <div class="actions"><button class="primary">확정</button><button>조정 요청</button></div>
+          </div>
+        </div>
         <div class="st-list">
           <div class="st-li ok">필수 4/4 · 선택 1/2 가능</div>
           <div class="st-li soft">선호 충돌 1명 · 익명</div>
@@ -328,8 +484,8 @@
   <!-- ===================== TRY IT (live app embed) ===================== -->
   <section class="try wrap">
     <span class="eyebrow">직접 해보기</span>
-    <h2>설명은 여기까지,<br>이제 직접 써보세요</h2>
-    <p>아래는 진짜로 작동하는 화면이에요.<br>주최자로 회의를 만들고 ‘데모’로 응답을 채우면,<br>추천까지 몇 번의 탭으로 확인돼요.</p>
+    <h2>직접 만들고,<br>추천까지 확인하기</h2>
+    <p>주최자로 회의를 만들고 ‘데모’로 응답을 채우면,<br>추천 근거까지 몇 번의 탭으로 확인할 수 있어요.</p>
     <div class="live-row">
       <div class="live-col">
         <div class="live-cap"><b>주최자</b> — 회의를 여는 사람</div>
