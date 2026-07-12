@@ -96,7 +96,7 @@
   .chip em { font-style: normal; font-weight: 600; color: var(--muted); margin-right: 7px; }
 
   /* ===================== FLOW (핵심 4단계) ===================== */
-  .flow { padding: 40px 24px 8px; max-width: var(--maxw); margin: 0 auto; }
+  .flow { padding: 88px 24px 8px; max-width: var(--maxw); margin: 0 auto; border-top: 1px solid var(--hairline); }
   .flow-head { text-align: center; }
   .flow-head h2 { font-size: clamp(1.7rem, 3.6vw, 2.4rem); font-weight: 800; margin-top: 16px; }
   .flow-head p { font-size: clamp(.98rem, 1.4vw, 1.08rem); color: var(--ink-soft); margin-top: 14px; }
@@ -111,7 +111,7 @@
   @media (max-width: 520px) { .flow-steps { grid-template-columns: 1fr; } }
 
   /* ===================== FEATURE (추천 장면) ===================== */
-  .feature { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding: 96px 24px; max-width: var(--maxw); margin: 0 auto; }
+  .feature { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding: 48px 24px 88px; max-width: var(--maxw); margin: 0 auto; }
   .feat-copy h2 { font-size: clamp(1.8rem, 3.8vw, 2.7rem); font-weight: 800; margin-top: 18px; line-height: 1.26; }
   .feat-copy p { font-size: clamp(1rem, 1.5vw, 1.1rem); color: var(--ink-soft); line-height: 1.72; margin-top: 20px; max-width: 34ch; }
   .feat-stage { display: flex; justify-content: center; position: relative; }
@@ -139,17 +139,6 @@
   .fc-v em { font-size: .72rem; font-weight: 600; color: var(--muted); font-style: normal; }
   .fc-v.muted { color: var(--muted); }
   @media (max-width: 860px) { .feature { grid-template-columns: 1fr; gap: 40px; padding: 72px 24px; } .feat-copy { text-align: center; } .feat-copy p { margin-left: auto; margin-right: auto; } }
-
-  /* ===================== WHY ===================== */
-  .why-sec { padding: 104px 0 96px; border-top: 1px solid var(--hairline); }
-  .why-head { text-align: center; max-width: 62ch; margin: 0 auto; }
-  .why-head h2 { font-size: clamp(1.8rem, 4.4vw, 2.9rem); font-weight: 800; margin-top: 18px; line-height: 1.22; }
-  .why-lede { font-size: clamp(1rem, 1.5vw, 1.12rem); color: var(--ink-soft); line-height: 1.72; margin: 20px auto 0; max-width: 58ch; }
-  .why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 52px; }
-  .why-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 20px; padding: 26px 24px; box-shadow: var(--shadow); }
-  .why-card .wn { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: .06em; }
-  .why-card h3 { font-size: 1.18rem; font-weight: 800; margin-top: 12px; letter-spacing: -.02em; }
-  .why-card p { font-size: 0.96rem; color: var(--ink-soft); line-height: 1.66; margin-top: 10px; }
 
   /* ===================== TRY IT ===================== */
   .try { padding: 104px 0 128px; text-align: center; border-top: 1px solid var(--hairline); }
@@ -194,6 +183,45 @@
     </div>
   </header>
 
+  <!-- ===================== FEATURE · 추천 장면 ===================== -->
+  <section class="feature">
+    <div class="feat-copy">
+      <span class="eyebrow">주최자가 보는 화면</span>
+      <h2>비교는 시스템이,<br>결정은 주최자가</h2>
+      <p>필수·선택·선호·미응답을 시스템이 대신 계산해요. 주최자는 표를 읽는 대신, 정리된 근거를 보고 <b style="color:var(--ink)">이 시간으로 정할지</b>만 판단하면 돼요.</p>
+    </div>
+    <div class="feat-stage">
+      <div class="feat-card">
+        <span class="fc-tag">추천</span>
+        <div class="fc-day">목요일 · 7월 16일</div>
+        <div class="fc-time">오후 2:00<span class="fc-sep">–</span>3:00</div>
+        <div class="fc-verdict"><svg viewBox="0 0 15 15" fill="none"><path d="M3 8l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>필수 네 분이 모두 되는 시간</div>
+        <div class="fc-rows">
+          <div class="fc-row">
+            <span class="fc-cir g"><svg viewBox="0 0 17 17" fill="none"><path d="M3.6 9l3 3 6.8-6.8" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="fc-l">필수 참석<span class="fc-s">네 분 모두 가능</span></span>
+            <span class="fc-trail"><span class="fc-pips"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="fc-v">4<em>/4</em></span></span>
+          </div>
+          <div class="fc-row">
+            <span class="fc-cir a"><svg viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="5.8" stroke="#fff" stroke-width="1.7"/><path d="M8.5 5v3.7l2.4 1.4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+            <span class="fc-l">선택 참석<span class="fc-s">한 분은 이 시간 어려움</span></span>
+            <span class="fc-trail"><span class="fc-pips amb"><i class="on"></i><i></i></span><span class="fc-v">1<em>/2</em></span></span>
+          </div>
+          <div class="fc-row">
+            <span class="fc-cir a"><svg viewBox="0 0 17 17" fill="none"><path d="M8.5 2.6l6.2 10.7H2.3L8.5 2.6z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 6.8v2.9M8.5 11.3v.1" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+            <span class="fc-l">선호 충돌<span class="fc-s">되도록 피하고 싶은 분 · 익명</span></span>
+            <span class="fc-trail"><span class="fc-v">1<em>명</em></span></span>
+          </div>
+          <div class="fc-row">
+            <span class="fc-cir s"><svg viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="5.8" stroke="#fff" stroke-width="1.7" stroke-dasharray="2.4 2.4"/></svg></span>
+            <span class="fc-l">미응답<span class="fc-s">기다릴 사람 없음</span></span>
+            <span class="fc-trail"><span class="fc-v muted">0<em>명</em></span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== FLOW · 핵심 4단계 ===================== -->
   <section class="flow">
     <div class="flow-head">
@@ -229,44 +257,6 @@
     </div>
   </section>
 
-  <!-- ===================== FEATURE · 추천 장면 ===================== -->
-  <section class="feature">
-    <div class="feat-copy">
-      <span class="eyebrow">이 서비스가 만드는 것</span>
-      <h2>후보를 늘어놓는 대신,<br>정해도 되는 한 시간과 근거</h2>
-      <p>주최자가 화면을 열면, 표가 아니라 이미 정리된 판단이 보여요. 필수는 다 되는지, 선택은 몇이나 되는지, 아쉬운 사람은 익명으로 몇 명인지.</p>
-    </div>
-    <div class="feat-stage">
-      <div class="feat-card">
-        <span class="fc-tag">추천</span>
-        <div class="fc-day">목요일 · 7월 16일</div>
-        <div class="fc-time">오후 2:00<span class="fc-sep">–</span>3:00</div>
-        <div class="fc-verdict"><svg viewBox="0 0 15 15" fill="none"><path d="M3 8l3 3 6-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>필수 네 분이 모두 되는 시간</div>
-        <div class="fc-rows">
-          <div class="fc-row">
-            <span class="fc-cir g"><svg viewBox="0 0 17 17" fill="none"><path d="M3.6 9l3 3 6.8-6.8" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <span class="fc-l">필수 참석<span class="fc-s">네 분 모두 가능</span></span>
-            <span class="fc-trail"><span class="fc-pips"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="fc-v">4<em>/4</em></span></span>
-          </div>
-          <div class="fc-row">
-            <span class="fc-cir a"><svg viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="5.8" stroke="#fff" stroke-width="1.7"/><path d="M8.5 5v3.7l2.4 1.4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-            <span class="fc-l">선택 참석<span class="fc-s">한 분은 이 시간 어려움</span></span>
-            <span class="fc-trail"><span class="fc-pips amb"><i class="on"></i><i></i></span><span class="fc-v">1<em>/2</em></span></span>
-          </div>
-          <div class="fc-row">
-            <span class="fc-cir a"><svg viewBox="0 0 17 17" fill="none"><path d="M8.5 2.6l6.2 10.7H2.3L8.5 2.6z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 6.8v2.9M8.5 11.3v.1" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></span>
-            <span class="fc-l">선호 충돌<span class="fc-s">되도록 피하고 싶은 분 · 익명</span></span>
-            <span class="fc-trail"><span class="fc-v">1<em>명</em></span></span>
-          </div>
-          <div class="fc-row">
-            <span class="fc-cir s"><svg viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="5.8" stroke="#fff" stroke-width="1.7" stroke-dasharray="2.4 2.4"/></svg></span>
-            <span class="fc-l">미응답<span class="fc-s">기다릴 사람 없음</span></span>
-            <span class="fc-trail"><span class="fc-v muted">0<em>명</em></span></span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- ===================== TRY IT (live app embed) ===================== -->
   <section class="try wrap">
@@ -291,23 +281,6 @@
     <p class="try-note">회의 응답은 대부분 폰에서 하니까, 데스크톱 웹이 아니라 <b>모바일 화면</b>으로 설계했어요.<br>새 탭에서 열 땐 브라우저 창을 좁게(폰 너비) 두면 의도한 대로 보여요.</p>
   </section>
 
-  <!-- ===================== WHY ===================== -->
-  <section class="why-sec wrap">
-    <div class="why-head">
-      <span class="eyebrow">설계 원칙</span>
-      <h2>이 판단을 만든 일곱 가지 결정</h2>
-      <p class="why-lede">위 화면이 이렇게 나오도록, 입력부터 추천까지 지킨 원칙이에요.</p>
-    </div>
-    <div class="why-grid">
-      <div class="why-card"><span class="wn">01</span><h3>실제 날짜로 시작</h3><p>‘다음 주’ 같은 진짜 기간을 먼저 정해요. 추상적인 요일만으론 회의 하나도 못 잡으니까요.</p></div>
-      <div class="why-card"><span class="wn">02</span><h3>안 되는 시간만 칠하기</h3><p>일정은 대부분 비어 있어요. 되는 시간을 다 고르는 대신, 안 되는 칸만 칠하면 몇 초예요.</p></div>
-      <div class="why-card"><span class="wn">03</span><h3>‘불가’와 ‘피하고 싶음’을 나눠서</h3><p>절대 안 되는 시간과 되도록 피하고 싶은 시간은 무게가 달라요. 입력할 때부터 나눠 받아요.</p></div>
-      <div class="why-card"><span class="wn">04</span><h3>선호는 익명으로</h3><p>‘이 시간은 좀…’ 하는 마음은 이름 없이 모아요. 눈치 안 봐야 솔직해지고, 그래야 더 나은 시간이 나와요.</p></div>
-      <div class="why-card"><span class="wn">05</span><h3>전원을 기다리지 않아요</h3><p>다 응답할 때까지 멈추면 그게 병목이에요. 지금까지 모인 것만으로도 추천이 나와요.</p></div>
-      <div class="why-card"><span class="wn">06</span><h3>후보 나열 대신 하나</h3><p>주최자의 진짜 고민은 ‘정해도 될까?’예요. 그래서 딱 한 시간을, 근거와 함께 추천해요.</p></div>
-      <div class="why-card"><span class="wn">07</span><h3>안 되면 강제 대신 선택지</h3><p>필수 인원이 겹치면 밀어붙이지 않아요. 조정을 요청하거나, 선택 참석으로 돌릴 수 있어요.</p></div>
-    </div>
-  </section>
 
 </div>
 
