@@ -690,3 +690,10 @@
 - **Evidence**: `npm run build` exit 0. CSS 89/89·div 31/31·section 3/3 균형, why 잔재 0, 순서 히어로→feature→flow→try 확인. 재배포 라이브. Q1/Q2/Q3 답변 섹션 미추가(원칙 유지), 제품명/브랜딩 과잉 없음, iframe 유지.
 - **Weakness**: (1)flow 4단계·feature가 여전히 '카드형'이라 그래픽 워크스루로서 더 그래픽할 여지(레퍼 KOKO 수준 조형은 미도달). (2)모바일 폭 텍스트 넘침/겹침은 코드상 clamp·keep-all로 대비했으나 실기기 육안 미검증. (3)앱 후반 화면(확정 등) 자가검증 여전 불가.
 - **Next Research**: 사용자 실기기(데스크톱/모바일 폭)에서 넘침·겹침·첫 30초 메시지("시스템이 비교 대신, 주최자는 근거 판단") 가독 확인. 필요 시 flow를 더 그래픽하게.
+
+## Entry 071 — 제품 해부 프레젠테이션 보드 전환 (2026-07-12)
+- **Fact**: 사용자 지시 — "깔끔한 SaaS 랜딩"이 아니라 "디자이너가 핵심 UX를 해부해 보여주는 발표 보드"로. 얌전한 중앙정렬·카드 반복·설명형 문장이 AI틱. 레퍼(콕 앱 등): 어두운 배경 + 큰 폰 + 화면 밖으로 떼어낸 확대 UI 조각(회전·겹침) + dotted connector + 라벨 + 보조 폰. 요구: 히어로 직후 추천 근거 zoom 장면(중심 비주얼), Step Flow 4단계(각 실제 제품 장면), 스크롤 reveal 모션(reduced-motion 대응), why-card 삭제, iframe은 마지막 유지. 첫 30초 메시지="시스템이 조건을 비교하고 주최자는 정해도 되는 근거를 받는다".
+- **Decision**: (1)`:root`에 어두운 장면색(--board/--board-ink/--board-mut/--board-line) 추가. (2)**BOARD 섹션**(히어로 직후): 딥네이비 배경 밴드에 큰 폰 목업(추천 화면: 태그·날짜·큰 시간·verdict·근거 4행) + 화면 밖으로 떼어낸 흰 **콜아웃 3개**(필수 4/4→성립 / 선호 1명 익명→이름 없이 반영 / 미응답 0명→지금 정해도 됨), 각 살짝 회전(-1.4~+1deg)·dotted connector(::before 점선+::after 액센트 점). (3)**STEPS 섹션**: 사용 4단계(주최자 조건설정→참여자 입력→시스템 비교→주최자 판단) 카드, step 사이 dotted connector(::after). Step4에 추천 근거 상세 포함. (4)`.reveal`+IntersectionObserver로 step label·phone·callout·row 순차 등장(delay d1~d4), `prefers-reduced-motion`시 즉시 표시·transition none. (5)feature→board 승격, flow→steps 확장, why-card는 Entry 070에서 이미 삭제.
+- **Evidence**: node로 script 파싱 OK, `npm run build` exit 0. CSS 116/116·div 60/60·section 3/3 균형, 순서 hero→board→steps→try, callout 3·step 4·reveal 다수. 재배포 라이브. iframe(try) 유지, Q섹션 미추가.
+- **Weakness**: (1)레퍼의 '보조 폰 뒤 흐리게'·스파클 장식은 미구현(콜아웃 중심으로 단순화) — 더 과감할 여지. (2)자가 렌더 불가라 데스크톱 connector 정렬·모바일 세로 스택·콜아웃 회전 겹침은 실기기 육안 필수(마진·leading/trailing은 그리드·clamp·line-height로 설계했으나 미검증). (3)board 큰 폰은 정적 재현(실앱 아님) — 실동작은 하단 iframe.
+- **Next Research**: 사용자 실기기(데스크톱/모바일)에서 넘침·겹침·connector 정렬·첫 30초 메시지 확인 후 콜아웃 위치·회전·간격 미세조정. 필요 시 보조 폰·장식 추가로 장면감 강화.
