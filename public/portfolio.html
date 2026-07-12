@@ -66,22 +66,28 @@
   .meta-row dt { padding: 16px; color: var(--muted); font-size: 13px; font-weight: 800; background: #fbfcfd; }
   .meta-row dd { margin: 0; padding: 16px; color: var(--ink); font-size: 14px; font-weight: 700; line-height: 1.45; }
 
-  .phone-shell {
-    width: 344px;
+  .decision-preview {
     margin-left: auto;
-    border-radius: 48px;
-    padding: 10px;
-    background: #101318;
-    box-shadow: var(--shadow), 0 20px 60px rgba(25,31,40,.18);
+    width: 420px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: var(--paper);
+    box-shadow: var(--shadow);
+    overflow: hidden;
   }
-  .phone-shell iframe {
-    display: block;
-    width: 100%;
-    height: 690px;
-    border: 0;
-    border-radius: 38px;
-    background: #fff;
-  }
+  .decision-head { padding: 22px 24px; border-bottom: 1px solid var(--line); }
+  .decision-head small { display: block; color: var(--muted); font-size: 13px; font-weight: 800; }
+  .decision-head h2 { margin-top: 8px; font-size: 42px; letter-spacing: -.045em; }
+  .decision-body { padding: 8px 24px 24px; }
+  .decision-row { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center; min-height: 62px; border-bottom: 1px solid var(--line); font-size: 15px; font-weight: 850; }
+  .decision-row i { width: 34px; height: 34px; border-radius: 12px; background: var(--green); color: #fff; display: grid; place-items: center; font-style: normal; }
+  .decision-row i.orange { background: var(--orange); }
+  .decision-row i.gray { background: #9aa3ad; }
+  .decision-row b { font-size: 18px; }
+  .decision-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 24px 24px; }
+  .decision-actions span { min-height: 46px; border-radius: 12px; display: grid; place-items: center; font-size: 14px; font-weight: 850; background: var(--gray-bg); }
+  .decision-actions span:first-child { background: var(--ink); color: #fff; }
+  .reason-note { margin: 0 24px 18px; padding: 12px 14px; border-radius: 12px; background: var(--green-bg); color: #168f57; font-size: 13px; font-weight: 800; }
   .preview-note { margin-top: 12px; text-align: right; color: var(--muted); font-size: 13px; font-weight: 700; }
 
   .section { padding: 38px 0; }
@@ -131,7 +137,7 @@
     body { min-width: 0; }
     .wrap { width: calc(100% - 40px); }
     .hero-grid { grid-template-columns: 1fr; }
-    .phone-shell { margin: 0; }
+    .decision-preview { margin: 0; width: 100%; }
     .flow-row { grid-template-columns: 1fr; }
     .flow-step, .flow-ui { border: 0; border-top: 1px solid var(--line); }
     .flow-step { border-top: 0; }
@@ -165,10 +171,21 @@
           </dl>
         </div>
         <div>
-          <div class="phone-shell">
-            <iframe src="https://schedulechallenge.vercel.app/?as=org" title="FitTime 주최자 프로토타입"></iframe>
+          <div class="decision-preview" aria-label="추천 근거 예시">
+            <div class="decision-head">
+              <small>추천 시간</small>
+              <h2>목요일 오후 2:00</h2>
+            </div>
+            <div class="reason-note">필수 참석자가 모두 가능해 지금 확정할 수 있는 시간</div>
+            <div class="decision-body">
+              <div class="decision-row"><i>✓</i><span>필수 참석</span><b>4/4</b></div>
+              <div class="decision-row"><i class="orange">•</i><span>선택 참석</span><b>1/2</b></div>
+              <div class="decision-row"><i class="orange">!</i><span>선호 충돌</span><b>1명</b></div>
+              <div class="decision-row"><i class="gray">?</i><span>미응답</span><b>0명</b></div>
+            </div>
+            <div class="decision-actions"><span>확정하기</span><span>조정 요청</span></div>
           </div>
-          <div class="preview-note">실제 조작 가능한 주최자 화면</div>
+          <div class="preview-note">주최자가 마지막에 확인하는 추천 근거</div>
         </div>
       </div>
     </section>
