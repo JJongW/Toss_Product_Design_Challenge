@@ -1,31 +1,28 @@
 :root {
-  /* OKLCH · 브랜드 hue 255를 저채도로 머금은 뉴트럴(순수 흑백회 아님, 곡선 원리) · 포인트=블루 CTA만 */
-  /* 확정 시스템: 틴트 배경 + 흰 카드 + 딥네이비 CTA · 포인트=태그/상태/CTA만 */
-  --h: 265;
-  --accent: oklch(0.58 0.17 258); /* 태그(작게) */
-  --accent-dark: oklch(0.5 0.17 258);
-  --accent-weak: oklch(0.95 0.035 258);
+  --h: 154;
+  --accent: #00c773;
+  --accent-dark: #009f5c;
+  --accent-weak: #e8fff3;
   --accent-ink: #ffffff;
-  --navy: oklch(0.3 0.055 265); /* 기본 CTA */
-  --navy-dark: oklch(0.25 0.05 265);
-  --bg: oklch(0.955 0.014 275); /* 화면: 소프트 라벤더-그레이(순수 화이트 아님) */
-  --surface: oklch(0.998 0.003 275); /* 흰 카드 */
-  --line: oklch(0.92 0.008 270); /* 헤어라인(최소 사용) */
-  --text: oklch(0.29 0.045 268); /* 딥 네이비 잉크 */
-  --text-2: oklch(0.48 0.035 265);
-  --text-3: oklch(0.64 0.025 265);
-  --ok-fg: oklch(0.66 0.13 155);
-  --ok-bg: oklch(0.95 0.045 155);
-  --soft-fg: oklch(0.74 0.12 72);
-  --soft-bg: oklch(0.95 0.05 72);
-  --unk-fg: oklch(0.68 0.02 265);
-  --unk-bg: oklch(0.945 0.008 265);
-  --hard-fg: oklch(0.6 0.19 25);
-  --hard-bg: oklch(0.95 0.045 25);
-  --r-md: 14px;
-  --r-lg: 22px;
-  --shadow: 0 1px 2px oklch(0.3 0.04 265 / 0.05),
-    0 18px 34px -22px oklch(0.3 0.06 265 / 0.28);
+  --navy: #111111;
+  --navy-dark: #000000;
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --line: #eeeeee;
+  --text: #111111;
+  --text-2: #4d4d4d;
+  --text-3: #9a9a9a;
+  --ok-fg: #00c773;
+  --ok-bg: #e8fff3;
+  --soft-fg: #ff8a2a;
+  --soft-bg: #fff0e3;
+  --unk-fg: #9aa0a6;
+  --unk-bg: #f6f6f6;
+  --hard-fg: #ff3b3b;
+  --hard-bg: #ffe8e8;
+  --r-md: 18px;
+  --r-lg: 28px;
+  --shadow: 0 10px 28px rgba(17, 17, 17, 0.08);
 }
 
 * {
@@ -244,7 +241,7 @@ select:focus-visible {
   width: 100%;
   margin-top: 10px;
   padding: 13px 14px;
-  border-radius: 12px;
+  border-radius: 18px;
   border: 1px dashed color-mix(in srgb, var(--accent) 55%, var(--line));
   background: var(--surface);
   color: var(--text);
@@ -353,7 +350,7 @@ select:focus-visible {
 .ev-row .cir {
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: 14px;
   display: grid;
   place-items: center;
   color: #fff;
@@ -482,7 +479,7 @@ select:focus-visible {
 .switch .track {
   position: absolute;
   inset: 0;
-  background: oklch(0.9 0.01 256);
+  background: #eeeeee;
   border-radius: 999px;
   transition: background 0.15s;
 }
@@ -511,7 +508,7 @@ select:focus-visible {
   padding: 10px 0;
   width: 48px;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 14px;
   border: 1px solid var(--line, #e2eae7);
   background: var(--surface);
   font-weight: 600;
@@ -549,7 +546,7 @@ select:focus-visible {
   flex: none;
   width: 30px;
   height: 30px;
-  border-radius: 8px;
+  border-radius: 14px;
   color: var(--text-3);
   font-size: 18px;
   line-height: 1;
@@ -689,7 +686,7 @@ select:focus-visible {
   background: var(--text);
   color: var(--bg);
   padding: 13px 16px;
-  border-radius: 12px;
+  border-radius: 18px;
   font-size: 14px;
   font-weight: 600;
   text-align: center;
@@ -821,7 +818,7 @@ select:focus-visible {
   justify-content: space-between;
   gap: 10px;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 16px;
   background: var(--unk-bg);
 }
 .participant-row.done {
@@ -923,7 +920,7 @@ select:focus-visible {
   z-index: 30;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: var(--shadow);
   padding: 6px;
   max-height: 264px;
@@ -937,7 +934,7 @@ select:focus-visible {
   justify-content: space-between;
   gap: 8px;
   padding: 11px 12px;
-  border-radius: 10px;
+  border-radius: 14px;
   font-size: 15px;
   font-weight: 600;
   color: var(--text);
@@ -964,14 +961,14 @@ select:focus-visible {
   display: flex;
   gap: 6px;
   background: var(--unk-bg);
-  border-radius: 12px;
+  border-radius: 18px;
   padding: 4px;
   margin-top: 8px;
 }
 .seg-wide button {
   flex: 1;
   padding: 10px 0;
-  border-radius: 9px;
+  border-radius: 14px;
   font-size: 14px;
   font-weight: 700;
   color: var(--text-3);
@@ -1007,7 +1004,7 @@ select:focus-visible {
   font-size: 13px;
   color: var(--text-2);
   background: var(--accent-weak);
-  border-radius: 10px;
+  border-radius: 16px;
   padding: 10px 12px;
   margin-top: 10px;
 }
@@ -1046,7 +1043,7 @@ select:focus-visible {
   flex: none;
   width: 36px;
   height: 36px;
-  border-radius: 10px;
+  border-radius: 14px;
   background: var(--surface);
   border: 1px solid var(--line);
   color: var(--text-2);
@@ -1082,7 +1079,7 @@ select:focus-visible {
   align-items: center;
   gap: 1px;
   padding: 4px 0 6px;
-  border-radius: 7px;
+  border-radius: 12px;
   background: var(--unk-bg);
 }
 .ghead .gwd {
@@ -1116,7 +1113,7 @@ select:focus-visible {
 }
 .gcell {
   height: 26px;
-  border-radius: 6px;
+  border-radius: 9px;
   background: var(--ok-bg);
   border: 1px solid transparent;
   transition: background 0.08s;

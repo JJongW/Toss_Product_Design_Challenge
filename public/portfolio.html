@@ -36,24 +36,6 @@
   p { color: var(--text); line-height: 1.7; }
   .wrap { width: 1080px; margin: 0 auto; }
 
-  .top {
-    height: 64px;
-    border-bottom: 1px solid var(--line);
-    background: rgba(247, 248, 250, .92);
-    backdrop-filter: blur(16px);
-    position: sticky;
-    top: 0;
-    z-index: 20;
-  }
-  .top .wrap { height: 64px; display: flex; align-items: center; justify-content: space-between; }
-  .brand { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; letter-spacing: -.02em; }
-  .brand i { width: 18px; height: 18px; border-radius: 6px; background: linear-gradient(135deg, var(--blue), var(--green)); display: block; }
-  .topnav { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; font-weight: 700; }
-  .topnav a { text-decoration: none; padding: 8px 10px; border-radius: 8px; }
-  .topnav a:hover { background: #fff; color: var(--ink); }
-  .topnav .primary { background: var(--ink); color: #fff; padding: 9px 13px; }
-  .topnav .primary:hover { background: #000; color: #fff; }
-
   .hero { padding: 56px 0 34px; }
   .hero-grid { display: grid; grid-template-columns: 430px 1fr; gap: 42px; align-items: start; }
   .kicker { color: var(--blue); font-size: 13px; font-weight: 800; letter-spacing: -.01em; }
@@ -146,17 +128,6 @@
 </style>
 </head>
 <body>
-  <header class="top">
-    <div class="wrap">
-      <div class="brand"><i></i>FitTime</div>
-      <nav class="topnav">
-        <a href="#problem">문제</a>
-        <a href="#flow">흐름</a>
-        <a class="primary" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">프로토타입 열기</a>
-      </nav>
-    </div>
-  </header>
-
   <main>
     <section class="hero wrap">
       <div class="hero-grid">
