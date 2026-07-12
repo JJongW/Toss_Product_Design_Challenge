@@ -95,6 +95,21 @@
   }
   .chip em { font-style: normal; font-weight: 600; color: var(--muted); margin-right: 7px; }
 
+  /* ===================== FLOW (핵심 4단계) ===================== */
+  .flow { padding: 40px 24px 8px; max-width: var(--maxw); margin: 0 auto; }
+  .flow-head { text-align: center; }
+  .flow-head h2 { font-size: clamp(1.7rem, 3.6vw, 2.4rem); font-weight: 800; margin-top: 16px; }
+  .flow-head p { font-size: clamp(.98rem, 1.4vw, 1.08rem); color: var(--ink-soft); margin-top: 14px; }
+  .flow-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 44px; }
+  .flow-step { background: var(--surface); border: 1px solid var(--hairline); border-radius: 20px; padding: 24px 20px; box-shadow: var(--shadow); }
+  .fs-n { display: inline-grid; place-items: center; width: 27px; height: 27px; border-radius: 9px; background: var(--navy); color: #fff; font-size: 13px; font-weight: 800; }
+  .fs-ic { width: 44px; height: 44px; border-radius: 13px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; margin-top: 16px; }
+  .fs-ic svg { width: 23px; height: 23px; }
+  .flow-step h3 { font-size: 1.05rem; font-weight: 800; margin-top: 15px; }
+  .flow-step p { font-size: .9rem; color: var(--ink-soft); line-height: 1.62; margin-top: 8px; }
+  @media (max-width: 860px) { .flow-steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .flow-steps { grid-template-columns: 1fr; } }
+
   /* ===================== FEATURE (추천 장면) ===================== */
   .feature { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding: 96px 24px; max-width: var(--maxw); margin: 0 auto; }
   .feat-copy h2 { font-size: clamp(1.8rem, 3.8vw, 2.7rem); font-weight: 800; margin-top: 18px; line-height: 1.26; }
@@ -171,14 +186,48 @@
   <header class="hero wrap">
     <span class="eyebrow" style="justify-content:center">Toss Product Design 2026</span>
     <h1>여섯 명의 회의,<br><span class="g">가장 덜 무리한 1시간</span>을 찾다</h1>
-    <p>사람이 여섯이면, 모두에게 완벽한 시간은 거의 없어요.<br>결국 누군가는 조금씩 양보하게 되죠.<br>그때 주최자에게 어려운 건 <b style="color:var(--ink)">무엇을 근거로 정하느냐</b>예요.</p>
-    <p class="hero-note">그 판단을 어떻게 도왔는지 먼저 보고,<br>맨 아래에서 실제 앱을 직접 써보세요.</p>
+    <p>사람이 여섯이면 모두에게 완벽한 시간은 거의 없어요.<br>그때 주최자에게 어려운 건 <b style="color:var(--ink)">무엇을 근거로 정하느냐</b>예요.</p>
     <div class="hero-meta">
       <span class="chip"><em>참석자</em>6명 · 필수 4 / 선택 2</span>
       <span class="chip"><em>기간</em>다음 주 안 · 1시간 회의</span>
       <span class="chip"><em>입력</em>안 되는 시간만 · 선호는 익명</span>
     </div>
   </header>
+
+  <!-- ===================== FLOW · 핵심 4단계 ===================== -->
+  <section class="flow">
+    <div class="flow-head">
+      <span class="eyebrow">핵심 흐름</span>
+      <h2>네 단계면, 정해도 되는 한 시간</h2>
+      <p>표를 만드는 게 아니라, 판단에 필요한 것만 모아요.</p>
+    </div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <span class="fs-n">1</span>
+        <div class="fs-ic"><svg viewBox="0 0 23 23" fill="none"><circle cx="8" cy="7" r="3" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="7" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M3 19c0-2.8 2.2-5 5-5M20 19c0-2.8-2.2-5-5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+        <h3>조건부터 정하기</h3>
+        <p>주최자가 필수·선택 참석자와 기간·길이를 정하고 링크를 공유해요.</p>
+      </div>
+      <div class="flow-step">
+        <span class="fs-n">2</span>
+        <div class="fs-ic"><svg viewBox="0 0 23 23" fill="none"><rect x="3.5" y="3.5" width="16" height="16" rx="2.5" stroke="currentColor" stroke-width="1.7"/><rect x="7" y="11" width="4" height="5" rx="1" fill="currentColor"/><rect x="13" y="7" width="4" height="5" rx="1" fill="currentColor" opacity=".5"/></svg></div>
+        <h3>안 되는 시간만</h3>
+        <p>참여자는 되는 시간을 다 고르지 않고, 안 되는 칸만 가볍게 칠해요.</p>
+      </div>
+      <div class="flow-step">
+        <span class="fs-n">3</span>
+        <div class="fs-ic"><svg viewBox="0 0 23 23" fill="none"><path d="M11.5 3l2.5 5.5 6 .6-4.5 4 1.3 5.9-5.3-3.1-5.3 3.1 1.3-5.9-4.5-4 6-.6L11.5 3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+        <h3>정해도 되는 1시간</h3>
+        <p>필수·선택·선호·미응답을 계산해, 근거와 함께 딱 하나를 추천해요.</p>
+      </div>
+      <div class="flow-step">
+        <span class="fs-n">4</span>
+        <div class="fs-ic"><svg viewBox="0 0 23 23" fill="none"><path d="M4 8h11l-3-3M19 15H8l3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>막히면 조정</h3>
+        <p>필수 인원이 겹치면 강제 대신 조정 요청이나 선택 참석 전환을 열어요.</p>
+      </div>
+    </div>
+  </section>
 
   <!-- ===================== FEATURE · 추천 장면 ===================== -->
   <section class="feature">
@@ -219,24 +268,6 @@
     </div>
   </section>
 
-  <!-- ===================== WHY ===================== -->
-  <section class="why-sec wrap">
-    <div class="why-head">
-      <span class="eyebrow">왜 이렇게 설계했나</span>
-      <h2>빈 시간을 모으는 게 아니라,<br>정해도 되는 근거를 만들었어요</h2>
-      <p class="why-lede">주최자에게 필요한 건 빈칸이 아니라,<br>“이 시간이면 괜찮다”고 말할 수 있는 근거예요.<br>그래서 입력부터 추천까지 이렇게 만들었어요.</p>
-    </div>
-    <div class="why-grid">
-      <div class="why-card"><span class="wn">01</span><h3>실제 날짜로 시작</h3><p>‘다음 주’ 같은 진짜 기간을 먼저 정해요. 추상적인 요일만으론 회의 하나도 못 잡으니까요.</p></div>
-      <div class="why-card"><span class="wn">02</span><h3>안 되는 시간만 칠하기</h3><p>일정은 대부분 비어 있어요. 되는 시간을 다 고르는 대신, 안 되는 칸만 칠하면 몇 초예요.</p></div>
-      <div class="why-card"><span class="wn">03</span><h3>‘불가’와 ‘피하고 싶음’을 나눠서</h3><p>절대 안 되는 시간과 되도록 피하고 싶은 시간은 무게가 달라요. 입력할 때부터 나눠 받아요.</p></div>
-      <div class="why-card"><span class="wn">04</span><h3>선호는 익명으로</h3><p>‘이 시간은 좀…’ 하는 마음은 이름 없이 모아요. 눈치 안 봐야 솔직해지고, 그래야 더 나은 시간이 나와요.</p></div>
-      <div class="why-card"><span class="wn">05</span><h3>전원을 기다리지 않아요</h3><p>다 응답할 때까지 멈추면 그게 병목이에요. 지금까지 모인 것만으로도 추천이 나와요.</p></div>
-      <div class="why-card"><span class="wn">06</span><h3>후보 나열 대신 하나</h3><p>주최자의 진짜 고민은 ‘정해도 될까?’예요. 그래서 딱 한 시간을, 근거와 함께 추천해요.</p></div>
-      <div class="why-card"><span class="wn">07</span><h3>안 되면 강제 대신 선택지</h3><p>필수 인원이 겹치면 밀어붙이지 않아요. 조정을 요청하거나, 선택 참석으로 돌릴 수 있어요.</p></div>
-    </div>
-  </section>
-
   <!-- ===================== TRY IT (live app embed) ===================== -->
   <section class="try wrap">
     <span class="eyebrow">직접 해보기</span>
@@ -259,6 +290,25 @@
     <a class="try-btn" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">새 탭에서 열기 →</a>
     <p class="try-note">회의 응답은 대부분 폰에서 하니까, 데스크톱 웹이 아니라 <b>모바일 화면</b>으로 설계했어요.<br>새 탭에서 열 땐 브라우저 창을 좁게(폰 너비) 두면 의도한 대로 보여요.</p>
   </section>
+
+  <!-- ===================== WHY ===================== -->
+  <section class="why-sec wrap">
+    <div class="why-head">
+      <span class="eyebrow">설계 원칙</span>
+      <h2>이 판단을 만든 일곱 가지 결정</h2>
+      <p class="why-lede">위 화면이 이렇게 나오도록, 입력부터 추천까지 지킨 원칙이에요.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card"><span class="wn">01</span><h3>실제 날짜로 시작</h3><p>‘다음 주’ 같은 진짜 기간을 먼저 정해요. 추상적인 요일만으론 회의 하나도 못 잡으니까요.</p></div>
+      <div class="why-card"><span class="wn">02</span><h3>안 되는 시간만 칠하기</h3><p>일정은 대부분 비어 있어요. 되는 시간을 다 고르는 대신, 안 되는 칸만 칠하면 몇 초예요.</p></div>
+      <div class="why-card"><span class="wn">03</span><h3>‘불가’와 ‘피하고 싶음’을 나눠서</h3><p>절대 안 되는 시간과 되도록 피하고 싶은 시간은 무게가 달라요. 입력할 때부터 나눠 받아요.</p></div>
+      <div class="why-card"><span class="wn">04</span><h3>선호는 익명으로</h3><p>‘이 시간은 좀…’ 하는 마음은 이름 없이 모아요. 눈치 안 봐야 솔직해지고, 그래야 더 나은 시간이 나와요.</p></div>
+      <div class="why-card"><span class="wn">05</span><h3>전원을 기다리지 않아요</h3><p>다 응답할 때까지 멈추면 그게 병목이에요. 지금까지 모인 것만으로도 추천이 나와요.</p></div>
+      <div class="why-card"><span class="wn">06</span><h3>후보 나열 대신 하나</h3><p>주최자의 진짜 고민은 ‘정해도 될까?’예요. 그래서 딱 한 시간을, 근거와 함께 추천해요.</p></div>
+      <div class="why-card"><span class="wn">07</span><h3>안 되면 강제 대신 선택지</h3><p>필수 인원이 겹치면 밀어붙이지 않아요. 조정을 요청하거나, 선택 참석으로 돌릴 수 있어요.</p></div>
+    </div>
+  </section>
+
 </div>
 
 
