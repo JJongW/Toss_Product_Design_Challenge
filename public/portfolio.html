@@ -3,508 +3,456 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="여섯 명의 회의에서 가장 덜 무리한 1시간을 찾는 경험 (Toss PD 2026)">
-<title>여섯 명의 회의, 가장 덜 무리한 1시간</title>
+<meta name="description" content="여섯 명의 회의에서 주최자가 추천 근거를 읽고 회의 시간을 정하는 경험">
+<title>FitTime - 회의 시간 조율 경험</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
-    --paper: oklch(0.945 0.018 88);
-    --surface: oklch(0.995 0.006 88);
-    --surface-2: oklch(0.965 0.014 88);
-    --screen: oklch(0.956 0.014 88);
-    --screen-ink: oklch(0.29 0.045 268);
-    --screen-muted: oklch(0.64 0.025 265);
-    --screen-line: oklch(0.92 0.008 270);
-    --ink: oklch(0.19 0.036 258);
-    --ink-soft: oklch(0.39 0.035 258);
-    --muted: oklch(0.56 0.026 258);
-    --faint: oklch(0.75 0.02 265);
-    --hairline: oklch(0.86 0.018 88);
-    --hairline-strong: oklch(0.78 0.02 88);
-    --board: oklch(0.17 0.036 258);
-    --board-ink: oklch(0.97 0.006 265);
-    --board-mut: oklch(0.74 0.02 265);
-    --board-line: oklch(0.64 0.07 30);
-    --navy: oklch(0.22 0.045 258);
-    --accent: oklch(0.66 0.18 30);
-    --accent-2: oklch(0.64 0.14 205);
-    --accent-soft: oklch(0.94 0.046 30);
-    --accent-ink: #ffffff;
-    --beige: #ffffff;
-    --ok: oklch(0.66 0.13 155);
-    --ok-bg: oklch(0.95 0.045 155);
-    --soft: oklch(0.74 0.12 70);
-    --soft-bg: oklch(0.95 0.05 70);
-    --unknown: oklch(0.68 0.02 265);
-    --unknown-bg: oklch(0.945 0.008 265);
-    --no: oklch(0.6 0.19 25);
-    --no-bg: oklch(0.95 0.045 25);
-    --shadow: 0 1px 2px oklch(0.3 0.04 265 / .05), 0 18px 34px -22px oklch(0.3 0.06 265 / .28);
-    --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
-    --font-mono: "Pretendard Variable", ui-monospace, "SF Mono", "Menlo", monospace;
-    --maxw: 1180px;
+    --paper: oklch(0.975 0.006 250);
+    --ink: oklch(0.19 0.035 258);
+    --ink-2: oklch(0.36 0.035 258);
+    --muted: oklch(0.58 0.025 258);
+    --line: oklch(0.9 0.01 258);
+    --line-2: oklch(0.82 0.016 258);
+    --panel: oklch(0.995 0.003 250);
+    --panel-2: oklch(0.955 0.008 250);
+    --deep: oklch(0.22 0.045 258);
+    --deep-2: oklch(0.16 0.035 258);
+    --green: oklch(0.66 0.14 154);
+    --green-soft: oklch(0.94 0.05 154);
+    --orange: oklch(0.72 0.15 57);
+    --orange-soft: oklch(0.95 0.055 57);
+    --red: oklch(0.64 0.18 27);
+    --red-soft: oklch(0.95 0.055 27);
+    --blue: oklch(0.62 0.13 245);
+    --blue-soft: oklch(0.93 0.04 245);
+    --unknown: oklch(0.67 0.018 258);
+    --shadow: 0 1px 2px oklch(0.22 0.04 258 / .05), 0 22px 48px -34px oklch(0.22 0.04 258 / .35);
+    --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+    --max: 1160px;
   }
 
   * { box-sizing: border-box; }
-  body { margin: 0; }
-  .page {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    line-height: 1.65;
-    letter-spacing: -0.01em;
-    word-break: keep-all;          /* 한글: 단어 중간에서 안 끊기게 */
-    overflow-wrap: break-word;
-    overflow-x: clip;   /* clip (NOT hidden) — hidden creates a scroll container that breaks position:sticky */
-  }
-  .page::before {
+  html { scroll-behavior: smooth; overflow-x: hidden; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     background:
-      linear-gradient(90deg, oklch(0.2 0.03 258 / .04) 1px, transparent 1px),
-      linear-gradient(0deg, oklch(0.2 0.03 258 / .03) 1px, transparent 1px);
-    background-size: 58px 58px;
-    mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 84%, transparent);
-    z-index: 0;
+      linear-gradient(90deg, oklch(0.22 0.04 258 / .035) 1px, transparent 1px),
+      linear-gradient(0deg, oklch(0.22 0.04 258 / .03) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: linear-gradient(to bottom, #000, transparent 78%);
   }
-  .page > * { position: relative; z-index: 1; }
-  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
-  .mono { font-variant-numeric: tabular-nums; }
-  p { text-wrap: pretty; }
-  h1, h2, h3, h4 { margin: 0; text-wrap: balance; letter-spacing: -0.025em; line-height: 1.18; }
+  .page { position: relative; overflow-x: clip; }
+  .wrap { width: min(var(--max), calc(100% - 48px)); margin: 0 auto; }
+  h1, h2, h3, p { margin: 0; word-break: keep-all; overflow-wrap: break-word; }
+  h1, h2, h3 { letter-spacing: -0.035em; line-height: 1.08; }
+  p { color: var(--ink-2); line-height: 1.68; text-wrap: pretty; }
   a { color: inherit; }
 
-  .viewhint {
-    text-align: center; font-size: 12.5px; font-weight: 600; color: var(--muted);
-    background: var(--surface-2); border-bottom: 1px solid var(--hairline); padding: 10px 16px;
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    backdrop-filter: blur(18px);
+    background: oklch(0.975 0.006 250 / .82);
+    border-bottom: 1px solid var(--line);
   }
-  .viewhint b { color: var(--ink-soft); font-weight: 700; }
-  .eyebrow {
-    font-size: 13px; letter-spacing: -0.005em; color: var(--accent); font-weight: 800;
-    display: inline-flex; align-items: center; gap: 7px;
-    background: var(--accent-soft); padding: 7px 14px; border-radius: 10px;
-  }
-  .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-
-  /* ===================== HERO ===================== */
-  .hero { padding: 92px 0 56px; text-align: left; }
-  .hero h1 {
-    font-size: clamp(3.2rem, 9vw, 7.6rem); font-weight: 900; margin: 22px 0 0; max-width: 11ch;
-    line-height: .92;
-  }
-  .hero h1 .g { color: var(--accent); }
-  .hero p {
-    font-size: clamp(1.15rem, 2vw, 1.5rem); color: var(--ink); font-weight: 500;
-    margin: 28px 0 0; max-width: 52ch; line-height: 1.55;
-  }
-  .hero .hero-note {
-    font-size: clamp(0.9rem, 1.3vw, 1rem); color: var(--muted); font-weight: 500;
-    margin: 16px auto 0; max-width: 48ch; line-height: 1.55;
-  }
-  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start; margin-top: 30px; }
-  .chip {
-    font-size: 12.5px; padding: 7px 13px;
-    border: 1px solid var(--hairline); border-radius: 10px; color: var(--ink); background: var(--surface); font-weight: 700;
-  }
-  .chip em { font-style: normal; font-weight: 600; color: var(--muted); margin-right: 7px; }
-
-  /* ===================== BOARD · 추천 근거 해부 장면 ===================== */
-  .board { background: var(--board); color: var(--board-ink); padding: 92px 24px 112px; position: relative; overflow: hidden; border-top: 1px solid var(--hairline); }
-  .board::before {
-    content: "";
-    position: absolute;
-    inset: -20% -8%;
+  .topbar .wrap { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 850; letter-spacing: -0.02em; }
+  .brand i {
+    width: 38px;
+    height: 12px;
+    border-radius: 4px;
     background:
-      radial-gradient(circle at 12% 18%, oklch(0.66 0.18 30 / .24), transparent 22%),
-      radial-gradient(circle at 76% 42%, oklch(0.64 0.14 205 / .13), transparent 28%),
-      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px),
-      linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px);
-    background-size: auto, auto, 72px 72px, 72px 72px;
+      linear-gradient(90deg, var(--green) 0 31%, transparent 31% 35%, var(--orange) 35% 66%, transparent 66% 70%, var(--blue) 70% 100%);
   }
-  .board::after {
+  .nav { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 750; color: var(--muted); }
+  .nav a { text-decoration: none; padding: 8px 10px; border-radius: 10px; }
+  .nav a:hover { background: var(--panel-2); color: var(--ink); }
+
+  .hero { padding: 68px 0 64px; }
+  .hero-grid { display: grid; grid-template-columns: minmax(0, 0.88fr) minmax(360px, 1.12fr); gap: clamp(36px, 6vw, 76px); align-items: center; }
+  .hero-grid > * { min-width: 0; }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 1px 0 #fff inset;
+  }
+  .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .hero h1 { margin-top: 22px; font-size: clamp(2.75rem, 6.6vw, 6.1rem); font-weight: 920; max-width: 10.5ch; }
+  .hero h1 em { color: var(--green); font-style: normal; }
+  .hero-copy { margin-top: 24px; font-size: clamp(1.02rem, 1.5vw, 1.2rem); max-width: 45ch; }
+  .problem-strip { display: grid; gap: 10px; margin-top: 28px; max-width: 560px; }
+  .problem {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    align-items: center;
+    gap: 11px;
+    min-height: 52px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 0 #fff inset;
+  }
+  .problem b { display: block; font-size: 14px; letter-spacing: -0.02em; }
+  .problem span { display: block; margin-top: 1px; font-size: 12.5px; color: var(--muted); font-weight: 650; }
+  .problem > div { min-width: 0; }
+  .picon { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: var(--green-soft); color: var(--green); }
+  .picon.orange { background: var(--orange-soft); color: var(--orange); }
+  .picon.blue { background: var(--blue-soft); color: var(--blue); }
+  .picon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+  .flow-board {
+    position: relative;
+    width: 100%;
+    min-height: 604px;
+    border-radius: 34px;
+    background:
+      radial-gradient(circle at 15% 8%, oklch(0.66 0.14 154 / .18), transparent 26%),
+      linear-gradient(145deg, var(--deep), var(--deep-2));
+    padding: 26px;
+    color: white;
+    box-shadow: 0 38px 80px -48px oklch(0.16 0.04 258 / .8);
+    overflow: hidden;
+  }
+  .flow-board::before {
     content: "";
     position: absolute;
-    width: 760px;
-    height: 760px;
-    right: -270px;
-    top: 40px;
-    border-radius: 46%;
-    border: 1px solid rgba(255,255,255,.08);
-    transform: rotate(-18deg);
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, #000, transparent 88%);
   }
-  .board-in { max-width: 1120px; margin: 0 auto; position: relative; z-index: 1; }
-  .step-badge { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; color: var(--accent); }
-  .step-badge b { color: var(--board-ink); }
-  .board h2 { font-size: clamp(1.9rem, 4.2vw, 3rem); font-weight: 800; margin-top: 16px; line-height: 1.2; color: var(--board-ink); max-width: 20ch; }
-  .board h2 .g { color: var(--accent); }
-  .board-sub { font-size: clamp(1rem, 1.4vw, 1.1rem); color: var(--board-mut); margin-top: 16px; max-width: 46ch; line-height: 1.65; }
-  .board-stage { position: relative; margin-top: 64px; display: grid; grid-template-columns: minmax(320px, 460px) 1fr; gap: clamp(36px, 6vw, 82px); align-items: center; }
-  .board-stage::before {
-    content: "COMPARE";
-    position: absolute;
-    left: 286px;
-    top: -26px;
-    font-size: clamp(4.8rem, 12vw, 10.4rem);
-    font-weight: 900;
-    line-height: .8;
-    color: rgba(255,255,255,.04);
-    letter-spacing: -.08em;
-    pointer-events: none;
-  }
+  .board-label { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: 12px; font-weight: 800; color: oklch(0.83 0.018 258); }
+  .board-label strong { color: #fff; }
+  .board-label span:last-child { color: oklch(0.73 0.02 258); font-variant-numeric: tabular-nums; }
 
-  /* 큰 폰 목업 (추천 화면) */
-  /* 리얼 아이폰 목업 */
-  .bphone { position: relative; width: min(430px, 88vw); justify-self: center; background: linear-gradient(150deg, #2a2c33, #131419 40%); border-radius: 58px; padding: 13px; box-shadow: 0 58px 130px -38px rgba(0,0,0,.82), 0 0 0 1.5px rgba(255,255,255,.08), inset 0 0 0 2px rgba(0,0,0,.5); transform: rotate(-2.5deg); }
-  .bphone::after {
+  .phone {
+    position: absolute;
+    width: 276px;
+    border-radius: 42px;
+    padding: 10px;
+    background: linear-gradient(150deg, #2d3038, #0e1118);
+    box-shadow: 0 34px 90px -35px rgba(0,0,0,.85), inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+  .phone::before { content: ""; position: absolute; top: 18px; left: 50%; transform: translateX(-50%); width: 78px; height: 22px; border-radius: 999px; background: #05070a; z-index: 2; }
+  .screen { min-height: 512px; border-radius: 34px; background: var(--paper); color: var(--ink); padding: 52px 18px 20px; overflow: hidden; }
+  .phone.main { right: 28px; top: 58px; transform: rotate(1.6deg); z-index: 3; }
+  .phone.ghost { left: 26px; bottom: 32px; transform: rotate(-5deg) scale(.72); opacity: .58; filter: saturate(.8); z-index: 1; }
+  .phone.part { left: 158px; top: 100px; transform: rotate(-1.8deg) scale(.82); z-index: 2; }
+  .phone.part .screen, .phone.ghost .screen { min-height: 438px; }
+
+  .screen-title { font-size: 13px; color: var(--muted); font-weight: 780; }
+  .screen-time { margin-top: 6px; font-size: 43px; font-weight: 940; letter-spacing: -0.06em; line-height: .96; }
+  .good-pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 7px 10px; border-radius: 10px; background: var(--green-soft); color: var(--green); font-size: 12px; font-weight: 850; }
+  .evidence { margin-top: 24px; border-top: 1px solid var(--line); }
+  .ev-row { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 10px; min-height: 54px; border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 820; }
+  .ev-row span { min-width: 0; }
+  .ev-row i { width: 30px; height: 30px; border-radius: 11px; display: grid; place-items: center; color: #fff; font-style: normal; font-size: 14px; }
+  .ev-row i.g { background: var(--green); } .ev-row i.o { background: var(--orange); } .ev-row i.u { background: var(--unknown); }
+  .ev-row b { font-size: 16px; font-weight: 930; font-variant-numeric: tabular-nums; }
+  .time-cells { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 18px; }
+  .time-cells i { height: 28px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--line); }
+  .time-cells i.busy { background: var(--deep); border-color: var(--deep); }
+  .time-cells i.soft { background: var(--orange-soft); border-color: var(--orange); }
+  .small-card { margin-top: 18px; padding: 14px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); }
+  .small-card b { display: block; font-size: 18px; letter-spacing: -0.035em; }
+  .small-card span { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); font-weight: 700; }
+
+  .evidence-card {
+    position: absolute;
+    left: 28px;
+    top: 52px;
+    width: 236px;
+    padding: 18px;
+    border-radius: 22px;
+    background: #fff;
+    color: var(--ink);
+    box-shadow: var(--shadow);
+    z-index: 4;
+  }
+  .evidence-card::after {
     content: "";
     position: absolute;
-    inset: 36px auto auto -66px;
-    width: 118px;
-    height: 118px;
-    border: 2px dashed var(--board-line);
-    border-radius: 28px;
-    transform: rotate(13deg);
-    opacity: .65;
+    right: -74px;
+    top: 50%;
+    width: 74px;
+    border-top: 2px dashed oklch(0.72 0.15 57);
   }
-  .bphone::before { content: ""; position: absolute; top: 15px; left: 50%; transform: translateX(-50%); width: 104px; height: 30px; background: #05060a; border-radius: 999px; z-index: 3; }
-  .bphone .side { position: absolute; z-index: 0; background: #0a0b10; }
-  .bphone .side.pwr { right: -2px; top: 150px; width: 3px; height: 60px; border-radius: 0 2px 2px 0; }
-  .bphone .side.vup { left: -2px; top: 132px; width: 3px; height: 44px; border-radius: 2px 0 0 2px; }
-  .bphone .side.vdn { left: -2px; top: 186px; width: 3px; height: 44px; border-radius: 2px 0 0 2px; }
-  .bp-screen { position: relative; background: var(--paper); border-radius: 44px; padding: 0 28px 28px; min-height: 650px; overflow: hidden; }
-  .bp-status { display: flex; justify-content: space-between; align-items: center; height: 50px; padding: 0 4px; }
-  .bp-status .t { font-size: 14px; font-weight: 700; color: var(--ink); letter-spacing: .01em; }
-  .bp-status .ic { display: inline-flex; align-items: center; gap: 6px; }
-  .bp-status .ic svg { display: block; }
-  .bp-status .ic svg path, .bp-status .ic svg rect { fill: var(--ink); }
-  .bp-tag { display: inline-block; font-size: 12px; font-weight: 800; color: var(--accent); background: var(--accent-soft); padding: 7px 11px; border-radius: 9px; }
-  .bp-day { font-size: 13px; font-weight: 600; color: var(--muted); margin-top: 20px; }
-  .bp-time { font-size: clamp(2.7rem, 5vw, 4.25rem); font-weight: 900; letter-spacing: -.06em; color: var(--ink); margin-top: 0; font-variant-numeric: tabular-nums; line-height: .98; }
-  .bp-verdict { display: inline-flex; align-items: center; gap: 6px; margin-top: 16px; font-size: 13px; font-weight: 800; color: var(--ok); background: var(--ok-bg); padding: 7px 11px; border-radius: 10px; }
-  .bp-verdict svg { width: 13px; height: 13px; }
-  .bp-rows { margin-top: 26px; border-top: 1px solid var(--hairline); }
-  .bp-r { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--hairline); }
-  .bp-r:last-child { border-bottom: none; }
-  .bp-c { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; }
-  .bp-c svg { width: 13px; height: 13px; }
-  .bp-c.g { background: var(--ok); } .bp-c.a { background: var(--soft); } .bp-c.s { background: var(--unknown); }
-  .bp-k { font-size: 15px; font-weight: 700; color: var(--ink); }
-  .bp-v { font-size: 17px; font-weight: 900; color: var(--ink); font-variant-numeric: tabular-nums; }
-  .bp-v.muted { color: var(--muted); }
+  .evidence-card h3 { font-size: 18px; font-weight: 920; }
+  .score { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .score span { font-size: 12px; color: var(--muted); font-weight: 760; }
+  .score b { font-size: 24px; font-weight: 940; color: var(--green); }
 
-  /* 화면 밖으로 떼어낸 근거 콜아웃 */
-  .callouts { position: relative; display: flex; flex-direction: column; gap: 22px; z-index: 3; }
-  .callout { position: relative; background: var(--surface); color: var(--ink); border-radius: 18px; padding: 20px 22px; display: flex; align-items: center; gap: 16px; box-shadow: 0 30px 70px -30px rgba(0,0,0,.62); border: 1px solid rgba(255,255,255,.06); }
-  .callout::before { content: ""; position: absolute; left: -74px; top: 50%; width: 74px; border-top: 2px dashed var(--board-line); }
-  .callout::after { content: ""; position: absolute; left: -80px; top: calc(50% - 4px); width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 5px oklch(0.66 0.18 30 / .18); }
-  .callout.r1 { transform: rotate(-3deg); margin-left: -8px; width: min(480px, 100%); }
-  .callout.r2 { transform: rotate(2.2deg); margin-left: 72px; width: min(440px, calc(100% - 42px)); }
-  .callout.r3 { transform: rotate(-1.2deg); margin-left: 28px; width: min(430px, calc(100% - 20px)); }
-  .callout.r1 .co-t { font-size: clamp(1.35rem, 3vw, 2.2rem); }
-  .co-cir { width: 50px; height: 50px; border-radius: 14px; flex: none; display: grid; place-items: center; color: #fff; }
-  .co-cir svg { width: 22px; height: 22px; }
-  .co-cir.g { background: var(--ok); } .co-cir.a { background: var(--soft); } .co-cir.s { background: var(--unknown); }
-  .co-t { font-size: 1.08rem; font-weight: 900; letter-spacing: -.035em; line-height: 1.05; }
-  .co-t em { font-size: .8rem; font-weight: 700; color: var(--muted); font-style: normal; margin-left: 6px; }
-  .co-s { font-size: .82rem; color: var(--muted); font-weight: 500; margin-top: 2px; }
-  @media (max-width: 900px) {
-    .board-stage { grid-template-columns: 1fr; gap: 40px; }
-    .callout { transform: none !important; margin-left: 0 !important; }
-    .callout::before, .callout::after { display: none; }
+  .section { padding: 78px 0; }
+  .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+  .section-head h2 { font-size: clamp(2rem, 4.5vw, 3.45rem); font-weight: 920; max-width: 11ch; }
+  .section-head p { max-width: 44ch; font-size: 1rem; }
+
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .step {
+    position: relative;
+    min-height: 254px;
+    border-radius: 24px;
+    padding: 20px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 0 #fff inset, var(--shadow);
+    overflow: hidden;
   }
-  @media (max-width: 600px) {
-    .viewhint { font-size: 11.5px; padding: 9px 12px; }
-    .wrap { padding: 0 18px; }
-    .hero { padding: 70px 18px 44px; }
-    .hero h1 {
-      font-size: clamp(2.65rem, 15vw, 3.6rem);
-      max-width: 9ch;
-      line-height: .96;
-      letter-spacing: -.055em;
-    }
-    .hero p { font-size: 1rem; line-height: 1.58; }
-    .chip { font-size: 11.5px; padding: 7px 10px; }
-    .board { padding: 74px 18px 86px; }
-    .board h2 { font-size: clamp(2rem, 9vw, 2.7rem); max-width: 10.5ch; }
-    .board-sub { font-size: .98rem; max-width: 31ch; }
-    .board-stage::before { display: none; }
-    .bphone {
-      width: min(330px, 100%);
-      transform: none;
-      border-radius: 50px;
-      justify-self: start;
-    }
-    .bphone::after { display: none; }
-    .bp-screen { min-height: 560px; padding: 0 18px 22px; border-radius: 38px; }
-    .bp-time { font-size: clamp(2.4rem, 16vw, 3.2rem); }
-    .bp-k { font-size: 14px; }
-    .bp-v { font-size: 15px; }
-    .callouts { gap: 12px; }
-    .callout { padding: 16px 16px; border-radius: 15px; }
-    .callout.r1 .co-t { font-size: 1.18rem; }
-    .co-cir { width: 40px; height: 40px; border-radius: 12px; }
-  }
+  .step::after { content: ""; position: absolute; right: -36px; bottom: -38px; width: 108px; height: 108px; border-radius: 30px; border: 1px solid var(--line); transform: rotate(18deg); }
+  .step-no { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 12px; background: var(--deep); color: #fff; font-size: 13px; font-weight: 900; }
+  .step h3 { margin-top: 18px; font-size: 21px; font-weight: 900; }
+  .step p { margin-top: 8px; font-size: 13.5px; color: var(--muted); font-weight: 650; }
+  .mini { position: relative; margin-top: 18px; padding: 12px; border-radius: 16px; background: var(--panel-2); border: 1px solid var(--line); z-index: 1; }
+  .mini-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 12px; font-weight: 780; color: var(--ink-2); }
+  .mini-line span { min-width: 0; }
+  .mini-line:last-child { border-bottom: 0; }
+  .mini-line b { color: var(--ink); font-weight: 920; }
+  .bars { display: grid; gap: 7px; }
+  .bar { height: 9px; border-radius: 999px; background: #fff; overflow: hidden; border: 1px solid var(--line); }
+  .bar i { display: block; height: 100%; background: var(--green); border-radius: inherit; }
+  .bar.o i { background: var(--orange); }
+  .bar.u i { background: var(--unknown); }
 
-  /* ===================== STEPS · 사용 흐름 4단계 ===================== */
-  .steps { padding: 104px 24px 54px; max-width: var(--maxw); margin: 0 auto; }
-  .steps-head { text-align: left; max-width: 760px; }
-  .steps-head h2 { font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 900; margin-top: 16px; line-height: 1.04; max-width: 13ch; }
-  .steps-head p { font-size: clamp(.98rem, 1.4vw, 1.08rem); color: var(--ink-soft); margin-top: 14px; }
-  .steps-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 52px; position: relative; }
-  .steps-row::before { content: ""; position: absolute; left: 8%; right: 8%; top: 39px; border-top: 2px dashed var(--accent); opacity: .45; }
-  .step { position: relative; background: var(--surface); border: 1px solid var(--hairline); border-radius: 18px; padding: 20px; box-shadow: var(--shadow); min-height: 360px; overflow: hidden; }
-  .step::before { content: ""; position: absolute; right: -42px; bottom: -44px; width: 118px; height: 118px; border-radius: 28px; border: 1px dashed var(--hairline-strong); transform: rotate(18deg); opacity: .65; }
-  .step:nth-child(1) { transform: rotate(-1.2deg); }
-  .step:nth-child(2) { transform: translateY(24px) rotate(1deg); }
-  .step:nth-child(3) { transform: translateY(-8px) rotate(-.8deg); }
-  .step:nth-child(4) { transform: translateY(18px) rotate(1.4deg); }
-  .step:not(:last-child)::after { content: ""; position: absolute; right: -17px; top: 39px; width: 18px; border-top: 2px dashed var(--accent); z-index: 2; }
-  .st-n { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--accent); }
-  .st-n b { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: var(--navy); color: #fff; font-size: 13px; }
-  .step h3 { font-size: 1.12rem; font-weight: 900; margin-top: 16px; letter-spacing: -.03em; }
-  .step .who { font-size: .74rem; font-weight: 700; color: var(--muted); margin-top: 3px; }
-  .st-list { margin-top: 12px; display: flex; flex-direction: column; gap: 7px; }
-  .st-li { display: flex; align-items: center; gap: 8px; font-size: .85rem; color: var(--ink-soft); font-weight: 600; }
-  .st-li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
-  .st-li.ok::before { background: var(--ok); } .st-li.soft::before { background: var(--soft); } .st-li.unk::before { background: var(--unknown); }
-  .mini-ui { position: relative; margin-top: 18px; background: var(--surface-2); border: 1px solid var(--hairline); border-radius: 18px; padding: 14px; min-height: 132px; overflow: hidden; }
-  .mini-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .mini-title { font-size: 12px; font-weight: 900; color: var(--ink); letter-spacing: -.02em; }
-  .mini-tag { font-size: 10.5px; font-weight: 800; color: var(--accent); background: var(--accent-soft); padding: 4px 7px; border-radius: 7px; }
-  .mini-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 30px; border-top: 1px solid var(--hairline); font-size: 12px; font-weight: 750; color: var(--ink-soft); }
-  .mini-row:first-of-type { border-top: 0; }
-  .mini-row b { color: var(--ink); font-weight: 900; }
-  .roster-dots { display: flex; gap: 5px; }
-  .roster-dots i { width: 15px; height: 15px; border-radius: 50%; background: var(--ok); box-shadow: inset 0 0 0 2px rgba(255,255,255,.55); }
-  .roster-dots i:nth-child(n+5) { background: var(--soft); }
-  .time-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
-  .time-grid i { height: 18px; border-radius: 5px; background: var(--surface); border: 1px solid var(--hairline); }
-  .time-grid i.busy { background: var(--navy); border-color: var(--navy); }
-  .time-grid i.soft { background: var(--soft-bg); border-color: var(--soft); }
-  .calc-bars { display: flex; flex-direction: column; gap: 8px; }
-  .calc-bar { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; color: var(--ink-soft); }
-  .calc-track { height: 9px; border-radius: 999px; background: var(--surface); overflow: hidden; border: 1px solid var(--hairline); }
-  .calc-fill { display: block; height: 100%; border-radius: inherit; background: var(--ok); }
-  .calc-fill.soft { background: var(--soft); }
-  .calc-fill.unk { background: var(--unknown); }
-  .decision-mini { display: grid; grid-template-columns: 1fr; gap: 7px; }
-  .decision-mini .pick { background: var(--navy); color: #fff; border-radius: 12px; padding: 12px; font-size: 18px; font-weight: 900; letter-spacing: -.04em; }
-  .decision-mini .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-  .decision-mini button { appearance: none; border: 1px solid var(--hairline); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; font-size: 11px; font-weight: 850; padding: 9px 6px; }
-  .decision-mini button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-  @media (max-width: 900px) {
-    .steps-row { grid-template-columns: repeat(2, 1fr); }
-    .steps-row::before, .step:not(:last-child)::after { display: none; }
-    .step:nth-child(n) { transform: none; }
-  }
-  @media (max-width: 520px) { .steps-row { grid-template-columns: 1fr; } }
-
-  /* reveal 모션 */
-  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); }
-  .reveal.in { opacity: 1; transform: none; }
-  .reveal.d1 { transition-delay: .06s; } .reveal.d2 { transition-delay: .14s; } .reveal.d3 { transition-delay: .22s; } .reveal.d4 { transition-delay: .3s; }
-  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1 !important; transform: none !important; transition: none !important; } }
-
-  /* ===================== TRY IT ===================== */
-  .try { padding: 104px 0 128px; text-align: center; border-top: 1px solid var(--hairline); }
-  .try .eyebrow { justify-content: center; margin: 0 auto; }
-  .try h2 { font-size: clamp(1.8rem, 4.4vw, 2.9rem); font-weight: 800; margin-top: 18px; }
-  .try p { margin: 18px auto 0; max-width: 54ch; color: var(--ink-soft); font-size: clamp(1.02rem, 1.6vw, 1.18rem); line-height: 1.6; }
-  .live-row { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 46px; }
-  .live-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-  .live-cap { font-size: 0.92rem; font-weight: 700; color: var(--ink-soft); }
+  .try { padding: 84px 0 104px; border-top: 1px solid var(--line); }
+  .try-grid { display: grid; grid-template-columns: 0.78fr 1.22fr; gap: 36px; align-items: start; }
+  .try h2 { margin-top: 16px; font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 920; }
+  .try p { margin-top: 16px; max-width: 42ch; }
+  .open-link { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; margin-top: 24px; padding: 0 18px; border-radius: 14px; background: var(--deep); color: #fff; text-decoration: none; font-weight: 850; box-shadow: var(--shadow); }
+  .live-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .live-col { min-width: 0; }
+  .live-cap { margin-bottom: 10px; font-size: 13px; color: var(--muted); font-weight: 800; }
   .live-cap b { color: var(--ink); }
-  /* 실기기 비율(9:19.5) · iframe이 앱 전체를 담게 */
-  .live-frame { position: relative; width: 358px; max-width: 92vw; aspect-ratio: 9 / 19.5; background: #0A0A0A; border-radius: 48px; padding: 11px; box-shadow: var(--shadow), 0 0 0 1px var(--hairline-strong); }
-  .live-frame iframe { width: 100%; height: 100%; border: 0; border-radius: 38px; background: var(--screen); display: block; }
-  .try-btn { display: inline-flex; align-items: center; gap: 9px; margin-top: 28px; background: var(--navy); color: #fff; font-weight: 800; font-size: 1.02rem; padding: 15px 28px; border-radius: 14px; text-decoration: none; transition: transform .16s ease, box-shadow .28s ease; }
-  .try-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px oklch(0.3 0.06 265 / .5); }
-  .try-note { margin: 18px auto 0; max-width: 62ch; font-size: 0.86rem; color: var(--muted); line-height: 1.6; }
-  .try-note b { color: var(--ink-soft); font-weight: 700; }
+  .live-frame { width: 100%; aspect-ratio: 9 / 19.5; border-radius: 42px; padding: 10px; background: linear-gradient(150deg, #2d3038, #0e1118); box-shadow: var(--shadow); }
+  .live-frame iframe { display: block; width: 100%; height: 100%; border: 0; border-radius: 32px; background: var(--paper); }
 
+  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1); }
+  .reveal.in { opacity: 1; transform: none; }
+  .d1 { transition-delay: .06s; } .d2 { transition-delay: .12s; } .d3 { transition-delay: .18s; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  }
+  :focus-visible { outline: 3px solid var(--green); outline-offset: 3px; border-radius: 10px; }
 
-  /* ============ 상호작용 폴리시 (a11y/QA) ============ */
-  a { transition: color .18s ease; }
-  a:hover { color: var(--accent); }
-  .btn, a { cursor: pointer; }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-  ::selection { background: var(--accent-soft); color: var(--ink); }
+  @media (max-width: 980px) {
+    .hero-grid, .try-grid { grid-template-columns: 1fr; }
+    .flow-board { min-height: 640px; }
+    .steps { grid-template-columns: repeat(2, 1fr); }
+    .section-head { display: block; }
+    .section-head p { margin-top: 14px; }
+  }
+  @media (max-width: 640px) {
+    .wrap { width: min(100% - 32px, var(--max)); }
+    .nav a:not(:last-child) { display: none; }
+    .hero { padding: 46px 0 48px; }
+    .hero h1 {
+      font-size: clamp(2.35rem, 11.8vw, 3.2rem);
+      max-width: 100%;
+      line-height: 1.04;
+      letter-spacing: -0.045em;
+    }
+    .hero-copy { font-size: .98rem; }
+    .hero-copy, .problem b, .problem span, .section-head p, .step p, .try p {
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+    .hero-copy { max-width: 32ch; }
+    .problem { grid-template-columns: 30px 1fr; gap: 10px; padding: 10px; }
+    .problem b { font-size: 13px; }
+    .problem span { font-size: 11.5px; }
+    .picon { width: 30px; height: 30px; border-radius: 10px; }
+    .flow-board {
+      width: calc(100vw - 32px);
+      max-width: calc(100vw - 32px);
+      min-height: 850px;
+      border-radius: 26px;
+      padding: 16px;
+      justify-self: center;
+    }
+    .board-label { align-items: flex-start; }
+    .board-label span:last-child { display: none; }
+    .phone { width: min(286px, calc(100vw - 78px)); }
+    .phone.main { top: 262px; left: 50%; right: auto; transform: translateX(-50%); }
+    .phone.part { left: 16px; top: 144px; transform: scale(.64) rotate(-2deg); transform-origin: top left; }
+    .phone.ghost { display: none; }
+    .evidence-card { left: 16px; top: 58px; width: calc(100vw - 64px); max-width: 294px; padding: 16px; border-radius: 18px; }
+    .evidence-card::after { display: none; }
+    .score { margin-top: 12px; padding-top: 12px; }
+    .score b { font-size: 20px; }
+    .screen { min-height: 492px; }
+    .screen-time { font-size: 38px; }
+    .steps { grid-template-columns: 1fr; }
+    .section { padding: 58px 0; }
+    .try { padding: 64px 0 88px; }
+    .live-row { grid-template-columns: 1fr; }
+    .live-frame { width: min(360px, 100%); margin: 0 auto; }
+  }
 </style>
 </head>
 <body>
-
 <div class="page">
-  <div class="viewhint">제품 흐름 보드 · 하단에서 실제 앱을 바로 써볼 수 있어요</div>
+  <div class="topbar">
+    <div class="wrap">
+      <div class="brand"><i aria-hidden="true"></i> FitTime</div>
+      <nav class="nav" aria-label="페이지 이동">
+        <a href="#flow">흐름</a>
+        <a href="#demo">직접 보기</a>
+      </nav>
+    </div>
+  </div>
 
-  <!-- ===================== HERO ===================== -->
   <header class="hero wrap">
-    <span class="eyebrow">Toss Product Design 2026</span>
-    <h1>여섯 명의 회의,<br><span class="g">가장 덜 무리한 1시간</span>을 찾다</h1>
-    <p>사람이 여섯이면 완벽한 시간은 거의 없어요.<br>주최자에게 남는 질문은 <b style="color:var(--ink)">무엇을 근거로 정하느냐</b>예요.</p>
-    <div class="hero-meta">
-      <span class="chip"><em>참석자</em>6명 · 필수 4 / 선택 2</span>
-      <span class="chip"><em>기간</em>다음 주 안 · 1시간 회의</span>
-      <span class="chip"><em>입력</em>안 되는 시간만 · 선호는 익명</span>
+    <div class="hero-grid">
+      <div class="reveal">
+        <span class="eyebrow">Toss Product Design Challenge 2026</span>
+        <h1>회의 시간은<br><em>빈칸</em>이 아니라<br>근거로 정한다</h1>
+        <p class="hero-copy">여섯 명의 조건이 모두 다를 때 주최자가 힘든 일은 시간을 모으는 게 아니라, 어떤 타협이 괜찮은지 판단하는 일입니다. FitTime은 필수 참석, 선택 참석, 선호 충돌, 미응답을 나눠 비교하고 정해도 되는 이유를 먼저 보여줍니다.</p>
+        <div class="problem-strip" aria-label="문제 정의">
+          <div class="problem">
+            <span class="picon"><svg viewBox="0 0 24 24"><path d="M8 7h10M8 12h8M8 17h5"/><path d="M4 7h.01M4 12h.01M4 17h.01"/></svg></span>
+            <div><b>모두의 빈 시간을 보는 것만으로는 결정이 안 됩니다</b><span>필수와 선택, 불가능과 선호가 같은 무게로 섞입니다.</span></div>
+          </div>
+          <div class="problem">
+            <span class="picon orange"><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></span>
+            <div><b>주최자는 마지막 선택의 책임을 혼자 집니다</b><span>왜 이 시간이 괜찮은지 설명할 근거가 필요합니다.</span></div>
+          </div>
+          <div class="problem">
+            <span class="picon blue"><svg viewBox="0 0 24 24"><path d="M12 3v18M4 8h16M6 16h12"/><path d="M7 8c0 5 10 5 10 0"/></svg></span>
+            <div><b>참여자는 적게 입력할수록 끝까지 응답합니다</b><span>되는 시간 전체가 아니라 안 되는 시간과 피하고 싶은 시간만 남깁니다.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flow-board reveal d1" id="flow" aria-label="추천 근거 흐름">
+        <div class="board-label"><strong>Recommendation evidence</strong><span>6 people · 1 hour · next week</span></div>
+        <div class="evidence-card">
+          <h3>추천 기준</h3>
+          <div class="score"><span>필수 참석</span><b>4/4</b></div>
+          <div class="score"><span>선택 참석</span><b style="color:var(--orange)">1/2</b></div>
+          <div class="score"><span>선호 충돌</span><b style="color:var(--orange)">1명</b></div>
+        </div>
+        <div class="phone part" aria-hidden="true">
+          <div class="screen">
+            <div class="screen-title">참여자 입력</div>
+            <div class="small-card"><b>안 되는 시간만</b><span>외근, 점심 직후, 이미 잡힌 일정</span></div>
+            <div class="time-cells">
+              <i></i><i class="busy"></i><i></i><i></i><i class="soft"></i>
+              <i></i><i></i><i class="busy"></i><i></i><i></i>
+              <i class="soft"></i><i></i><i></i><i></i><i class="busy"></i>
+            </div>
+          </div>
+        </div>
+        <div class="phone ghost" aria-hidden="true">
+          <div class="screen">
+            <div class="screen-title">주최자 설정</div>
+            <div class="small-card"><b>참석자 6명</b><span>필수 4명 · 선택 2명</span></div>
+            <div class="small-card"><b>다음 주 안</b><span>회의 시간 1시간</span></div>
+          </div>
+        </div>
+        <div class="phone main">
+          <div class="screen">
+            <div class="screen-title">목요일 · 7월 16일</div>
+            <div class="screen-time">오후 2:00</div>
+            <div class="good-pill">✓ 지금 정해도 되는 시간</div>
+            <div class="evidence">
+              <div class="ev-row"><i class="g">✓</i><span>필수 참석</span><b>4/4</b></div>
+              <div class="ev-row"><i class="o">•</i><span>선택 참석</span><b>1/2</b></div>
+              <div class="ev-row"><i class="o">!</i><span>선호 충돌</span><b>1명</b></div>
+              <div class="ev-row"><i class="u">?</i><span>미응답</span><b>0명</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- ===================== BOARD · 추천 근거 해부 ===================== -->
-  <section class="board">
-    <div class="board-in">
-      <div class="reveal">
-        <span class="step-badge">STEP 4 · <b>주최자의 판단</b></span>
-        <h2>시스템이 조건을 비교하고,<br><span class="g">주최자는 근거만</span> 읽는다</h2>
-        <p class="board-sub">시간표를 작게 만든 게 아니에요. 필수·선택·선호·미응답을 계산해, 정해도 되는 이유를 먼저 꺼내요.</p>
+  <main>
+    <section class="section wrap">
+      <div class="section-head reveal">
+        <h2>핵심 흐름은 네 단계입니다</h2>
+        <p>문제 정의를 따로 설명하지 않아도 흐름 안에서 드러나도록, 각 단계는 사용자가 실제로 해야 하는 행동과 시스템이 대신 비교하는 일을 나눠 보여줍니다.</p>
       </div>
-      <div class="board-stage">
-        <div class="bphone reveal d1">
-          <span class="side vup"></span><span class="side vdn"></span><span class="side pwr"></span>
-          <div class="bp-screen">
-            <div class="bp-status">
-              <span class="t">9:41</span>
-              <span class="ic">
-                <svg width="17" height="11" viewBox="0 0 17 11"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.7" y="5" width="3" height="6" rx="1"/><rect x="9.4" y="2.5" width="3" height="8.5" rx="1"/><rect x="14" y="0" width="3" height="11" rx="1"/></svg>
-                <svg width="15" height="11" viewBox="0 0 15 11"><path d="M7.5 2.1c2.5 0 4.8 1 6.4 2.6l-1.3 1.3A7.3 7.3 0 0 0 7.5 4a7.3 7.3 0 0 0-5.1 2L1.1 4.7A9.1 9.1 0 0 1 7.5 2.1Zm0 3.5c1.5 0 2.8.6 3.8 1.6l-1.3 1.3a3.3 3.3 0 0 0-4.9 0L3.7 7.2a5.3 5.3 0 0 1 3.8-1.6Zm0 3.4c.7 0 1.2.3 1.6.7L7.5 11 5.9 9.1c.4-.4 1-.7 1.6-.7Z"/></svg>
-                <svg width="24" height="11" viewBox="0 0 24 11"><rect x="0.5" y="0.5" width="20" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="15" height="7" rx="1.2"/><rect x="21.5" y="3.5" width="1.5" height="4" rx=".7"/></svg>
-              </span>
-            </div>
-            <span class="bp-tag">추천</span>
-            <div class="bp-day">목요일 · 7월 16일</div>
-            <div class="bp-time">오후 2:00</div>
-            <div class="bp-verdict"><svg viewBox="0 0 13 13" fill="none"><path d="M2.6 6.8l2.2 2.2L10.4 3.4" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>필수 네 분이 모두 되는 시간</div>
-            <div class="bp-rows">
-              <div class="bp-r"><span class="bp-c g"><svg viewBox="0 0 13 13" fill="none"><path d="M2.6 6.8l2.2 2.2L10.4 3.4" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="bp-k">필수 참석</span><span class="bp-v">4 / 4</span></div>
-              <div class="bp-r"><span class="bp-c a"><svg viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="4.3" stroke="#fff" stroke-width="1.4"/><path d="M6.5 4v2.7l1.8 1" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg></span><span class="bp-k">선택 참석</span><span class="bp-v">1 / 2</span></div>
-              <div class="bp-r"><span class="bp-c a"><svg viewBox="0 0 13 13" fill="none"><path d="M6.5 2l4.6 8H1.9L6.5 2z" stroke="#fff" stroke-width="1.3" stroke-linejoin="round"/></svg></span><span class="bp-k">선호 충돌</span><span class="bp-v">1명</span></div>
-              <div class="bp-r"><span class="bp-c s"><svg viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="4.3" stroke="#fff" stroke-width="1.4" stroke-dasharray="1.9 1.9"/></svg></span><span class="bp-k">미응답</span><span class="bp-v muted">0명</span></div>
-            </div>
+      <div class="steps">
+        <article class="step reveal d1">
+          <span class="step-no">1</span>
+          <h3>조건 설정</h3>
+          <p>주최자는 참석자 6명, 필수/선택 여부, 다음 주 안 1시간만 정합니다.</p>
+          <div class="mini">
+            <div class="mini-line"><span>참석자</span><b>6명</b></div>
+            <div class="mini-line"><span>필수 / 선택</span><b>4 / 2</b></div>
           </div>
-        </div>
-        <div class="callouts">
-          <div class="callout r1 reveal d2">
-            <span class="co-cir g"><svg viewBox="0 0 18 18" fill="none"><path d="M3.8 9.4l3 3L14.4 5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <div><div class="co-t">필수 참석 <em>4 / 4</em></div><div class="co-s">네 분이 모두 되니, 이 시간은 성립해요</div></div>
+        </article>
+        <article class="step reveal d2">
+          <span class="step-no">2</span>
+          <h3>가벼운 응답</h3>
+          <p>참여자는 가능한 시간을 모두 고르지 않고, 안 되는 시간과 피하고 싶은 시간만 남깁니다.</p>
+          <div class="mini">
+            <div class="mini-line"><span>입력 방식</span><b>제외 중심</b></div>
+            <div class="mini-line"><span>선호</span><b>익명</b></div>
           </div>
-          <div class="callout r2 reveal d3">
-            <span class="co-cir a"><svg viewBox="0 0 18 18" fill="none"><path d="M9 2.8l6.5 11.2H2.5L9 2.8z" stroke="#fff" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 7.2v3M9 11.9v.1" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-            <div><div class="co-t">선호 충돌 1명 <em>익명</em></div><div class="co-s">‘피하고 싶다’는 이름 없이 반영돼요</div></div>
+        </article>
+        <article class="step reveal d3">
+          <span class="step-no">3</span>
+          <h3>조건 비교</h3>
+          <p>시스템은 필수 참석 가능 여부를 최우선으로 보고 선택 참석과 선호 충돌을 따로 계산합니다.</p>
+          <div class="mini bars">
+            <span class="bar"><i style="width:100%"></i></span>
+            <span class="bar o"><i style="width:50%"></i></span>
+            <span class="bar u"><i style="width:0%"></i></span>
           </div>
-          <div class="callout r3 reveal d4">
-            <span class="co-cir s"><svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="6.2" stroke="#fff" stroke-width="1.8" stroke-dasharray="2.5 2.5"/></svg></span>
-            <div><div class="co-t">미응답 0명</div><div class="co-s">더 기다릴 사람이 없어, 지금 정해도 돼요</div></div>
+        </article>
+        <article class="step reveal">
+          <span class="step-no">4</span>
+          <h3>근거 확인</h3>
+          <p>주최자는 추천 시간 하나와 그 이유를 읽고 확정하거나 조정 요청을 보냅니다.</p>
+          <div class="mini">
+            <div class="mini-line"><span>추천</span><b>목 2:00</b></div>
+            <div class="mini-line"><span>판단</span><b>확정 / 조정</b></div>
           </div>
-        </div>
+        </article>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===================== STEPS · 사용 흐름 4단계 ===================== -->
-  <section class="steps">
-    <div class="steps-head reveal">
-      <span class="eyebrow">사용 흐름</span>
-        <h2>흐름은 네 번의 판단으로 끝난다</h2>
-      <p>설명보다 조작이 먼저 보이도록, 핵심 행동만 남겼어요.</p>
-    </div>
-    <div class="steps-row">
-      <div class="step reveal d1">
-        <span class="st-n"><b>1</b> 주최자</span>
-        <h3>회의 조건 설정</h3>
-        <div class="who">참석자와 기간을 정해 링크 공유</div>
-        <div class="mini-ui">
-          <div class="mini-top"><span class="mini-title">디자인팀 회의</span><span class="mini-tag">주최자</span></div>
-          <div class="mini-row"><span>참석자</span><b>6명</b></div>
-          <div class="mini-row"><span>필수 / 선택</span><b>4 / 2</b></div>
-          <div class="roster-dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <section class="try" id="demo">
+      <div class="wrap try-grid">
+        <div class="reveal">
+          <span class="eyebrow">직접 써보기</span>
+          <h2>실제 흐름은 아래에서 바로 볼 수 있습니다</h2>
+          <p>주최자 화면에서는 회의를 만들고, 참여자 화면에서는 안 되는 시간과 선호를 입력합니다. 데모 응답이 채워지면 추천 시간이 근거와 함께 나타납니다.</p>
+          <a class="open-link" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">새 탭에서 프로토타입 열기</a>
         </div>
-        <div class="st-list">
-          <div class="st-li">참석자 6명 · 필수 4 / 선택 2</div>
-          <div class="st-li">다음 주 안 · 1시간 회의</div>
-        </div>
-      </div>
-      <div class="step reveal d2">
-        <span class="st-n"><b>2</b> 참여자</span>
-        <h3>안 되는 시간만 입력</h3>
-        <div class="who">가볍게, 선호는 익명으로</div>
-        <div class="mini-ui">
-          <div class="mini-top"><span class="mini-title">다음 주</span><span class="mini-tag">참여자</span></div>
-          <div class="time-grid" aria-hidden="true">
-            <i></i><i class="busy"></i><i></i><i></i><i class="soft"></i>
-            <i></i><i></i><i class="busy"></i><i></i><i></i>
-            <i class="soft"></i><i></i><i></i><i class="busy"></i><i></i>
+        <div class="live-row reveal d1">
+          <div class="live-col">
+            <div class="live-cap"><b>주최자</b> · 회의 만들기와 추천 확인</div>
+            <div class="live-frame"><iframe src="https://schedulechallenge.vercel.app/?as=org" title="주최자 화면" loading="lazy" allow="clipboard-write"></iframe></div>
+          </div>
+          <div class="live-col">
+            <div class="live-cap"><b>참여자</b> · 안 되는 시간 입력</div>
+            <div class="live-frame"><iframe src="https://schedulechallenge.vercel.app/?as=part" title="참여자 화면" loading="lazy" allow="clipboard-write"></iframe></div>
           </div>
         </div>
-        <div class="st-list">
-          <div class="st-li">명단에서 본인 선택</div>
-          <div class="st-li soft">되도록 피할 시간은 익명 선호</div>
-        </div>
       </div>
-      <div class="step reveal d3">
-        <span class="st-n"><b>3</b> 시스템</span>
-        <h3>조건을 비교</h3>
-        <div class="who">무게가 다른 조건을 계산</div>
-        <div class="mini-ui">
-          <div class="mini-top"><span class="mini-title">비교 중</span><span class="mini-tag">시스템</span></div>
-          <div class="calc-bars">
-            <div class="calc-bar"><span>필수</span><span class="calc-track"><i class="calc-fill" style="width:100%"></i></span><b>4/4</b></div>
-            <div class="calc-bar"><span>선택</span><span class="calc-track"><i class="calc-fill soft" style="width:50%"></i></span><b>1/2</b></div>
-            <div class="calc-bar"><span>선호</span><span class="calc-track"><i class="calc-fill soft" style="width:28%"></i></span><b>1</b></div>
-            <div class="calc-bar"><span>미응답</span><span class="calc-track"><i class="calc-fill unk" style="width:0%"></i></span><b>0</b></div>
-          </div>
-        </div>
-        <div class="st-list">
-          <div class="st-li ok">필수 참석 가능 여부</div>
-          <div class="st-li">선택 참석 가능 인원</div>
-          <div class="st-li soft">선호 충돌 · 미응답</div>
-        </div>
-      </div>
-      <div class="step reveal d4">
-        <span class="st-n"><b>4</b> 주최자</span>
-        <h3>추천 근거 확인</h3>
-        <div class="who">추천 1개 + 근거를 읽고 결정</div>
-        <div class="mini-ui">
-          <div class="mini-top"><span class="mini-title">추천 시간</span><span class="mini-tag">결정</span></div>
-          <div class="decision-mini">
-            <div class="pick">목 2:00</div>
-            <div class="actions"><button class="primary">확정</button><button>조정 요청</button></div>
-          </div>
-        </div>
-        <div class="st-list">
-          <div class="st-li ok">필수 4/4 · 선택 1/2 가능</div>
-          <div class="st-li soft">선호 충돌 1명 · 익명</div>
-          <div class="st-li">확정 또는 조정 요청</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===================== TRY IT (live app embed) ===================== -->
-  <section class="try wrap">
-    <span class="eyebrow">직접 해보기</span>
-    <h2>직접 만들고,<br>추천까지 확인하기</h2>
-    <p>주최자로 회의를 만들고 ‘데모’로 응답을 채우면,<br>추천 근거까지 몇 번의 탭으로 확인할 수 있어요.</p>
-    <div class="live-row">
-      <div class="live-col">
-        <div class="live-cap"><b>주최자</b> — 회의를 여는 사람</div>
-        <div class="live-frame">
-          <iframe src="https://schedulechallenge.vercel.app/?as=org" title="주최자 화면" loading="lazy" allow="clipboard-write"></iframe>
-        </div>
-      </div>
-      <div class="live-col">
-        <div class="live-cap"><b>참여자</b> — 초대받은 사람</div>
-        <div class="live-frame">
-          <iframe src="https://schedulechallenge.vercel.app/?as=part" title="참여자 화면" loading="lazy" allow="clipboard-write"></iframe>
-        </div>
-      </div>
-    </div>
-    <a class="try-btn" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">새 탭에서 열기 →</a>
-    <p class="try-note">회의 응답은 대부분 폰에서 하니까, 데스크톱 웹이 아니라 <b>모바일 화면</b>으로 설계했어요.<br>새 탭에서 열 땐 브라우저 창을 좁게(폰 너비) 두면 의도한 대로 보여요.</p>
-  </section>
-
-
+    </section>
+  </main>
 </div>
 
 <script>
@@ -516,13 +464,15 @@
     return;
   }
   var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in");
+        io.unobserve(entry.target);
+      }
     });
-  }, { threshold: 0.16, rootMargin: "0px 0px -8% 0px" });
+  }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
   items.forEach(function (el) { io.observe(el); });
 })();
 </script>
-
 </body>
 </html>
