@@ -71,7 +71,7 @@ function hourLabel(h: number): string {
 const DURATION_OPTS: Array<{ min: number; label: string }> = [
   { min: 30, label: "30분" },
   { min: 60, label: "1시간" },
-  { min: 90, label: "1시간 반" },
+  { min: 90, label: "90분" },
   { min: 120, label: "2시간" },
 ];
 
