@@ -3,476 +3,429 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="여섯 명의 회의에서 주최자가 추천 근거를 읽고 회의 시간을 정하는 경험">
-<title>FitTime - 회의 시간 조율 경험</title>
+<meta name="description" content="6명이 회의 일정을 잡는 경험 설계">
+<title>FitTime - 6명 회의 시간 조율 경험</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
-    --paper: oklch(0.975 0.006 250);
-    --ink: oklch(0.19 0.035 258);
-    --ink-2: oklch(0.36 0.035 258);
-    --muted: oklch(0.58 0.025 258);
-    --line: oklch(0.9 0.01 258);
-    --line-2: oklch(0.82 0.016 258);
-    --panel: oklch(0.995 0.003 250);
-    --panel-2: oklch(0.955 0.008 250);
-    --deep: oklch(0.22 0.045 258);
-    --deep-2: oklch(0.16 0.035 258);
-    --green: oklch(0.66 0.14 154);
-    --green-soft: oklch(0.94 0.05 154);
-    --orange: oklch(0.72 0.15 57);
-    --orange-soft: oklch(0.95 0.055 57);
-    --red: oklch(0.64 0.18 27);
-    --red-soft: oklch(0.95 0.055 27);
-    --blue: oklch(0.62 0.13 245);
-    --blue-soft: oklch(0.93 0.04 245);
-    --unknown: oklch(0.67 0.018 258);
-    --shadow: 0 1px 2px oklch(0.22 0.04 258 / .05), 0 22px 48px -34px oklch(0.22 0.04 258 / .35);
+    --bg: #f6f7f8;
+    --ink: #17191f;
+    --sub: #5e6572;
+    --muted: #8a92a0;
+    --line: #dfe3e8;
+    --line-dark: #cbd1d8;
+    --white: #fff;
+    --black: #111318;
+    --green: #27ae68;
+    --green-bg: #e8f7ef;
+    --orange: #ee8b32;
+    --orange-bg: #fff1df;
+    --blue: #3d7fe8;
+    --blue-bg: #eaf2ff;
+    --gray-bg: #eef1f4;
+    --shadow: 0 1px 2px rgba(17, 19, 24, .05), 0 18px 44px rgba(17, 19, 24, .08);
     --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
-    --max: 1160px;
+    --max: 1180px;
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; overflow-x: hidden; }
-  body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  html, body { margin: 0; overflow-x: hidden; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
   body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
     background:
-      linear-gradient(90deg, oklch(0.22 0.04 258 / .035) 1px, transparent 1px),
-      linear-gradient(0deg, oklch(0.22 0.04 258 / .03) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: linear-gradient(to bottom, #000, transparent 78%);
+      linear-gradient(90deg, rgba(23,25,31,.04) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(23,25,31,.035) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: .75;
   }
-  .page { position: relative; overflow-x: clip; }
+  .page { position: relative; }
   .wrap { width: min(var(--max), calc(100% - 48px)); margin: 0 auto; }
   h1, h2, h3, p { margin: 0; word-break: keep-all; overflow-wrap: break-word; }
-  h1, h2, h3 { letter-spacing: -0.035em; line-height: 1.08; }
-  p { color: var(--ink-2); line-height: 1.68; text-wrap: pretty; }
+  h1, h2, h3 { letter-spacing: -.035em; line-height: 1.12; }
+  p { line-height: 1.65; color: var(--sub); }
   a { color: inherit; }
 
-  .topbar {
+  .top {
     position: sticky;
     top: 0;
-    z-index: 20;
-    backdrop-filter: blur(18px);
-    background: oklch(0.975 0.006 250 / .82);
+    z-index: 10;
     border-bottom: 1px solid var(--line);
+    background: rgba(246, 247, 248, .86);
+    backdrop-filter: blur(14px);
   }
-  .topbar .wrap { min-height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  .brand { display: inline-flex; align-items: center; gap: 9px; font-weight: 850; letter-spacing: -0.02em; }
-  .brand i {
-    width: 38px;
-    height: 12px;
-    border-radius: 4px;
-    background:
-      linear-gradient(90deg, var(--green) 0 31%, transparent 31% 35%, var(--orange) 35% 66%, transparent 66% 70%, var(--blue) 70% 100%);
-  }
-  .nav { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 750; color: var(--muted); }
-  .nav a { text-decoration: none; padding: 8px 10px; border-radius: 10px; }
-  .nav a:hover { background: var(--panel-2); color: var(--ink); }
+  .top .wrap { height: 56px; display: flex; align-items: center; justify-content: space-between; }
+  .mark { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 850; }
+  .mark::before { content: ""; width: 18px; height: 18px; border-radius: 6px; background: conic-gradient(from 90deg, var(--green), var(--blue), var(--orange), var(--green)); }
+  .top nav { display: flex; gap: 6px; color: var(--sub); font-size: 13px; font-weight: 750; }
+  .top a { text-decoration: none; padding: 8px 10px; border-radius: 9px; }
+  .top a:hover { background: var(--white); }
 
-  .hero { padding: 68px 0 64px; }
-  .hero-grid { display: grid; grid-template-columns: minmax(0, 0.88fr) minmax(360px, 1.12fr); gap: clamp(36px, 6vw, 76px); align-items: center; }
-  .hero-grid > * { min-width: 0; }
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 32px;
-    padding: 0 12px;
-    border-radius: 999px;
-    background: var(--panel);
+  .hero { padding: 54px 0 42px; }
+  .case-grid { display: grid; grid-template-columns: 370px minmax(0, 1fr); gap: 28px; align-items: start; }
+  .case-grid > * { min-width: 0; }
+  .brief {
+    position: sticky;
+    top: 82px;
+    padding: 24px;
     border: 1px solid var(--line);
-    color: var(--muted);
-    font-size: 12px;
-    font-weight: 800;
-    box-shadow: 0 1px 0 #fff inset;
-  }
-  .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
-  .hero h1 { margin-top: 22px; font-size: clamp(2.75rem, 6.6vw, 6.1rem); font-weight: 920; max-width: 10.5ch; }
-  .hero h1 em { color: var(--green); font-style: normal; }
-  .hero-copy { margin-top: 24px; font-size: clamp(1.02rem, 1.5vw, 1.2rem); max-width: 45ch; }
-  .problem-strip { display: grid; gap: 10px; margin-top: 28px; max-width: 560px; }
-  .problem {
-    display: grid;
-    grid-template-columns: 34px 1fr;
-    align-items: center;
-    gap: 11px;
-    min-height: 52px;
-    padding: 10px 12px;
-    border-radius: 16px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    box-shadow: 0 1px 0 #fff inset;
-  }
-  .problem b { display: block; font-size: 14px; letter-spacing: -0.02em; }
-  .problem span { display: block; margin-top: 1px; font-size: 12.5px; color: var(--muted); font-weight: 650; }
-  .problem > div { min-width: 0; }
-  .picon { width: 34px; height: 34px; border-radius: 12px; display: grid; place-items: center; background: var(--green-soft); color: var(--green); }
-  .picon.orange { background: var(--orange-soft); color: var(--orange); }
-  .picon.blue { background: var(--blue-soft); color: var(--blue); }
-  .picon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-
-  .flow-board {
-    position: relative;
-    width: 100%;
-    min-height: 604px;
-    border-radius: 34px;
-    background:
-      radial-gradient(circle at 15% 8%, oklch(0.66 0.14 154 / .18), transparent 26%),
-      linear-gradient(145deg, var(--deep), var(--deep-2));
-    padding: 26px;
-    color: white;
-    box-shadow: 0 38px 80px -48px oklch(0.16 0.04 258 / .8);
-    overflow: hidden;
-  }
-  .flow-board::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(90deg, rgba(255,255,255,.055) 1px, transparent 1px),
-      linear-gradient(0deg, rgba(255,255,255,.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-    mask-image: linear-gradient(to bottom, #000, transparent 88%);
-  }
-  .board-label { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-size: 12px; font-weight: 800; color: oklch(0.83 0.018 258); }
-  .board-label strong { color: #fff; }
-  .board-label span:last-child { color: oklch(0.73 0.02 258); font-variant-numeric: tabular-nums; }
-
-  .phone {
-    position: absolute;
-    width: 276px;
-    border-radius: 42px;
-    padding: 10px;
-    background: linear-gradient(150deg, #2d3038, #0e1118);
-    box-shadow: 0 34px 90px -35px rgba(0,0,0,.85), inset 0 0 0 1px rgba(255,255,255,.12);
-  }
-  .phone::before { content: ""; position: absolute; top: 18px; left: 50%; transform: translateX(-50%); width: 78px; height: 22px; border-radius: 999px; background: #05070a; z-index: 2; }
-  .screen { min-height: 512px; border-radius: 34px; background: var(--paper); color: var(--ink); padding: 52px 18px 20px; overflow: hidden; }
-  .phone.main { right: 28px; top: 58px; transform: rotate(1.6deg); z-index: 3; }
-  .phone.ghost { left: 26px; bottom: 32px; transform: rotate(-5deg) scale(.72); opacity: .58; filter: saturate(.8); z-index: 1; }
-  .phone.part { left: 158px; top: 100px; transform: rotate(-1.8deg) scale(.82); z-index: 2; }
-  .phone.part .screen, .phone.ghost .screen { min-height: 438px; }
-
-  .screen-title { font-size: 13px; color: var(--muted); font-weight: 780; }
-  .screen-time { margin-top: 6px; font-size: 43px; font-weight: 940; letter-spacing: -0.06em; line-height: .96; }
-  .good-pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 7px 10px; border-radius: 10px; background: var(--green-soft); color: var(--green); font-size: 12px; font-weight: 850; }
-  .evidence { margin-top: 24px; border-top: 1px solid var(--line); }
-  .ev-row { display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 10px; min-height: 54px; border-bottom: 1px solid var(--line); font-size: 14px; font-weight: 820; }
-  .ev-row span { min-width: 0; }
-  .ev-row i { width: 30px; height: 30px; border-radius: 11px; display: grid; place-items: center; color: #fff; font-style: normal; font-size: 14px; }
-  .ev-row i.g { background: var(--green); } .ev-row i.o { background: var(--orange); } .ev-row i.u { background: var(--unknown); }
-  .ev-row b { font-size: 16px; font-weight: 930; font-variant-numeric: tabular-nums; }
-  .time-cells { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 18px; }
-  .time-cells i { height: 28px; border-radius: 8px; background: var(--panel-2); border: 1px solid var(--line); }
-  .time-cells i.busy { background: var(--deep); border-color: var(--deep); }
-  .time-cells i.soft { background: var(--orange-soft); border-color: var(--orange); }
-  .small-card { margin-top: 18px; padding: 14px; border-radius: 16px; background: var(--panel); border: 1px solid var(--line); }
-  .small-card b { display: block; font-size: 18px; letter-spacing: -0.035em; }
-  .small-card span { display: block; margin-top: 4px; font-size: 12px; color: var(--muted); font-weight: 700; }
-
-  .evidence-card {
-    position: absolute;
-    left: 28px;
-    top: 52px;
-    width: 236px;
-    padding: 18px;
     border-radius: 22px;
-    background: #fff;
-    color: var(--ink);
+    background: rgba(255,255,255,.78);
     box-shadow: var(--shadow);
-    z-index: 4;
   }
-  .evidence-card::after {
-    content: "";
-    position: absolute;
-    right: -74px;
-    top: 50%;
-    width: 74px;
-    border-top: 2px dashed oklch(0.72 0.15 57);
-  }
-  .evidence-card h3 { font-size: 18px; font-weight: 920; }
-  .score { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); }
-  .score span { font-size: 12px; color: var(--muted); font-weight: 760; }
-  .score b { font-size: 24px; font-weight: 940; color: var(--green); }
+  .label { display: inline-flex; align-items: center; gap: 8px; color: var(--sub); font-size: 12px; font-weight: 850; }
+  .label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+  .brief h1 { margin-top: 14px; font-size: 42px; font-weight: 920; }
+  .brief h1 span { color: var(--green); }
+  .brief p { margin-top: 16px; font-size: 15px; }
+  .brief dl { margin: 22px 0 0; display: grid; gap: 10px; }
+  .brief div { display: grid; grid-template-columns: 80px 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
+  .brief dt { color: var(--muted); font-size: 12px; font-weight: 800; }
+  .brief dd { margin: 0; color: var(--ink); font-size: 13px; font-weight: 760; line-height: 1.45; }
+  .brief dd { min-width: 0; }
 
-  .section { padding: 78px 0; }
-  .section-head { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 30px; }
-  .section-head h2 { font-size: clamp(2rem, 4.5vw, 3.45rem); font-weight: 920; max-width: 11ch; }
-  .section-head p { max-width: 44ch; font-size: 1rem; }
-
-  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-  .step {
-    position: relative;
-    min-height: 254px;
-    border-radius: 24px;
-    padding: 20px;
-    background: var(--panel);
-    border: 1px solid var(--line);
-    box-shadow: 0 1px 0 #fff inset, var(--shadow);
+  .workspace {
+    min-width: 0;
+    border: 1px solid var(--line-dark);
+    border-radius: 28px;
+    background: var(--white);
+    box-shadow: var(--shadow);
     overflow: hidden;
   }
-  .step::after { content: ""; position: absolute; right: -36px; bottom: -38px; width: 108px; height: 108px; border-radius: 30px; border: 1px solid var(--line); transform: rotate(18deg); }
-  .step-no { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 12px; background: var(--deep); color: #fff; font-size: 13px; font-weight: 900; }
-  .step h3 { margin-top: 18px; font-size: 21px; font-weight: 900; }
-  .step p { margin-top: 8px; font-size: 13.5px; color: var(--muted); font-weight: 650; }
-  .mini { position: relative; margin-top: 18px; padding: 12px; border-radius: 16px; background: var(--panel-2); border: 1px solid var(--line); z-index: 1; }
-  .mini-line { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 12px; font-weight: 780; color: var(--ink-2); }
-  .mini-line span { min-width: 0; }
-  .mini-line:last-child { border-bottom: 0; }
-  .mini-line b { color: var(--ink); font-weight: 920; }
-  .bars { display: grid; gap: 7px; }
-  .bar { height: 9px; border-radius: 999px; background: #fff; overflow: hidden; border: 1px solid var(--line); }
-  .bar i { display: block; height: 100%; background: var(--green); border-radius: inherit; }
-  .bar.o i { background: var(--orange); }
-  .bar.u i { background: var(--unknown); }
-
-  .try { padding: 84px 0 104px; border-top: 1px solid var(--line); }
-  .try-grid { display: grid; grid-template-columns: 0.78fr 1.22fr; gap: 36px; align-items: start; }
-  .try h2 { margin-top: 16px; font-size: clamp(2rem, 4vw, 3.25rem); font-weight: 920; }
-  .try p { margin-top: 16px; max-width: 42ch; }
-  .open-link { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; margin-top: 24px; padding: 0 18px; border-radius: 14px; background: var(--deep); color: #fff; text-decoration: none; font-weight: 850; box-shadow: var(--shadow); }
-  .live-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-  .live-col { min-width: 0; }
-  .live-cap { margin-bottom: 10px; font-size: 13px; color: var(--muted); font-weight: 800; }
-  .live-cap b { color: var(--ink); }
-  .live-frame { width: 100%; aspect-ratio: 9 / 19.5; border-radius: 42px; padding: 10px; background: linear-gradient(150deg, #2d3038, #0e1118); box-shadow: var(--shadow); }
-  .live-frame iframe { display: block; width: 100%; height: 100%; border: 0; border-radius: 32px; background: var(--paper); }
-
-  .reveal { opacity: 0; transform: translateY(14px); transition: opacity .55s ease, transform .55s cubic-bezier(.2,.8,.2,1); }
-  .reveal.in { opacity: 1; transform: none; }
-  .d1 { transition-delay: .06s; } .d2 { transition-delay: .12s; } .d3 { transition-delay: .18s; }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .workspace-head {
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--line);
+    background: #fbfbfc;
   }
-  :focus-visible { outline: 3px solid var(--green); outline-offset: 3px; border-radius: 10px; }
+  .dots { display: flex; gap: 7px; }
+  .dots i { width: 10px; height: 10px; border-radius: 50%; background: #d2d7de; }
+  .dots i:nth-child(1) { background: #f26a5a; }
+  .dots i:nth-child(2) { background: #f3bf43; }
+  .dots i:nth-child(3) { background: #31b76d; }
+  .file-title { color: var(--sub); font-size: 12px; font-weight: 800; }
+
+  .board { padding: 22px; display: grid; gap: 16px; }
+  .stage { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+  .panel {
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .panel.dark {
+    background: #16191f;
+    color: #fff;
+    border-color: #16191f;
+  }
+  .panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--line);
+    font-size: 13px;
+    font-weight: 850;
+  }
+  .panel-head > * { min-width: 0; }
+  .panel.dark .panel-head { border-color: rgba(255,255,255,.12); color: rgba(255,255,255,.9); }
+  .tag { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 999px; background: var(--gray-bg); color: var(--sub); font-size: 11px; font-weight: 800; }
+  .tag.green { background: var(--green-bg); color: var(--green); }
+  .tag.orange { background: var(--orange-bg); color: var(--orange); }
+  .panel-body { padding: 16px; }
+
+  .meeting-card { display: grid; gap: 13px; }
+  .meeting-title { font-size: 22px; font-weight: 900; letter-spacing: -.03em; }
+  .field { display: grid; grid-template-columns: 78px 1fr; gap: 10px; align-items: start; padding: 11px 0; border-top: 1px solid var(--line); }
+  .field:first-of-type { border-top: 0; }
+  .field span { color: var(--muted); font-size: 12px; font-weight: 800; }
+  .field b { font-size: 14px; line-height: 1.45; }
+  .people { display: flex; flex-wrap: wrap; gap: 6px; }
+  .person { display: inline-flex; align-items: center; gap: 5px; min-height: 28px; padding: 0 9px; border-radius: 999px; background: var(--gray-bg); font-size: 12px; font-weight: 800; }
+  .person.req { background: var(--green-bg); color: #16844b; }
+
+  .phone-row { display: grid; grid-template-columns: 190px 1fr; gap: 14px; align-items: center; }
+  .phone-row > * { min-width: 0; }
+  .phone {
+    width: 190px;
+    border-radius: 31px;
+    padding: 8px;
+    background: #111318;
+    box-shadow: 0 24px 44px rgba(0,0,0,.22);
+  }
+  .screen {
+    position: relative;
+    min-height: 392px;
+    padding: 34px 14px 14px;
+    border-radius: 24px;
+    background: #f8f9fb;
+    color: var(--ink);
+  }
+  .screen::before { content: ""; position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 58px; height: 17px; border-radius: 999px; background: #050609; }
+  .screen small { display: block; color: var(--muted); font-size: 11px; font-weight: 800; }
+  .screen h3 { margin-top: 8px; font-size: 23px; font-weight: 920; }
+  .time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 16px; }
+  .time-grid i { height: 24px; border-radius: 7px; background: #fff; border: 1px solid var(--line); }
+  .time-grid i.busy { background: #20242c; border-color: #20242c; }
+  .time-grid i.soft { background: var(--orange-bg); border-color: #f2b475; }
+  .legend { display: grid; gap: 8px; }
+  .legend p { font-size: 13px; }
+  .legend-row { display: flex; align-items: center; gap: 8px; color: var(--sub); font-size: 12px; font-weight: 800; }
+  .legend-row i { width: 13px; height: 13px; border-radius: 4px; background: #20242c; }
+  .legend-row i.soft { background: var(--orange-bg); border: 1px solid #f2b475; }
+
+  .result { display: grid; gap: 13px; }
+  .result-time { font-size: 40px; font-weight: 940; letter-spacing: -.055em; }
+  .result-pill { display: inline-flex; width: fit-content; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 10px; background: var(--green-bg); color: var(--green); font-size: 12px; font-weight: 850; }
+  .ev { display: grid; gap: 0; margin-top: 4px; border-top: 1px solid var(--line); }
+  .ev-row { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; min-height: 47px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 820; }
+  .ev-row i { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 10px; color: #fff; font-style: normal; font-size: 13px; }
+  .ev-row i.green { background: var(--green); }
+  .ev-row i.orange { background: var(--orange); }
+  .ev-row i.gray { background: #9aa3af; }
+  .ev-row b { font-size: 15px; font-weight: 930; }
+
+  .decision-note {
+    border-radius: 16px;
+    padding: 16px;
+    background: #20242c;
+  }
+  .decision-note h3 { color: #fff; font-size: 20px; font-weight: 900; }
+  .decision-note p { margin-top: 9px; color: rgba(255,255,255,.72); font-size: 13px; }
+  .decision-note ul { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+  .decision-note li { display: flex; gap: 8px; color: rgba(255,255,255,.86); font-size: 12px; font-weight: 800; }
+  .decision-note li::before { content: ""; width: 7px; height: 7px; margin-top: 5px; border-radius: 50%; background: var(--green); flex: none; }
+
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .step { padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+  .step-num { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .04em; }
+  .step h3 { margin-top: 8px; font-size: 17px; font-weight: 900; }
+  .step p { margin-top: 7px; font-size: 12.5px; }
+
+  .demo { padding: 48px 0 88px; }
+  .demo-head { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 18px; }
+  .demo h2 { font-size: 32px; font-weight: 920; }
+  .demo p { max-width: 520px; font-size: 14px; }
+  .demo-link { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 15px; border-radius: 12px; background: var(--black); color: #fff; text-decoration: none; font-size: 13px; font-weight: 850; }
+  .live { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .live-card { border: 1px solid var(--line); border-radius: 24px; background: var(--white); padding: 14px; box-shadow: var(--shadow); }
+  .live-card h3 { font-size: 15px; font-weight: 900; margin-bottom: 10px; }
+  .frame { width: min(360px, 100%); margin: 0 auto; aspect-ratio: 9 / 19.5; border-radius: 38px; padding: 9px; background: #111318; }
+  .frame iframe { display: block; width: 100%; height: 100%; border: 0; border-radius: 29px; background: #f8f9fb; }
 
   @media (max-width: 980px) {
-    .hero-grid, .try-grid { grid-template-columns: 1fr; }
-    .flow-board { min-height: 640px; }
-    .steps { grid-template-columns: repeat(2, 1fr); }
-    .section-head { display: block; }
-    .section-head p { margin-top: 14px; }
+    .case-grid { grid-template-columns: 1fr; }
+    .brief { position: static; }
+    .stage { grid-template-columns: 1fr; }
+    .flow { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 640px) {
-    .wrap { width: min(100% - 32px, var(--max)); }
-    .nav a:not(:last-child) { display: none; }
-    .hero { padding: 46px 0 48px; }
-    .hero h1 {
-      font-size: clamp(2.35rem, 11.8vw, 3.2rem);
-      max-width: 100%;
-      line-height: 1.04;
-      letter-spacing: -0.045em;
-    }
-    .hero-copy { font-size: .98rem; }
-    .hero-copy, .problem b, .problem span, .section-head p, .step p, .try p {
+    .wrap { width: min(var(--max), calc(100% - 32px)); }
+    .top nav a:first-child { display: none; }
+    .hero { padding: 30px 0 34px; }
+    .brief { padding: 18px; border-radius: 18px; overflow: hidden; }
+    .brief h1 {
+      font-size: 28px;
+      line-height: 1.16;
       word-break: normal;
       overflow-wrap: anywhere;
     }
-    .hero-copy { max-width: 32ch; }
-    .problem { grid-template-columns: 30px 1fr; gap: 10px; padding: 10px; }
-    .problem b { font-size: 13px; }
-    .problem span { font-size: 11.5px; }
-    .picon { width: 30px; height: 30px; border-radius: 10px; }
-    .flow-board {
-      width: calc(100vw - 32px);
-      max-width: calc(100vw - 32px);
-      min-height: 850px;
-      border-radius: 26px;
-      padding: 16px;
-      justify-self: center;
+    .brief p { font-size: 14px; }
+    .brief div {
+      display: block;
+      padding-top: 12px;
     }
-    .board-label { align-items: flex-start; }
-    .board-label span:last-child { display: none; }
-    .phone { width: min(286px, calc(100vw - 78px)); }
-    .phone.main { top: 262px; left: 50%; right: auto; transform: translateX(-50%); }
-    .phone.part { left: 16px; top: 144px; transform: scale(.64) rotate(-2deg); transform-origin: top left; }
-    .phone.ghost { display: none; }
-    .evidence-card { left: 16px; top: 58px; width: calc(100vw - 64px); max-width: 294px; padding: 16px; border-radius: 18px; }
-    .evidence-card::after { display: none; }
-    .score { margin-top: 12px; padding-top: 12px; }
-    .score b { font-size: 20px; }
-    .screen { min-height: 492px; }
-    .screen-time { font-size: 38px; }
-    .steps { grid-template-columns: 1fr; }
-    .section { padding: 58px 0; }
-    .try { padding: 64px 0 88px; }
-    .live-row { grid-template-columns: 1fr; }
-    .live-frame { width: min(360px, 100%); margin: 0 auto; }
+    .brief dt { margin-bottom: 5px; }
+    .brief dd {
+      display: block;
+      font-size: 12.5px;
+      overflow-wrap: anywhere;
+      word-break: normal;
+      white-space: normal;
+    }
+    .workspace { border-radius: 20px; }
+    .workspace-head { padding: 0 14px; }
+    .file-title {
+      max-width: 210px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .board { padding: 14px; }
+    .stage { gap: 14px; }
+    .panel { border-radius: 18px; }
+    .panel-head {
+      min-height: 50px;
+      padding: 10px 14px;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    .phone-row { grid-template-columns: 1fr; }
+    .phone { margin: 0 auto; }
+    .meeting-title { font-size: 20px; }
+    .field { grid-template-columns: 64px minmax(0, 1fr); }
+    .result-time { font-size: 31px; }
+    .flow { grid-template-columns: 1fr; }
+    .demo-head { display: grid; }
+    .live { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="topbar">
+  <header class="top">
     <div class="wrap">
-      <div class="brand"><i aria-hidden="true"></i> FitTime</div>
-      <nav class="nav" aria-label="페이지 이동">
+      <div class="mark">FitTime</div>
+      <nav aria-label="페이지 이동">
         <a href="#flow">흐름</a>
         <a href="#demo">직접 보기</a>
       </nav>
     </div>
-  </div>
-
-  <header class="hero wrap">
-    <div class="hero-grid">
-      <div class="reveal">
-        <span class="eyebrow">Toss Product Design Challenge 2026</span>
-        <h1>회의 시간은<br><em>빈칸</em>이 아니라<br>근거로 정한다</h1>
-        <p class="hero-copy">여섯 명의 조건이 모두 다를 때 주최자가 힘든 일은 시간을 모으는 게 아니라, 어떤 타협이 괜찮은지 판단하는 일입니다. FitTime은 필수 참석, 선택 참석, 선호 충돌, 미응답을 나눠 비교하고 정해도 되는 이유를 먼저 보여줍니다.</p>
-        <div class="problem-strip" aria-label="문제 정의">
-          <div class="problem">
-            <span class="picon"><svg viewBox="0 0 24 24"><path d="M8 7h10M8 12h8M8 17h5"/><path d="M4 7h.01M4 12h.01M4 17h.01"/></svg></span>
-            <div><b>모두의 빈 시간을 보는 것만으로는 결정이 안 됩니다</b><span>필수와 선택, 불가능과 선호가 같은 무게로 섞입니다.</span></div>
-          </div>
-          <div class="problem">
-            <span class="picon orange"><svg viewBox="0 0 24 24"><path d="M12 8v5l3 2"/><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></span>
-            <div><b>주최자는 마지막 선택의 책임을 혼자 집니다</b><span>왜 이 시간이 괜찮은지 설명할 근거가 필요합니다.</span></div>
-          </div>
-          <div class="problem">
-            <span class="picon blue"><svg viewBox="0 0 24 24"><path d="M12 3v18M4 8h16M6 16h12"/><path d="M7 8c0 5 10 5 10 0"/></svg></span>
-            <div><b>참여자는 적게 입력할수록 끝까지 응답합니다</b><span>되는 시간 전체가 아니라 안 되는 시간과 피하고 싶은 시간만 남깁니다.</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="flow-board reveal d1" id="flow" aria-label="추천 근거 흐름">
-        <div class="board-label"><strong>Recommendation evidence</strong><span>6 people · 1 hour · next week</span></div>
-        <div class="evidence-card">
-          <h3>추천 기준</h3>
-          <div class="score"><span>필수 참석</span><b>4/4</b></div>
-          <div class="score"><span>선택 참석</span><b style="color:var(--orange)">1/2</b></div>
-          <div class="score"><span>선호 충돌</span><b style="color:var(--orange)">1명</b></div>
-        </div>
-        <div class="phone part" aria-hidden="true">
-          <div class="screen">
-            <div class="screen-title">참여자 입력</div>
-            <div class="small-card"><b>안 되는 시간만</b><span>외근, 점심 직후, 이미 잡힌 일정</span></div>
-            <div class="time-cells">
-              <i></i><i class="busy"></i><i></i><i></i><i class="soft"></i>
-              <i></i><i></i><i class="busy"></i><i></i><i></i>
-              <i class="soft"></i><i></i><i></i><i></i><i class="busy"></i>
-            </div>
-          </div>
-        </div>
-        <div class="phone ghost" aria-hidden="true">
-          <div class="screen">
-            <div class="screen-title">주최자 설정</div>
-            <div class="small-card"><b>참석자 6명</b><span>필수 4명 · 선택 2명</span></div>
-            <div class="small-card"><b>다음 주 안</b><span>회의 시간 1시간</span></div>
-          </div>
-        </div>
-        <div class="phone main">
-          <div class="screen">
-            <div class="screen-title">목요일 · 7월 16일</div>
-            <div class="screen-time">오후 2:00</div>
-            <div class="good-pill">✓ 지금 정해도 되는 시간</div>
-            <div class="evidence">
-              <div class="ev-row"><i class="g">✓</i><span>필수 참석</span><b>4/4</b></div>
-              <div class="ev-row"><i class="o">•</i><span>선택 참석</span><b>1/2</b></div>
-              <div class="ev-row"><i class="o">!</i><span>선호 충돌</span><b>1명</b></div>
-              <div class="ev-row"><i class="u">?</i><span>미응답</span><b>0명</b></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </header>
 
   <main>
-    <section class="section wrap">
-      <div class="section-head reveal">
-        <h2>핵심 흐름은 네 단계입니다</h2>
-        <p>문제 정의를 따로 설명하지 않아도 흐름 안에서 드러나도록, 각 단계는 사용자가 실제로 해야 하는 행동과 시스템이 대신 비교하는 일을 나눠 보여줍니다.</p>
-      </div>
-      <div class="steps">
-        <article class="step reveal d1">
-          <span class="step-no">1</span>
-          <h3>조건 설정</h3>
-          <p>주최자는 참석자 6명, 필수/선택 여부, 다음 주 안 1시간만 정합니다.</p>
-          <div class="mini">
-            <div class="mini-line"><span>참석자</span><b>6명</b></div>
-            <div class="mini-line"><span>필수 / 선택</span><b>4 / 2</b></div>
+    <section class="hero wrap">
+      <div class="case-grid">
+        <aside class="brief">
+          <span class="label">Toss Product Design Challenge 2026</span>
+          <h1>6명 회의 시간 조율<br><span>빈 시간 수집</span>보다<br>결정 근거 중심으로</h1>
+          <p>주최자에게 필요한 것은 더 큰 시간표가 아니라, 서로 다른 조건을 비교해도 되는 판단 기준입니다. 필수 참석, 선택 참석, 선호 충돌, 미응답을 분리해 추천 이유를 먼저 확인하는 흐름으로 설계했습니다.</p>
+          <dl>
+            <div><dt>상황</dt><dd>같은 회사 동료 6명 · 다음 주 안 · 1시간 회의</dd></div>
+            <div><dt>조건</dt><dd>필수 참석자와 선택 참석자, 익명 선호, 미응답 상태</dd></div>
+            <div><dt>핵심</dt><dd>시스템의 조건 비교 · 주최자의 추천 근거 확인</dd></div>
+          </dl>
+        </aside>
+
+        <section class="workspace" aria-label="FitTime 사용 흐름 보드">
+          <div class="workspace-head">
+            <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="file-title">fit-time-core-flow</div>
           </div>
-        </article>
-        <article class="step reveal d2">
-          <span class="step-no">2</span>
-          <h3>가벼운 응답</h3>
-          <p>참여자는 가능한 시간을 모두 고르지 않고, 안 되는 시간과 피하고 싶은 시간만 남깁니다.</p>
-          <div class="mini">
-            <div class="mini-line"><span>입력 방식</span><b>제외 중심</b></div>
-            <div class="mini-line"><span>선호</span><b>익명</b></div>
+          <div class="board" id="flow">
+            <div class="stage">
+              <article class="panel">
+                <div class="panel-head">
+                  <span>1. 회의 조건 설정</span>
+                  <span class="tag green">필수/선택 구분</span>
+                </div>
+                <div class="panel-body meeting-card">
+                  <div class="meeting-title">디자인팀 회의</div>
+                  <div class="field"><span>참석자</span><b>6명</b></div>
+                  <div class="field"><span>역할</span><div class="people"><b class="person req">필수 4명</b><b class="person">선택 2명</b></div></div>
+                  <div class="field"><span>조건</span><b>다음 주 안 · 1시간</b></div>
+                </div>
+              </article>
+
+              <article class="panel">
+                <div class="panel-head">
+                  <span>2. 참여자 입력</span>
+                  <span class="tag orange">안 되는 시간만</span>
+                </div>
+                <div class="panel-body phone-row">
+                  <div class="phone" aria-hidden="true">
+                    <div class="screen">
+                      <small>다음 주</small>
+                      <h3>피해야 하는 시간</h3>
+                      <div class="time-grid">
+                        <i></i><i class="busy"></i><i></i><i></i>
+                        <i></i><i></i><i class="soft"></i><i></i>
+                        <i class="busy"></i><i></i><i></i><i class="soft"></i>
+                        <i></i><i></i><i class="busy"></i><i></i>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="legend">
+                    <p>가능한 시간을 모두 고르지 않고, 이미 안 되는 시간과 되도록 피하고 싶은 시간만 표시하는 입력 방식입니다.</p>
+                    <div class="legend-row"><i></i> 안 되는 시간</div>
+                    <div class="legend-row"><i class="soft"></i> 피하고 싶은 시간</div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="stage">
+              <article class="panel">
+                <div class="panel-head">
+                  <span>3. 조건 비교</span>
+                  <span class="tag">조건별 무게 분리</span>
+                </div>
+                <div class="panel-body result">
+                  <small style="color:var(--muted);font-weight:800">추천 시간</small>
+                  <div class="result-time">목요일 오후 2:00</div>
+                  <span class="result-pill">✓ 지금 정해도 되는 시간</span>
+                  <div class="ev">
+                    <div class="ev-row"><i class="green">✓</i><span>필수 참석</span><b>4/4</b></div>
+                    <div class="ev-row"><i class="orange">•</i><span>선택 참석</span><b>1/2</b></div>
+                    <div class="ev-row"><i class="orange">!</i><span>선호 충돌</span><b>1명</b></div>
+                    <div class="ev-row"><i class="gray">?</i><span>미응답</span><b>0명</b></div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="panel dark">
+                <div class="panel-head">
+                  <span>4. 추천 근거 확인</span>
+                  <span class="tag green">근거 확인</span>
+                </div>
+                <div class="panel-body">
+                  <div class="decision-note">
+                    <h3>표 비교 없이 결정 이유 확인</h3>
+                    <p>추천 시간을 하나로 좁히고, 왜 괜찮은지와 어떤 타협이 포함됐는지 함께 제시합니다.</p>
+                    <ul>
+                      <li>필수 참석자는 모두 가능</li>
+                      <li>선택 참석자 한 명은 불참 가능</li>
+                      <li>점심 직후 선호 충돌은 익명으로 반영</li>
+                      <li>미응답자가 없어 지금 확정 가능</li>
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div class="flow">
+              <article class="step"><div class="step-num">STEP 01</div><h3>회의 조건 설정</h3><p>참석자와 필수/선택 여부만 먼저 지정</p></article>
+              <article class="step"><div class="step-num">STEP 02</div><h3>제외 중심 입력</h3><p>안 되는 시간과 피하고 싶은 시간만 표시</p></article>
+              <article class="step"><div class="step-num">STEP 03</div><h3>조건별 비교</h3><p>필수, 선택, 선호, 미응답을 분리 계산</p></article>
+              <article class="step"><div class="step-num">STEP 04</div><h3>근거 확인 후 확정</h3><p>추천 이유 확인 후 확정 또는 조정 요청</p></article>
+            </div>
           </div>
-        </article>
-        <article class="step reveal d3">
-          <span class="step-no">3</span>
-          <h3>조건 비교</h3>
-          <p>시스템은 필수 참석 가능 여부를 최우선으로 보고 선택 참석과 선호 충돌을 따로 계산합니다.</p>
-          <div class="mini bars">
-            <span class="bar"><i style="width:100%"></i></span>
-            <span class="bar o"><i style="width:50%"></i></span>
-            <span class="bar u"><i style="width:0%"></i></span>
-          </div>
-        </article>
-        <article class="step reveal">
-          <span class="step-no">4</span>
-          <h3>근거 확인</h3>
-          <p>주최자는 추천 시간 하나와 그 이유를 읽고 확정하거나 조정 요청을 보냅니다.</p>
-          <div class="mini">
-            <div class="mini-line"><span>추천</span><b>목 2:00</b></div>
-            <div class="mini-line"><span>판단</span><b>확정 / 조정</b></div>
-          </div>
-        </article>
+        </section>
       </div>
     </section>
 
-    <section class="try" id="demo">
-      <div class="wrap try-grid">
-        <div class="reveal">
-          <span class="eyebrow">직접 써보기</span>
-          <h2>실제 흐름은 아래에서 바로 볼 수 있습니다</h2>
-          <p>주최자 화면에서는 회의를 만들고, 참여자 화면에서는 안 되는 시간과 선호를 입력합니다. 데모 응답이 채워지면 추천 시간이 근거와 함께 나타납니다.</p>
-          <a class="open-link" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">새 탭에서 프로토타입 열기</a>
+    <section class="demo wrap" id="demo">
+      <div class="demo-head">
+        <div>
+          <span class="label">Prototype</span>
+          <h2>실제 조작 흐름</h2>
+          <p>주최자와 참여자의 핵심 흐름을 바로 확인할 수 있는 프로토타입입니다. 새 탭에서 열면 더 편하게 조작할 수 있습니다.</p>
         </div>
-        <div class="live-row reveal d1">
-          <div class="live-col">
-            <div class="live-cap"><b>주최자</b> · 회의 만들기와 추천 확인</div>
-            <div class="live-frame"><iframe src="https://schedulechallenge.vercel.app/?as=org" title="주최자 화면" loading="lazy" allow="clipboard-write"></iframe></div>
-          </div>
-          <div class="live-col">
-            <div class="live-cap"><b>참여자</b> · 안 되는 시간 입력</div>
-            <div class="live-frame"><iframe src="https://schedulechallenge.vercel.app/?as=part" title="참여자 화면" loading="lazy" allow="clipboard-write"></iframe></div>
-          </div>
-        </div>
+        <a class="demo-link" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">프로토타입 열기</a>
+      </div>
+      <div class="live">
+        <article class="live-card">
+          <h3>주최자 화면</h3>
+          <div class="frame"><iframe src="https://schedulechallenge.vercel.app/?as=org" title="주최자 화면" loading="lazy" allow="clipboard-write"></iframe></div>
+        </article>
+        <article class="live-card">
+          <h3>참여자 화면</h3>
+          <div class="frame"><iframe src="https://schedulechallenge.vercel.app/?as=part" title="참여자 화면" loading="lazy" allow="clipboard-write"></iframe></div>
+        </article>
       </div>
     </section>
   </main>
 </div>
-
-<script>
-(function () {
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var items = document.querySelectorAll(".reveal");
-  if (reduce || !("IntersectionObserver" in window)) {
-    items.forEach(function (el) { el.classList.add("in"); });
-    return;
-  }
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("in");
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.14, rootMargin: "0px 0px -8% 0px" });
-  items.forEach(function (el) { io.observe(el); });
-})();
-</script>
 </body>
 </html>
