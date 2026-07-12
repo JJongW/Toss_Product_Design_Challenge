@@ -114,6 +114,8 @@
   .live-frame iframe { width: 100%; height: 100%; border: 0; border-radius: 38px; background: var(--screen); display: block; }
   .try-btn { display: inline-flex; align-items: center; gap: 9px; margin-top: 28px; background: var(--navy); color: #fff; font-weight: 800; font-size: 1.02rem; padding: 15px 28px; border-radius: 14px; text-decoration: none; transition: transform .16s ease, box-shadow .28s ease; }
   .try-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px oklch(0.3 0.06 265 / .5); }
+  .try-note { margin: 18px auto 0; max-width: 42ch; font-size: 0.86rem; color: var(--muted); line-height: 1.6; }
+  .try-note b { color: var(--ink-soft); font-weight: 700; }
 
 
   /* ============ 상호작용 폴리시 (a11y/QA) ============ */
@@ -179,6 +181,7 @@
       </div>
     </div>
     <a class="try-btn" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">새 탭에서 열기 →</a>
+    <p class="try-note">회의 응답은 대부분 폰에서 하니까, 데스크톱 웹이 아니라 <b>모바일 화면</b>으로 설계했어요.<br>새 탭에서 열 땐 브라우저 창을 좁게(폰 너비) 두면 의도한 대로 보여요.</p>
   </section>
 </div>
 
