@@ -62,6 +62,11 @@
   h1, h2, h3, h4 { margin: 0; text-wrap: balance; letter-spacing: -0.025em; line-height: 1.18; }
   a { color: inherit; }
 
+  .viewhint {
+    text-align: center; font-size: 12.5px; font-weight: 600; color: var(--muted);
+    background: var(--surface-2); border-bottom: 1px solid var(--hairline); padding: 10px 16px;
+  }
+  .viewhint b { color: var(--ink-soft); font-weight: 700; }
   .eyebrow {
     font-size: 13px; letter-spacing: -0.005em; color: var(--accent); font-weight: 700;
     display: inline-flex; align-items: center; gap: 7px;
@@ -77,11 +82,11 @@
   .hero h1 .g { color: var(--accent); }
   .hero p {
     font-size: clamp(1.15rem, 2vw, 1.5rem); color: var(--ink); font-weight: 500;
-    margin: 24px auto 0; max-width: 30ch; line-height: 1.5;
+    margin: 24px auto 0; max-width: 52ch; line-height: 1.55;
   }
   .hero .hero-note {
     font-size: clamp(0.9rem, 1.3vw, 1rem); color: var(--muted); font-weight: 500;
-    margin: 16px auto 0; max-width: 40ch; line-height: 1.55;
+    margin: 16px auto 0; max-width: 48ch; line-height: 1.55;
   }
   .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 30px; }
   .chip {
@@ -121,9 +126,9 @@
 
   /* ===================== WHY ===================== */
   .why-sec { padding: 104px 0 96px; border-top: 1px solid var(--hairline); }
-  .why-head { text-align: center; max-width: 40ch; margin: 0 auto; }
+  .why-head { text-align: center; max-width: 62ch; margin: 0 auto; }
   .why-head h2 { font-size: clamp(1.8rem, 4.4vw, 2.9rem); font-weight: 800; margin-top: 18px; line-height: 1.22; }
-  .why-lede { font-size: clamp(1rem, 1.5vw, 1.12rem); color: var(--ink-soft); line-height: 1.7; margin: 20px auto 0; max-width: 46ch; }
+  .why-lede { font-size: clamp(1rem, 1.5vw, 1.12rem); color: var(--ink-soft); line-height: 1.72; margin: 20px auto 0; max-width: 58ch; }
   .why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 52px; }
   .why-card { background: var(--surface); border: 1px solid var(--hairline); border-radius: 20px; padding: 26px 24px; box-shadow: var(--shadow); }
   .why-card .wn { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--accent); letter-spacing: .06em; }
@@ -134,7 +139,7 @@
   .try { padding: 104px 0 128px; text-align: center; border-top: 1px solid var(--hairline); }
   .try .eyebrow { justify-content: center; margin: 0 auto; }
   .try h2 { font-size: clamp(1.8rem, 4.4vw, 2.9rem); font-weight: 800; margin-top: 18px; }
-  .try p { margin: 18px auto 0; max-width: 34ch; color: var(--ink-soft); font-size: clamp(1.02rem, 1.6vw, 1.18rem); line-height: 1.6; }
+  .try p { margin: 18px auto 0; max-width: 54ch; color: var(--ink-soft); font-size: clamp(1.02rem, 1.6vw, 1.18rem); line-height: 1.6; }
   .live-row { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 46px; }
   .live-col { display: flex; flex-direction: column; align-items: center; gap: 14px; }
   .live-cap { font-size: 0.92rem; font-weight: 700; color: var(--ink-soft); }
@@ -144,7 +149,7 @@
   .live-frame iframe { width: 100%; height: 100%; border: 0; border-radius: 38px; background: var(--screen); display: block; }
   .try-btn { display: inline-flex; align-items: center; gap: 9px; margin-top: 28px; background: var(--navy); color: #fff; font-weight: 800; font-size: 1.02rem; padding: 15px 28px; border-radius: 14px; text-decoration: none; transition: transform .16s ease, box-shadow .28s ease; }
   .try-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px oklch(0.3 0.06 265 / .5); }
-  .try-note { margin: 18px auto 0; max-width: 42ch; font-size: 0.86rem; color: var(--muted); line-height: 1.6; }
+  .try-note { margin: 18px auto 0; max-width: 62ch; font-size: 0.86rem; color: var(--muted); line-height: 1.6; }
   .try-note b { color: var(--ink-soft); font-weight: 700; }
 
 
@@ -159,6 +164,7 @@
 <body>
 
 <div class="page">
+  <div class="viewhint">이 소개 페이지는 <b>넓은 데스크톱 화면</b>에 맞춰 만들었어요 · 브라우저를 전체 화면으로 봐주시면 감사하겠습니다</div>
 
   <!-- ===================== HERO ===================== -->
   <header class="hero wrap">
