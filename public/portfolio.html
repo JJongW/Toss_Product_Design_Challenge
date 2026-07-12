@@ -109,8 +109,9 @@
   .fc-verdict { display: inline-flex; align-items: center; gap: 6px; margin-top: 15px; font-size: .88rem; font-weight: 700; color: var(--ok); background: var(--ok-bg); padding: 7px 13px; border-radius: 999px; }
   .fc-verdict svg { width: 15px; height: 15px; }
   .fc-rows { margin-top: 22px; border-top: 1px solid var(--hairline); }
-  .fc-row { display: grid; grid-template-columns: 34px 1fr auto auto; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--hairline); }
+  .fc-row { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--hairline); }
   .fc-row:last-child { border-bottom: none; }
+  .fc-trail { display: inline-flex; align-items: center; justify-content: flex-end; gap: 12px; }
   .fc-cir { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #fff; }
   .fc-cir svg { width: 17px; height: 17px; display: block; }
   .fc-cir.g { background: var(--ok); } .fc-cir.a { background: var(--soft); } .fc-cir.s { background: var(--unknown); }
@@ -196,24 +197,22 @@
           <div class="fc-row">
             <span class="fc-cir g"><svg viewBox="0 0 17 17" fill="none"><path d="M3.6 9l3 3 6.8-6.8" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
             <span class="fc-l">필수 참석<span class="fc-s">네 분 모두 가능</span></span>
-            <span class="fc-pips"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
-            <span class="fc-v">4<em>/4</em></span>
+            <span class="fc-trail"><span class="fc-pips"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span><span class="fc-v">4<em>/4</em></span></span>
           </div>
           <div class="fc-row">
             <span class="fc-cir a"><svg viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="5.8" stroke="#fff" stroke-width="1.7"/><path d="M8.5 5v3.7l2.4 1.4" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></span>
             <span class="fc-l">선택 참석<span class="fc-s">한 분은 이 시간 어려움</span></span>
-            <span class="fc-pips amb"><i class="on"></i><i></i></span>
-            <span class="fc-v">1<em>/2</em></span>
+            <span class="fc-trail"><span class="fc-pips amb"><i class="on"></i><i></i></span><span class="fc-v">1<em>/2</em></span></span>
           </div>
           <div class="fc-row">
             <span class="fc-cir a"><svg viewBox="0 0 17 17" fill="none"><path d="M8.5 2.6l6.2 10.7H2.3L8.5 2.6z" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M8.5 6.8v2.9M8.5 11.3v.1" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg></span>
             <span class="fc-l">선호 충돌<span class="fc-s">되도록 피하고 싶은 분 · 익명</span></span>
-            <span class="fc-v">1<em>명</em></span>
+            <span class="fc-trail"><span class="fc-v">1<em>명</em></span></span>
           </div>
           <div class="fc-row">
             <span class="fc-cir s"><svg viewBox="0 0 17 17" fill="none"><circle cx="8.5" cy="8.5" r="5.8" stroke="#fff" stroke-width="1.7" stroke-dasharray="2.4 2.4"/></svg></span>
             <span class="fc-l">미응답<span class="fc-s">기다릴 사람 없음</span></span>
-            <span class="fc-v muted">0<em>명</em></span>
+            <span class="fc-trail"><span class="fc-v muted">0<em>명</em></span></span>
           </div>
         </div>
       </div>
