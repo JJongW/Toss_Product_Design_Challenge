@@ -85,9 +85,10 @@
   }
   .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 30px; }
   .chip {
-    font-family: var(--font-mono); font-size: 12.5px; padding: 7px 12px;
-    border: 1px solid var(--hairline); border-radius: 999px; color: var(--ink-soft); background: var(--surface-2); font-weight: 600;
+    font-size: 12.5px; padding: 7px 13px;
+    border: 1px solid var(--hairline); border-radius: 999px; color: var(--ink); background: var(--surface-2); font-weight: 600;
   }
+  .chip em { font-style: normal; font-weight: 600; color: var(--muted); margin-right: 7px; }
 
   /* ===================== FEATURE (추천 장면) ===================== */
   .feature { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; padding: 96px 24px; max-width: var(--maxw); margin: 0 auto; }
@@ -166,9 +167,9 @@
     <p>사람이 여섯이면, 모두에게 완벽한 시간은 거의 없어요.<br>결국 누군가는 조금씩 양보하게 되죠.<br>그때 주최자에게 어려운 건 <b style="color:var(--ink)">무엇을 근거로 정하느냐</b>예요.</p>
     <p class="hero-note">그 판단을 어떻게 도왔는지 먼저 보고,<br>맨 아래에서 실제 앱을 직접 써보세요.</p>
     <div class="hero-meta">
-      <span class="chip">필수 4 · 선택 2</span>
-      <span class="chip">다음 주 · 1시간</span>
-      <span class="chip">안 되는 시간만 · 익명 선호</span>
+      <span class="chip"><em>참석자</em>6명 · 필수 4 / 선택 2</span>
+      <span class="chip"><em>기간</em>다음 주 안 · 1시간 회의</span>
+      <span class="chip"><em>입력</em>안 되는 시간만 · 선호는 익명</span>
     </div>
   </header>
 
