@@ -3,429 +3,266 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="6명이 회의 일정을 잡는 경험 설계">
-<title>FitTime - 6명 회의 시간 조율 경험</title>
+<meta name="description" content="Toss Product Design Challenge 2026 - 6명이 회의 일정을 잡는 경험">
+<title>FitTime · 6명 회의 시간 조율</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
 <style>
   :root {
-    --bg: #f6f7f8;
-    --ink: #17191f;
-    --sub: #5e6572;
-    --muted: #8a92a0;
-    --line: #dfe3e8;
-    --line-dark: #cbd1d8;
-    --white: #fff;
-    --black: #111318;
-    --green: #27ae68;
-    --green-bg: #e8f7ef;
-    --orange: #ee8b32;
-    --orange-bg: #fff1df;
-    --blue: #3d7fe8;
-    --blue-bg: #eaf2ff;
-    --gray-bg: #eef1f4;
-    --shadow: 0 1px 2px rgba(17, 19, 24, .05), 0 18px 44px rgba(17, 19, 24, .08);
+    --bg: #f7f8fa;
+    --paper: #ffffff;
+    --ink: #191f28;
+    --text: #333d4b;
+    --muted: #6b7684;
+    --weak: #8b95a1;
+    --line: #e5e8eb;
+    --line-strong: #d1d6db;
+    --blue: #3182f6;
+    --green: #20b26c;
+    --green-bg: #e8f8ef;
+    --orange: #f08b32;
+    --orange-bg: #fff3e3;
+    --gray-bg: #f2f4f6;
+    --dark: #202632;
+    --shadow: 0 12px 30px rgba(25, 31, 40, .08);
     --font: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
-    --max: 1180px;
   }
 
   * { box-sizing: border-box; }
-  html, body { margin: 0; overflow-x: hidden; }
-  body { background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background:
-      linear-gradient(90deg, rgba(23,25,31,.04) 1px, transparent 1px),
-      linear-gradient(0deg, rgba(23,25,31,.035) 1px, transparent 1px);
-    background-size: 40px 40px;
-    opacity: .75;
-  }
-  .page { position: relative; }
-  .wrap { width: min(var(--max), calc(100% - 48px)); margin: 0 auto; }
-  h1, h2, h3, p { margin: 0; word-break: keep-all; overflow-wrap: break-word; }
-  h1, h2, h3 { letter-spacing: -.035em; line-height: 1.12; }
-  p { line-height: 1.65; color: var(--sub); }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); -webkit-font-smoothing: antialiased; }
+  body { min-width: 1120px; }
   a { color: inherit; }
+  h1, h2, h3, p { margin: 0; word-break: keep-all; }
+  p { color: var(--text); line-height: 1.7; }
+  .wrap { width: 1080px; margin: 0 auto; }
 
   .top {
+    height: 64px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(247, 248, 250, .92);
+    backdrop-filter: blur(16px);
     position: sticky;
     top: 0;
-    z-index: 10;
-    border-bottom: 1px solid var(--line);
-    background: rgba(246, 247, 248, .86);
-    backdrop-filter: blur(14px);
+    z-index: 20;
   }
-  .top .wrap { height: 56px; display: flex; align-items: center; justify-content: space-between; }
-  .mark { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 850; }
-  .mark::before { content: ""; width: 18px; height: 18px; border-radius: 6px; background: conic-gradient(from 90deg, var(--green), var(--blue), var(--orange), var(--green)); }
-  .top nav { display: flex; gap: 6px; color: var(--sub); font-size: 13px; font-weight: 750; }
-  .top a { text-decoration: none; padding: 8px 10px; border-radius: 9px; }
-  .top a:hover { background: var(--white); }
+  .top .wrap { height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; letter-spacing: -.02em; }
+  .brand i { width: 18px; height: 18px; border-radius: 6px; background: linear-gradient(135deg, var(--blue), var(--green)); display: block; }
+  .topnav { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; font-weight: 700; }
+  .topnav a { text-decoration: none; padding: 8px 10px; border-radius: 8px; }
+  .topnav a:hover { background: #fff; color: var(--ink); }
+  .topnav .primary { background: var(--ink); color: #fff; padding: 9px 13px; }
+  .topnav .primary:hover { background: #000; color: #fff; }
 
-  .hero { padding: 54px 0 42px; }
-  .case-grid { display: grid; grid-template-columns: 370px minmax(0, 1fr); gap: 28px; align-items: start; }
-  .case-grid > * { min-width: 0; }
-  .brief {
-    position: sticky;
-    top: 82px;
-    padding: 24px;
-    border: 1px solid var(--line);
-    border-radius: 22px;
-    background: rgba(255,255,255,.78);
-    box-shadow: var(--shadow);
-  }
-  .label { display: inline-flex; align-items: center; gap: 8px; color: var(--sub); font-size: 12px; font-weight: 850; }
-  .label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
-  .brief h1 { margin-top: 14px; font-size: 42px; font-weight: 920; }
-  .brief h1 span { color: var(--green); }
-  .brief p { margin-top: 16px; font-size: 15px; }
-  .brief dl { margin: 22px 0 0; display: grid; gap: 10px; }
-  .brief div { display: grid; grid-template-columns: 80px 1fr; gap: 10px; padding-top: 10px; border-top: 1px solid var(--line); }
-  .brief dt { color: var(--muted); font-size: 12px; font-weight: 800; }
-  .brief dd { margin: 0; color: var(--ink); font-size: 13px; font-weight: 760; line-height: 1.45; }
-  .brief dd { min-width: 0; }
+  .hero { padding: 56px 0 34px; }
+  .hero-grid { display: grid; grid-template-columns: 430px 1fr; gap: 42px; align-items: start; }
+  .kicker { color: var(--blue); font-size: 13px; font-weight: 800; letter-spacing: -.01em; }
+  h1 { margin-top: 14px; font-size: 52px; line-height: 1.08; letter-spacing: -.045em; font-weight: 900; }
+  h1 span { color: var(--green); }
+  .lead { margin-top: 22px; font-size: 17px; line-height: 1.75; color: var(--text); }
+  .meta { margin-top: 28px; display: grid; gap: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--paper); }
+  .meta-row { display: grid; grid-template-columns: 96px 1fr; min-height: 52px; border-top: 1px solid var(--line); }
+  .meta-row:first-child { border-top: 0; }
+  .meta-row dt { padding: 16px; color: var(--muted); font-size: 13px; font-weight: 800; background: #fbfcfd; }
+  .meta-row dd { margin: 0; padding: 16px; color: var(--ink); font-size: 14px; font-weight: 700; line-height: 1.45; }
 
-  .workspace {
-    min-width: 0;
-    border: 1px solid var(--line-dark);
-    border-radius: 28px;
-    background: var(--white);
-    box-shadow: var(--shadow);
-    overflow: hidden;
+  .phone-shell {
+    width: 344px;
+    margin-left: auto;
+    border-radius: 48px;
+    padding: 10px;
+    background: #101318;
+    box-shadow: var(--shadow), 0 20px 60px rgba(25,31,40,.18);
   }
-  .workspace-head {
-    min-height: 54px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 0 18px;
-    border-bottom: 1px solid var(--line);
-    background: #fbfbfc;
-  }
-  .dots { display: flex; gap: 7px; }
-  .dots i { width: 10px; height: 10px; border-radius: 50%; background: #d2d7de; }
-  .dots i:nth-child(1) { background: #f26a5a; }
-  .dots i:nth-child(2) { background: #f3bf43; }
-  .dots i:nth-child(3) { background: #31b76d; }
-  .file-title { color: var(--sub); font-size: 12px; font-weight: 800; }
-
-  .board { padding: 22px; display: grid; gap: 16px; }
-  .stage { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
-  .panel {
-    min-width: 0;
-    border: 1px solid var(--line);
-    border-radius: 20px;
+  .phone-shell iframe {
+    display: block;
+    width: 100%;
+    height: 690px;
+    border: 0;
+    border-radius: 38px;
     background: #fff;
-    overflow: hidden;
   }
-  .panel.dark {
-    background: #16191f;
-    color: #fff;
-    border-color: #16191f;
-  }
-  .panel-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    min-height: 48px;
-    padding: 0 16px;
-    border-bottom: 1px solid var(--line);
-    font-size: 13px;
-    font-weight: 850;
-  }
-  .panel-head > * { min-width: 0; }
-  .panel.dark .panel-head { border-color: rgba(255,255,255,.12); color: rgba(255,255,255,.9); }
-  .tag { display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 999px; background: var(--gray-bg); color: var(--sub); font-size: 11px; font-weight: 800; }
-  .tag.green { background: var(--green-bg); color: var(--green); }
-  .tag.orange { background: var(--orange-bg); color: var(--orange); }
-  .panel-body { padding: 16px; }
+  .preview-note { margin-top: 12px; text-align: right; color: var(--muted); font-size: 13px; font-weight: 700; }
 
-  .meeting-card { display: grid; gap: 13px; }
-  .meeting-title { font-size: 22px; font-weight: 900; letter-spacing: -.03em; }
-  .field { display: grid; grid-template-columns: 78px 1fr; gap: 10px; align-items: start; padding: 11px 0; border-top: 1px solid var(--line); }
-  .field:first-of-type { border-top: 0; }
-  .field span { color: var(--muted); font-size: 12px; font-weight: 800; }
-  .field b { font-size: 14px; line-height: 1.45; }
-  .people { display: flex; flex-wrap: wrap; gap: 6px; }
-  .person { display: inline-flex; align-items: center; gap: 5px; min-height: 28px; padding: 0 9px; border-radius: 999px; background: var(--gray-bg); font-size: 12px; font-weight: 800; }
-  .person.req { background: var(--green-bg); color: #16844b; }
+  .section { padding: 38px 0; }
+  .section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
+  .section-title h2 { font-size: 26px; letter-spacing: -.035em; }
+  .section-title p { max-width: 560px; color: var(--muted); font-size: 14px; }
 
-  .phone-row { display: grid; grid-template-columns: 190px 1fr; gap: 14px; align-items: center; }
-  .phone-row > * { min-width: 0; }
-  .phone {
-    width: 190px;
-    border-radius: 31px;
-    padding: 8px;
-    background: #111318;
-    box-shadow: 0 24px 44px rgba(0,0,0,.22);
-  }
-  .screen {
-    position: relative;
-    min-height: 392px;
-    padding: 34px 14px 14px;
-    border-radius: 24px;
-    background: #f8f9fb;
-    color: var(--ink);
-  }
-  .screen::before { content: ""; position: absolute; top: 11px; left: 50%; transform: translateX(-50%); width: 58px; height: 17px; border-radius: 999px; background: #050609; }
-  .screen small { display: block; color: var(--muted); font-size: 11px; font-weight: 800; }
-  .screen h3 { margin-top: 8px; font-size: 23px; font-weight: 920; }
-  .time-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 16px; }
-  .time-grid i { height: 24px; border-radius: 7px; background: #fff; border: 1px solid var(--line); }
-  .time-grid i.busy { background: #20242c; border-color: #20242c; }
-  .time-grid i.soft { background: var(--orange-bg); border-color: #f2b475; }
-  .legend { display: grid; gap: 8px; }
-  .legend p { font-size: 13px; }
-  .legend-row { display: flex; align-items: center; gap: 8px; color: var(--sub); font-size: 12px; font-weight: 800; }
-  .legend-row i { width: 13px; height: 13px; border-radius: 4px; background: #20242c; }
-  .legend-row i.soft { background: var(--orange-bg); border: 1px solid #f2b475; }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 20px; min-height: 176px; }
+  .card small { display: block; color: var(--weak); font-size: 12px; font-weight: 850; }
+  .card h3 { margin-top: 12px; font-size: 20px; line-height: 1.25; letter-spacing: -.025em; }
+  .card p { margin-top: 10px; font-size: 14px; color: var(--text); }
 
-  .result { display: grid; gap: 13px; }
-  .result-time { font-size: 40px; font-weight: 940; letter-spacing: -.055em; }
-  .result-pill { display: inline-flex; width: fit-content; align-items: center; gap: 6px; padding: 7px 10px; border-radius: 10px; background: var(--green-bg); color: var(--green); font-size: 12px; font-weight: 850; }
-  .ev { display: grid; gap: 0; margin-top: 4px; border-top: 1px solid var(--line); }
-  .ev-row { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: center; min-height: 47px; border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 820; }
-  .ev-row i { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 10px; color: #fff; font-style: normal; font-size: 13px; }
-  .ev-row i.green { background: var(--green); }
-  .ev-row i.orange { background: var(--orange); }
-  .ev-row i.gray { background: #9aa3af; }
-  .ev-row b { font-size: 15px; font-weight: 930; }
+  .flow { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; }
+  .flow-row { display: grid; grid-template-columns: 180px 1fr 260px; min-height: 112px; border-top: 1px solid var(--line); }
+  .flow-row:first-child { border-top: 0; }
+  .flow-step { padding: 22px; background: #fbfcfd; border-right: 1px solid var(--line); }
+  .flow-step b { display: block; color: var(--blue); font-size: 12px; letter-spacing: .04em; }
+  .flow-step span { display: block; margin-top: 8px; font-size: 18px; font-weight: 850; letter-spacing: -.02em; }
+  .flow-desc { padding: 22px; }
+  .flow-desc p { font-size: 15px; }
+  .flow-ui { padding: 18px 22px; border-left: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+  .mini { width: 100%; border: 1px solid var(--line); border-radius: 14px; padding: 12px; background: #fff; }
+  .mini-line { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 13px; font-weight: 750; }
+  .mini-line:first-child { border-top: 0; }
+  .pill { display: inline-flex; align-items: center; justify-content: center; min-height: 26px; padding: 0 9px; border-radius: 999px; background: var(--gray-bg); color: var(--text); font-size: 12px; font-weight: 800; }
+  .pill.green { background: var(--green-bg); color: #15935a; }
+  .pill.orange { background: var(--orange-bg); color: #b96719; }
+  .slots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+  .slots i { height: 18px; border-radius: 5px; background: var(--gray-bg); border: 1px solid var(--line); }
+  .slots i.busy { background: var(--dark); border-color: var(--dark); }
+  .slots i.soft { background: var(--orange-bg); border-color: #f2b36c; }
+  .evidence { display: grid; gap: 6px; }
+  .ev { display: grid; grid-template-columns: 22px 1fr auto; gap: 8px; align-items: center; font-size: 13px; font-weight: 800; }
+  .ev i { width: 22px; height: 22px; border-radius: 8px; background: var(--green); color: #fff; display: grid; place-items: center; font-style: normal; font-size: 12px; }
+  .ev i.orange { background: var(--orange); }
+  .ev i.gray { background: #9aa3ad; }
 
-  .decision-note {
-    border-radius: 16px;
-    padding: 16px;
-    background: #20242c;
-  }
-  .decision-note h3 { color: #fff; font-size: 20px; font-weight: 900; }
-  .decision-note p { margin-top: 9px; color: rgba(255,255,255,.72); font-size: 13px; }
-  .decision-note ul { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
-  .decision-note li { display: flex; gap: 8px; color: rgba(255,255,255,.86); font-size: 12px; font-weight: 800; }
-  .decision-note li::before { content: ""; width: 7px; height: 7px; margin-top: 5px; border-radius: 50%; background: var(--green); flex: none; }
+  .demo { padding: 42px 0 86px; }
+  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .demo-card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 18px; }
+  .demo-card h3 { font-size: 17px; margin-bottom: 14px; }
+  .demo-frame { width: 320px; margin: 0 auto; border-radius: 46px; padding: 10px; background: #101318; box-shadow: var(--shadow); }
+  .demo-frame iframe { display: block; width: 100%; height: 642px; border: 0; border-radius: 36px; background: #fff; }
 
-  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .step { padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
-  .step-num { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .04em; }
-  .step h3 { margin-top: 8px; font-size: 17px; font-weight: 900; }
-  .step p { margin-top: 7px; font-size: 12.5px; }
-
-  .demo { padding: 48px 0 88px; }
-  .demo-head { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 18px; }
-  .demo h2 { font-size: 32px; font-weight: 920; }
-  .demo p { max-width: 520px; font-size: 14px; }
-  .demo-link { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 15px; border-radius: 12px; background: var(--black); color: #fff; text-decoration: none; font-size: 13px; font-weight: 850; }
-  .live { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
-  .live-card { border: 1px solid var(--line); border-radius: 24px; background: var(--white); padding: 14px; box-shadow: var(--shadow); }
-  .live-card h3 { font-size: 15px; font-weight: 900; margin-bottom: 10px; }
-  .frame { width: min(360px, 100%); margin: 0 auto; aspect-ratio: 9 / 19.5; border-radius: 38px; padding: 9px; background: #111318; }
-  .frame iframe { display: block; width: 100%; height: 100%; border: 0; border-radius: 29px; background: #f8f9fb; }
-
-  @media (max-width: 980px) {
-    .case-grid { grid-template-columns: 1fr; }
-    .brief { position: static; }
-    .stage { grid-template-columns: 1fr; }
-    .flow { grid-template-columns: repeat(2, 1fr); }
-  }
-  @media (max-width: 640px) {
-    .wrap { width: min(var(--max), calc(100% - 32px)); }
-    .top nav a:first-child { display: none; }
-    .hero { padding: 30px 0 34px; }
-    .brief { padding: 18px; border-radius: 18px; overflow: hidden; }
-    .brief h1 {
-      font-size: 28px;
-      line-height: 1.16;
-      word-break: normal;
-      overflow-wrap: anywhere;
-    }
-    .brief p { font-size: 14px; }
-    .brief div {
-      display: block;
-      padding-top: 12px;
-    }
-    .brief dt { margin-bottom: 5px; }
-    .brief dd {
-      display: block;
-      font-size: 12.5px;
-      overflow-wrap: anywhere;
-      word-break: normal;
-      white-space: normal;
-    }
-    .workspace { border-radius: 20px; }
-    .workspace-head { padding: 0 14px; }
-    .file-title {
-      max-width: 210px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .board { padding: 14px; }
-    .stage { gap: 14px; }
-    .panel { border-radius: 18px; }
-    .panel-head {
-      min-height: 50px;
-      padding: 10px 14px;
-      align-items: flex-start;
-      flex-direction: column;
-    }
-    .phone-row { grid-template-columns: 1fr; }
-    .phone { margin: 0 auto; }
-    .meeting-title { font-size: 20px; }
-    .field { grid-template-columns: 64px minmax(0, 1fr); }
-    .result-time { font-size: 31px; }
-    .flow { grid-template-columns: 1fr; }
-    .demo-head { display: grid; }
-    .live { grid-template-columns: 1fr; }
+  @media (max-width: 1180px) {
+    body { min-width: 0; }
+    .wrap { width: calc(100% - 40px); }
+    .hero-grid { grid-template-columns: 1fr; }
+    .phone-shell { margin: 0; }
+    .flow-row { grid-template-columns: 1fr; }
+    .flow-step, .flow-ui { border: 0; border-top: 1px solid var(--line); }
+    .flow-step { border-top: 0; }
+    .cards, .demo-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
-<div class="page">
   <header class="top">
     <div class="wrap">
-      <div class="mark">FitTime</div>
-      <nav aria-label="페이지 이동">
+      <div class="brand"><i></i>FitTime</div>
+      <nav class="topnav">
+        <a href="#problem">문제</a>
         <a href="#flow">흐름</a>
-        <a href="#demo">직접 보기</a>
+        <a class="primary" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">프로토타입 열기</a>
       </nav>
     </div>
   </header>
 
   <main>
     <section class="hero wrap">
-      <div class="case-grid">
-        <aside class="brief">
-          <span class="label">Toss Product Design Challenge 2026</span>
-          <h1>6명 회의 시간 조율<br><span>빈 시간 수집</span>보다<br>결정 근거 중심으로</h1>
-          <p>주최자에게 필요한 것은 더 큰 시간표가 아니라, 서로 다른 조건을 비교해도 되는 판단 기준입니다. 필수 참석, 선택 참석, 선호 충돌, 미응답을 분리해 추천 이유를 먼저 확인하는 흐름으로 설계했습니다.</p>
-          <dl>
-            <div><dt>상황</dt><dd>같은 회사 동료 6명 · 다음 주 안 · 1시간 회의</dd></div>
-            <div><dt>조건</dt><dd>필수 참석자와 선택 참석자, 익명 선호, 미응답 상태</dd></div>
-            <div><dt>핵심</dt><dd>시스템의 조건 비교 · 주최자의 추천 근거 확인</dd></div>
+      <div class="hero-grid">
+        <div>
+          <div class="kicker">Toss Product Design Challenge 2026</div>
+          <h1>6명 회의 시간 조율<br><span>결정 근거</span>를 먼저 보는 흐름</h1>
+          <p class="lead">여러 사람의 빈 시간을 한 장의 표로 모으면 정보는 늘어나지만, 주최자의 판단은 쉬워지지 않습니다. FitTime은 필수 참석, 선택 참석, 선호 충돌, 미응답을 분리해 추천 시간의 이유를 먼저 확인하게 합니다.</p>
+          <dl class="meta">
+            <div class="meta-row"><dt>상황</dt><dd>같은 회사 동료 6명 · 다음 주 안 · 1시간 회의</dd></div>
+            <div class="meta-row"><dt>문제</dt><dd>빈 시간 수집 이후에도 “이 시간으로 정해도 되는지” 판단해야 하는 부담</dd></div>
+            <div class="meta-row"><dt>해결</dt><dd>시스템이 조건을 비교하고, 주최자는 추천 근거를 확인</dd></div>
           </dl>
-        </aside>
-
-        <section class="workspace" aria-label="FitTime 사용 흐름 보드">
-          <div class="workspace-head">
-            <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
-            <div class="file-title">fit-time-core-flow</div>
+        </div>
+        <div>
+          <div class="phone-shell">
+            <iframe src="https://schedulechallenge.vercel.app/?as=org" title="FitTime 주최자 프로토타입"></iframe>
           </div>
-          <div class="board" id="flow">
-            <div class="stage">
-              <article class="panel">
-                <div class="panel-head">
-                  <span>1. 회의 조건 설정</span>
-                  <span class="tag green">필수/선택 구분</span>
-                </div>
-                <div class="panel-body meeting-card">
-                  <div class="meeting-title">디자인팀 회의</div>
-                  <div class="field"><span>참석자</span><b>6명</b></div>
-                  <div class="field"><span>역할</span><div class="people"><b class="person req">필수 4명</b><b class="person">선택 2명</b></div></div>
-                  <div class="field"><span>조건</span><b>다음 주 안 · 1시간</b></div>
-                </div>
-              </article>
-
-              <article class="panel">
-                <div class="panel-head">
-                  <span>2. 참여자 입력</span>
-                  <span class="tag orange">안 되는 시간만</span>
-                </div>
-                <div class="panel-body phone-row">
-                  <div class="phone" aria-hidden="true">
-                    <div class="screen">
-                      <small>다음 주</small>
-                      <h3>피해야 하는 시간</h3>
-                      <div class="time-grid">
-                        <i></i><i class="busy"></i><i></i><i></i>
-                        <i></i><i></i><i class="soft"></i><i></i>
-                        <i class="busy"></i><i></i><i></i><i class="soft"></i>
-                        <i></i><i></i><i class="busy"></i><i></i>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="legend">
-                    <p>가능한 시간을 모두 고르지 않고, 이미 안 되는 시간과 되도록 피하고 싶은 시간만 표시하는 입력 방식입니다.</p>
-                    <div class="legend-row"><i></i> 안 되는 시간</div>
-                    <div class="legend-row"><i class="soft"></i> 피하고 싶은 시간</div>
-                  </div>
-                </div>
-              </article>
-            </div>
-
-            <div class="stage">
-              <article class="panel">
-                <div class="panel-head">
-                  <span>3. 조건 비교</span>
-                  <span class="tag">조건별 무게 분리</span>
-                </div>
-                <div class="panel-body result">
-                  <small style="color:var(--muted);font-weight:800">추천 시간</small>
-                  <div class="result-time">목요일 오후 2:00</div>
-                  <span class="result-pill">✓ 지금 정해도 되는 시간</span>
-                  <div class="ev">
-                    <div class="ev-row"><i class="green">✓</i><span>필수 참석</span><b>4/4</b></div>
-                    <div class="ev-row"><i class="orange">•</i><span>선택 참석</span><b>1/2</b></div>
-                    <div class="ev-row"><i class="orange">!</i><span>선호 충돌</span><b>1명</b></div>
-                    <div class="ev-row"><i class="gray">?</i><span>미응답</span><b>0명</b></div>
-                  </div>
-                </div>
-              </article>
-
-              <article class="panel dark">
-                <div class="panel-head">
-                  <span>4. 추천 근거 확인</span>
-                  <span class="tag green">근거 확인</span>
-                </div>
-                <div class="panel-body">
-                  <div class="decision-note">
-                    <h3>표 비교 없이 결정 이유 확인</h3>
-                    <p>추천 시간을 하나로 좁히고, 왜 괜찮은지와 어떤 타협이 포함됐는지 함께 제시합니다.</p>
-                    <ul>
-                      <li>필수 참석자는 모두 가능</li>
-                      <li>선택 참석자 한 명은 불참 가능</li>
-                      <li>점심 직후 선호 충돌은 익명으로 반영</li>
-                      <li>미응답자가 없어 지금 확정 가능</li>
-                    </ul>
-                  </div>
-                </div>
-              </article>
-            </div>
-
-            <div class="flow">
-              <article class="step"><div class="step-num">STEP 01</div><h3>회의 조건 설정</h3><p>참석자와 필수/선택 여부만 먼저 지정</p></article>
-              <article class="step"><div class="step-num">STEP 02</div><h3>제외 중심 입력</h3><p>안 되는 시간과 피하고 싶은 시간만 표시</p></article>
-              <article class="step"><div class="step-num">STEP 03</div><h3>조건별 비교</h3><p>필수, 선택, 선호, 미응답을 분리 계산</p></article>
-              <article class="step"><div class="step-num">STEP 04</div><h3>근거 확인 후 확정</h3><p>추천 이유 확인 후 확정 또는 조정 요청</p></article>
-            </div>
-          </div>
-        </section>
+          <div class="preview-note">실제 조작 가능한 주최자 화면</div>
+        </div>
       </div>
     </section>
 
-    <section class="demo wrap" id="demo">
-      <div class="demo-head">
-        <div>
-          <span class="label">Prototype</span>
-          <h2>실제 조작 흐름</h2>
-          <p>주최자와 참여자의 핵심 흐름을 바로 확인할 수 있는 프로토타입입니다. 새 탭에서 열면 더 편하게 조작할 수 있습니다.</p>
-        </div>
-        <a class="demo-link" href="https://schedulechallenge.vercel.app/" target="_blank" rel="noopener">프로토타입 열기</a>
+    <section class="section wrap" id="problem">
+      <div class="section-title">
+        <h2>발견한 문제</h2>
+        <p>과제 조건에서 중요한 단서는 “모두 되는 시간”이 아니라 “조건의 무게가 서로 다르다”는 점입니다.</p>
       </div>
-      <div class="live">
-        <article class="live-card">
-          <h3>주최자 화면</h3>
-          <div class="frame"><iframe src="https://schedulechallenge.vercel.app/?as=org" title="주최자 화면" loading="lazy" allow="clipboard-write"></iframe></div>
+      <div class="cards">
+        <article class="card">
+          <small>01</small>
+          <h3>같은 초록색이어도 의미가 다름</h3>
+          <p>필수 참석자의 가능 시간과 선택 참석자의 가능 시간이 같은 무게로 보이면, 주최자가 다시 해석해야 합니다.</p>
         </article>
-        <article class="live-card">
+        <article class="card">
+          <small>02</small>
+          <h3>선호는 말하기 어렵고 숨기기 쉬움</h3>
+          <p>점심 직후를 피하고 싶다는 약한 선호는 공개적으로 말하기 어렵기 때문에 익명 입력이 필요합니다.</p>
+        </article>
+        <article class="card">
+          <small>03</small>
+          <h3>최종 결정 책임이 주최자에게 남음</h3>
+          <p>추천 이유가 없으면 회의 확정 이후에도 왜 이 시간인지 설명하기 어렵습니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section wrap" id="flow">
+      <div class="section-title">
+        <h2>핵심 사용 흐름</h2>
+        <p>사용자가 실제로 쓰는 흐름 안에서 문제 정의와 해결 방식을 함께 확인할 수 있도록 구성했습니다.</p>
+      </div>
+      <div class="flow">
+        <div class="flow-row">
+          <div class="flow-step"><b>STEP 01</b><span>조건 설정</span></div>
+          <div class="flow-desc"><p>주최자는 참석자 6명, 필수/선택 여부, 다음 주 안 1시간 회의라는 최소 조건만 설정합니다.</p></div>
+          <div class="flow-ui">
+            <div class="mini">
+              <div class="mini-line"><span>참석자</span><b>6명</b></div>
+              <div class="mini-line"><span>필수 / 선택</span><span><b class="pill green">4명</b> <b class="pill">2명</b></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-step"><b>STEP 02</b><span>제외 중심 입력</span></div>
+          <div class="flow-desc"><p>참여자는 가능한 시간을 모두 고르지 않고, 안 되는 시간과 피하고 싶은 시간만 표시합니다.</p></div>
+          <div class="flow-ui">
+            <div class="mini">
+              <div class="slots"><i></i><i class="busy"></i><i></i><i></i><i class="soft"></i><i></i><i></i><i class="busy"></i><i></i><i></i></div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-step"><b>STEP 03</b><span>조건 비교</span></div>
+          <div class="flow-desc"><p>시스템은 필수 참석, 선택 참석, 선호 충돌, 미응답을 서로 다른 판단 기준으로 나눠 계산합니다.</p></div>
+          <div class="flow-ui">
+            <div class="mini evidence">
+              <div class="ev"><i>✓</i><span>필수 참석</span><b>4/4</b></div>
+              <div class="ev"><i class="orange">•</i><span>선택 참석</span><b>1/2</b></div>
+              <div class="ev"><i class="orange">!</i><span>선호 충돌</span><b>1명</b></div>
+              <div class="ev"><i class="gray">?</i><span>미응답</span><b>0명</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="flow-row">
+          <div class="flow-step"><b>STEP 04</b><span>근거 확인</span></div>
+          <div class="flow-desc"><p>주최자는 추천 시간 하나와 그 이유를 확인한 뒤 확정하거나 조정을 요청합니다.</p></div>
+          <div class="flow-ui">
+            <div class="mini">
+              <div class="mini-line"><span>추천</span><b>목요일 오후 2:00</b></div>
+              <div class="mini-line"><span>판단</span><b class="pill green">지금 확정 가능</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo wrap">
+      <div class="section-title">
+        <h2>프로토타입</h2>
+        <p>주최자와 참여자 화면을 함께 배치해 실제 조작 흐름을 확인할 수 있게 했습니다.</p>
+      </div>
+      <div class="demo-grid">
+        <article class="demo-card">
+          <h3>주최자 화면</h3>
+          <div class="demo-frame"><iframe src="https://schedulechallenge.vercel.app/?as=org" title="주최자 화면"></iframe></div>
+        </article>
+        <article class="demo-card">
           <h3>참여자 화면</h3>
-          <div class="frame"><iframe src="https://schedulechallenge.vercel.app/?as=part" title="참여자 화면" loading="lazy" allow="clipboard-write"></iframe></div>
+          <div class="demo-frame"><iframe src="https://schedulechallenge.vercel.app/?as=part" title="참여자 화면"></iframe></div>
         </article>
       </div>
     </section>
   </main>
-</div>
 </body>
 </html>
