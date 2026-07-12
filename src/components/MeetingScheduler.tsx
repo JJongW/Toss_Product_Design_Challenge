@@ -182,7 +182,7 @@ function Dropdown({
   );
 }
 
-export default function FitTime() {
+export default function MeetingScheduler() {
   const [screen, setScreen] = useState<Screen>("home");
   const [path, setPath] = useState<Path>(null);
   const [toastMsg, setToastMsg] = useState("");

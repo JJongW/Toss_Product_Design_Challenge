@@ -1,5 +1,5 @@
-import FitTime from "@/components/FitTime";
+import MeetingScheduler from "@/components/MeetingScheduler";
 
 export default function Page() {
-  return <FitTime />;
+  return <MeetingScheduler />;
 }

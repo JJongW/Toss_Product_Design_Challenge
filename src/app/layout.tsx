@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "회의 시간 조율",
-  description: "여럿이 모이는 회의 시간을 눈치 없이 정하는 서비스",
+  description: "6명이 회의 시간을 정하는 경험 프로토타입",
 };
 
 export const viewport: Viewport = {

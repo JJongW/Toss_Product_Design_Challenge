@@ -24,18 +24,18 @@ function makeRedis(): Redis | null {
 }
 
 const g = globalThis as unknown as {
-  __fittimeMem?: Map<string, Meeting>;
-  __fittimeRedis?: Redis | null;
+  __meetingSchedulerMem?: Map<string, Meeting>;
+  __meetingSchedulerRedis?: Redis | null;
 };
 
 const redis: Redis | null =
-  g.__fittimeRedis !== undefined
-    ? g.__fittimeRedis
-    : (g.__fittimeRedis = makeRedis());
+  g.__meetingSchedulerRedis !== undefined
+    ? g.__meetingSchedulerRedis
+    : (g.__meetingSchedulerRedis = makeRedis());
 
 // HMR로 모듈이 리로드돼도 로컬 데이터가 날아가지 않게 globalThis에 붙인다.
 const mem: Map<string, Meeting> =
-  g.__fittimeMem ?? (g.__fittimeMem = new Map());
+  g.__meetingSchedulerMem ?? (g.__meetingSchedulerMem = new Map());
 
 export function usingKv(): boolean {
   return redis !== null;

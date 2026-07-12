@@ -1,8 +1,8 @@
 {
-  "name": "fittime",
+  "name": "meeting-scheduler-challenge",
   "version": "0.1.0",
   "private": true,
-  "description": "핏타임 — 여럿이 모이는 회의 시간을 눈치 없이 정하는 서비스 (Toss PD 과제)",
+  "description": "6명이 회의 시간을 정하는 경험 프로토타입",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
