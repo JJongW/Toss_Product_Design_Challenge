@@ -36,13 +36,13 @@
   p { color: var(--text); line-height: 1.7; }
   .wrap { width: 1080px; margin: 0 auto; }
 
-  .hero { padding: 70px 0 86px; }
-  .hero-grid { display: grid; grid-template-columns: 0.86fr 1.14fr; gap: 32px; align-items: center; }
+  .hero { padding: 82px 0 34px; text-align: center; }
+  .hero-grid { display: block; }
   .kicker { color: var(--blue); font-size: 13px; font-weight: 800; letter-spacing: -.01em; }
   h1 { margin-top: 0; font-size: 64px; line-height: 1.02; letter-spacing: -.055em; font-weight: 920; }
   h1 span { color: var(--green); }
-  .lead { margin-top: 24px; font-size: 18px; line-height: 1.72; color: var(--text); max-width: 620px; }
-  .meta { margin-top: 30px; display: grid; gap: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--paper); max-width: 620px; }
+  .lead { margin: 24px auto 0; font-size: 18px; line-height: 1.72; color: var(--text); max-width: 680px; }
+  .meta { margin: 30px auto 0; display: grid; gap: 0; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--paper); max-width: 720px; text-align: left; }
   .meta-row { display: grid; grid-template-columns: 96px 1fr; min-height: 52px; border-top: 1px solid var(--line); }
   .meta-row:first-child { border-top: 0; }
   .meta-row dt { padding: 16px; color: var(--muted); font-size: 13px; font-weight: 800; background: #fbfcfd; }
@@ -76,7 +76,7 @@
   .section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
   .section-title h2 { font-size: 26px; letter-spacing: -.035em; }
   .section-title p { max-width: 560px; color: var(--muted); font-size: 14px; }
-  .problem-list { margin-top: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 620px; }
+  .problem-list { display: none; }
   .problem-item { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
   .problem-item small { display: block; color: var(--weak); font-size: 12px; font-weight: 850; }
   .problem-item h3 { margin-top: 10px; font-size: 17px; line-height: 1.25; letter-spacing: -.025em; }
@@ -118,16 +118,16 @@
   .ev i.gray { background: #9aa3ad; }
 
   .demo { padding: 0; }
-  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   .demo-card { background: #fbfcfd; border: 1px solid var(--line); border-radius: 20px; padding: 16px; }
   .demo-card h3 { font-size: 17px; margin-bottom: 14px; }
-  .demo-frame { width: 260px; margin: 0 auto; border-radius: 38px; padding: 8px; background: #101318; box-shadow: var(--shadow); }
-  .demo-frame iframe { display: block; width: 100%; height: 520px; border: 0; border-radius: 30px; background: #fff; }
+  .demo-frame { width: 300px; margin: 0 auto; border-radius: 42px; padding: 9px; background: #101318; box-shadow: var(--shadow); }
+  .demo-frame iframe { display: block; width: 100%; height: 600px; border: 0; border-radius: 34px; background: #fff; }
 
   @media (max-width: 1180px) {
     body { min-width: 0; }
     .wrap { width: calc(100% - 40px); }
-    .hero-grid { grid-template-columns: 1fr; }
+    .hero-grid { display: block; }
     .decision-preview { margin: 0; width: 100%; }
     .flow-row { grid-template-columns: 1fr; }
     .flow-step, .flow-ui { border: 0; border-top: 1px solid var(--line); }
@@ -148,25 +148,12 @@
             <div class="meta-row"><dt>문제</dt><dd>빈 시간 수집 이후에도 “이 시간으로 정해도 되는지” 판단해야 하는 부담</dd></div>
             <div class="meta-row"><dt>해결</dt><dd>시스템이 조건을 비교하고, 주최자는 추천 근거를 확인</dd></div>
           </dl>
-          <div class="problem-list">
-            <article class="problem-item">
-              <small>01</small>
-              <h3>같은 초록색이어도 의미가 다름</h3>
-              <p>필수 참석자의 가능 시간과 선택 참석자의 가능 시간이 같은 무게로 보이면, 주최자가 다시 해석해야 합니다.</p>
-            </article>
-            <article class="problem-item">
-              <small>02</small>
-              <h3>선호는 말하기 어렵고 숨기기 쉬움</h3>
-              <p>점심 직후를 피하고 싶다는 약한 선호는 공개적으로 말하기 어렵기 때문에 익명 입력이 필요합니다.</p>
-            </article>
-            <article class="problem-item">
-              <small>03</small>
-              <h3>최종 결정 책임이 주최자에게 남음</h3>
-              <p>추천 이유가 없으면 회의 확정 이후에도 왜 이 시간인지 설명하기 어렵습니다.</p>
-            </article>
-          </div>
         </div>
-          <div class="pair-panel">
+      </div>
+    </section>
+
+    <section class="wrap" style="padding-bottom: 84px;">
+      <div class="pair-panel">
             <section class="demo">
               <div class="section-title">
                 <h2>프로토타입</h2>
@@ -184,7 +171,6 @@
               </div>
             </section>
           </div>
-      </div>
     </section>
   </main>
 </body>
