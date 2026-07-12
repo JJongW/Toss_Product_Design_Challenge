@@ -36,8 +36,8 @@
   p { color: var(--text); line-height: 1.7; }
   .wrap { width: 1080px; margin: 0 auto; }
 
-  .hero { padding: 56px 0 34px; }
-  .hero-grid { display: grid; grid-template-columns: 430px 1fr; gap: 42px; align-items: start; }
+  .hero { padding: 56px 0 20px; }
+  .hero-grid { display: grid; grid-template-columns: 0.88fr 1.12fr; gap: 20px; align-items: start; }
   .kicker { color: var(--blue); font-size: 13px; font-weight: 800; letter-spacing: -.01em; }
   h1 { margin-top: 14px; font-size: 52px; line-height: 1.08; letter-spacing: -.045em; font-weight: 900; }
   h1 span { color: var(--green); }
@@ -72,13 +72,22 @@
   .reason-note { margin: 0 24px 18px; padding: 12px 14px; border-radius: 12px; background: var(--green-bg); color: #168f57; font-size: 13px; font-weight: 800; }
   .preview-note { margin-top: 12px; text-align: right; color: var(--muted); font-size: 13px; font-weight: 700; }
 
-  .section { padding: 38px 0; }
+  .section { padding: 28px 0; }
   .section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
   .section-title h2 { font-size: 26px; letter-spacing: -.035em; }
   .section-title p { max-width: 560px; color: var(--muted); font-size: 14px; }
+  .problem-list { margin-top: 26px; display: grid; gap: 12px; }
+  .problem-item { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
+  .problem-item small { display: block; color: var(--weak); font-size: 12px; font-weight: 850; }
+  .problem-item h3 { margin-top: 10px; font-size: 19px; line-height: 1.25; letter-spacing: -.025em; }
+  .problem-item p { margin-top: 8px; font-size: 14px; color: var(--text); }
+  .main-pair { display: block; padding-bottom: 78px; }
+  .pair-panel { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+  .pair-panel .section-title { display: block; margin-bottom: 16px; }
+  .pair-panel .section-title p { margin-top: 8px; }
 
-  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 20px; min-height: 176px; }
+  .cards { display: grid; grid-template-columns: 1fr; gap: 12px; }
+  .card { background: #fbfcfd; border: 1px solid var(--line); border-radius: 16px; padding: 18px; min-height: auto; }
   .card small { display: block; color: var(--weak); font-size: 12px; font-weight: 850; }
   .card h3 { margin-top: 12px; font-size: 20px; line-height: 1.25; letter-spacing: -.025em; }
   .card p { margin-top: 10px; font-size: 14px; color: var(--text); }
@@ -108,7 +117,7 @@
   .ev i.orange { background: var(--orange); }
   .ev i.gray { background: #9aa3ad; }
 
-  .demo { padding: 42px 0 86px; }
+  .demo { padding: 0; }
   .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   .demo-card { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 18px; }
   .demo-card h3 { font-size: 17px; margin-bottom: 14px; }
@@ -131,124 +140,52 @@
   <main>
     <section class="hero wrap">
       <div class="hero-grid">
-        <div>
-          <div class="kicker">Toss Product Design Challenge 2026</div>
-          <h1>6명 회의 시간 조율<br><span>결정 근거</span>를 먼저 보는 흐름</h1>
-          <p class="lead">여러 사람의 빈 시간을 한 장의 표로 모으면 정보는 늘어나지만, 주최자의 판단은 쉬워지지 않습니다. FitTime은 필수 참석, 선택 참석, 선호 충돌, 미응답을 분리해 추천 시간의 이유를 먼저 확인하게 합니다.</p>
+          <div class="kicker">발견한 문제</div>
+          <h1>빈 시간을 모아도<br><span>정해도 되는 이유</span>는 남지 않습니다</h1>
+          <p class="lead">여러 사람의 빈 시간을 한 장의 표로 모으면 정보는 늘어나지만, 주최자의 판단은 쉬워지지 않습니다. 필수 참석, 선택 참석, 선호 충돌, 미응답처럼 무게가 다른 조건을 다시 해석해야 하기 때문입니다.</p>
           <dl class="meta">
             <div class="meta-row"><dt>상황</dt><dd>같은 회사 동료 6명 · 다음 주 안 · 1시간 회의</dd></div>
             <div class="meta-row"><dt>문제</dt><dd>빈 시간 수집 이후에도 “이 시간으로 정해도 되는지” 판단해야 하는 부담</dd></div>
             <div class="meta-row"><dt>해결</dt><dd>시스템이 조건을 비교하고, 주최자는 추천 근거를 확인</dd></div>
           </dl>
-        </div>
-        <div>
-          <div class="decision-preview" aria-label="추천 근거 예시">
-            <div class="decision-head">
-              <small>추천 시간</small>
-              <h2>목요일 오후 2:00</h2>
-            </div>
-            <div class="reason-note">필수 참석자가 모두 가능해 지금 확정할 수 있는 시간</div>
-            <div class="decision-body">
-              <div class="decision-row"><i>✓</i><span>필수 참석</span><b>4/4</b></div>
-              <div class="decision-row"><i class="orange">•</i><span>선택 참석</span><b>1/2</b></div>
-              <div class="decision-row"><i class="orange">!</i><span>선호 충돌</span><b>1명</b></div>
-              <div class="decision-row"><i class="gray">?</i><span>미응답</span><b>0명</b></div>
-            </div>
-            <div class="decision-actions"><span>확정하기</span><span>조정 요청</span></div>
+          <div class="problem-list">
+            <article class="problem-item">
+              <small>01</small>
+              <h3>같은 초록색이어도 의미가 다름</h3>
+              <p>필수 참석자의 가능 시간과 선택 참석자의 가능 시간이 같은 무게로 보이면, 주최자가 다시 해석해야 합니다.</p>
+            </article>
+            <article class="problem-item">
+              <small>02</small>
+              <h3>선호는 말하기 어렵고 숨기기 쉬움</h3>
+              <p>점심 직후를 피하고 싶다는 약한 선호는 공개적으로 말하기 어렵기 때문에 익명 입력이 필요합니다.</p>
+            </article>
+            <article class="problem-item">
+              <small>03</small>
+              <h3>최종 결정 책임이 주최자에게 남음</h3>
+              <p>추천 이유가 없으면 회의 확정 이후에도 왜 이 시간인지 설명하기 어렵습니다.</p>
+            </article>
           </div>
-          <div class="preview-note">주최자가 마지막에 확인하는 추천 근거</div>
-        </div>
       </div>
     </section>
 
-    <section class="section wrap" id="problem">
-      <div class="section-title">
-        <h2>발견한 문제</h2>
-        <p>과제 조건에서 중요한 단서는 “모두 되는 시간”이 아니라 “조건의 무게가 서로 다르다”는 점입니다.</p>
-      </div>
-      <div class="cards">
-        <article class="card">
-          <small>01</small>
-          <h3>같은 초록색이어도 의미가 다름</h3>
-          <p>필수 참석자의 가능 시간과 선택 참석자의 가능 시간이 같은 무게로 보이면, 주최자가 다시 해석해야 합니다.</p>
-        </article>
-        <article class="card">
-          <small>02</small>
-          <h3>선호는 말하기 어렵고 숨기기 쉬움</h3>
-          <p>점심 직후를 피하고 싶다는 약한 선호는 공개적으로 말하기 어렵기 때문에 익명 입력이 필요합니다.</p>
-        </article>
-        <article class="card">
-          <small>03</small>
-          <h3>최종 결정 책임이 주최자에게 남음</h3>
-          <p>추천 이유가 없으면 회의 확정 이후에도 왜 이 시간인지 설명하기 어렵습니다.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section wrap" id="flow">
-      <div class="section-title">
-        <h2>핵심 사용 흐름</h2>
-        <p>사용자가 실제로 쓰는 흐름 안에서 문제 정의와 해결 방식을 함께 확인할 수 있도록 구성했습니다.</p>
-      </div>
-      <div class="flow">
-        <div class="flow-row">
-          <div class="flow-step"><b>STEP 01</b><span>조건 설정</span></div>
-          <div class="flow-desc"><p>주최자는 참석자 6명, 필수/선택 여부, 다음 주 안 1시간 회의라는 최소 조건만 설정합니다.</p></div>
-          <div class="flow-ui">
-            <div class="mini">
-              <div class="mini-line"><span>참석자</span><b>6명</b></div>
-              <div class="mini-line"><span>필수 / 선택</span><span><b class="pill green">4명</b> <b class="pill">2명</b></span></div>
-            </div>
+    <section class="main-pair wrap">
+      <div class="pair-panel">
+        <section class="demo">
+          <div class="section-title">
+            <h2>프로토타입</h2>
+            <p>주최자와 참여자 화면을 함께 배치해 실제 조작 흐름을 확인할 수 있게 했습니다.</p>
           </div>
-        </div>
-        <div class="flow-row">
-          <div class="flow-step"><b>STEP 02</b><span>제외 중심 입력</span></div>
-          <div class="flow-desc"><p>참여자는 가능한 시간을 모두 고르지 않고, 안 되는 시간과 피하고 싶은 시간만 표시합니다.</p></div>
-          <div class="flow-ui">
-            <div class="mini">
-              <div class="slots"><i></i><i class="busy"></i><i></i><i></i><i class="soft"></i><i></i><i></i><i class="busy"></i><i></i><i></i></div>
-            </div>
+          <div class="demo-grid">
+            <article class="demo-card">
+              <h3>주최자 화면</h3>
+              <div class="demo-frame"><iframe src="https://schedulechallenge.vercel.app/?as=org" title="주최자 화면"></iframe></div>
+            </article>
+            <article class="demo-card">
+              <h3>참여자 화면</h3>
+              <div class="demo-frame"><iframe src="https://schedulechallenge.vercel.app/?as=part" title="참여자 화면"></iframe></div>
+            </article>
           </div>
-        </div>
-        <div class="flow-row">
-          <div class="flow-step"><b>STEP 03</b><span>조건 비교</span></div>
-          <div class="flow-desc"><p>시스템은 필수 참석, 선택 참석, 선호 충돌, 미응답을 서로 다른 판단 기준으로 나눠 계산합니다.</p></div>
-          <div class="flow-ui">
-            <div class="mini evidence">
-              <div class="ev"><i>✓</i><span>필수 참석</span><b>4/4</b></div>
-              <div class="ev"><i class="orange">•</i><span>선택 참석</span><b>1/2</b></div>
-              <div class="ev"><i class="orange">!</i><span>선호 충돌</span><b>1명</b></div>
-              <div class="ev"><i class="gray">?</i><span>미응답</span><b>0명</b></div>
-            </div>
-          </div>
-        </div>
-        <div class="flow-row">
-          <div class="flow-step"><b>STEP 04</b><span>근거 확인</span></div>
-          <div class="flow-desc"><p>주최자는 추천 시간 하나와 그 이유를 확인한 뒤 확정하거나 조정을 요청합니다.</p></div>
-          <div class="flow-ui">
-            <div class="mini">
-              <div class="mini-line"><span>추천</span><b>목요일 오후 2:00</b></div>
-              <div class="mini-line"><span>판단</span><b class="pill green">지금 확정 가능</b></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="demo wrap">
-      <div class="section-title">
-        <h2>프로토타입</h2>
-        <p>주최자와 참여자 화면을 함께 배치해 실제 조작 흐름을 확인할 수 있게 했습니다.</p>
-      </div>
-      <div class="demo-grid">
-        <article class="demo-card">
-          <h3>주최자 화면</h3>
-          <div class="demo-frame"><iframe src="https://schedulechallenge.vercel.app/?as=org" title="주최자 화면"></iframe></div>
-        </article>
-        <article class="demo-card">
-          <h3>참여자 화면</h3>
-          <div class="demo-frame"><iframe src="https://schedulechallenge.vercel.app/?as=part" title="참여자 화면"></iframe></div>
-        </article>
+        </section>
       </div>
     </section>
   </main>
